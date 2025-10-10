@@ -1,0 +1,125 @@
+:root {
+  --yellow: #FFD166;
+  --orange: #EF6C00;
+  --blue: #15616D;
+  --bg: #F7F6F3;
+  --white: #FFFFFF;
+  --text-dark: #2F2F2F;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-dark);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Navbar --- */
+.navbar {
+  background: var(--blue);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+.navbar-brand {
+  font-weight: 700;
+  color: var(--yellow) !important;
+}
+.nav-link {
+  color: var(--white) !important;
+  opacity: 0.9;
+}
+.nav-link:hover,
+.nav-link.active {
+  opacity: 1;
+  text-decoration: underline;
+}
+.brand-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 1rem;
+  background: var(--yellow);
+  display: inline-block;
+  margin-right: 0.35rem;
+}
+
+/* --- Cards --- */
+.card {
+  border: 0;
+  border-radius: 1rem;
+  background-color: var(--white);
+  box-shadow: 0 8px 20px rgba(21, 97, 109, 0.08);
+}
+.card-header {
+  background-color: var(--blue);
+  color: var(--white);
+  border-radius: 1rem 1rem 0 0;
+  font-weight: 600;
+}
+
+/* --- Botones --- */
+.btn-primary {
+  background-color: var(--orange);
+  border: none;
+  transition: background-color 0.2s ease-in-out;
+}
+.btn-primary:hover {
+  background-color: var(--yellow);
+  color: var(--text-dark);
+}
+.btn-outline-secondary {
+  color: var(--blue);
+  border-color: var(--blue);
+}
+.btn-outline-secondary:hover {
+  background-color: var(--blue);
+  color: var(--white);
+}
+.btn-outline-danger {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+.btn-outline-danger:hover {
+  background-color: var(--orange);
+  color: var(--white);
+}
+
+/* --- Tablas --- */
+.table thead th {
+  background-color: var(--yellow);
+  color: var(--blue);
+}
+.table tbody tr:hover {
+  background-color: rgba(255, 209, 102, 0.1);
+}
+
+/* --- Textos y detalles --- */
+.required::after {
+  content: " *";
+  color: var(--orange);
+}
+
+/* --- Animación skeleton --- */
+.skeleton {
+  display: inline-block;
+  min-width: 6ch;
+  background: linear-gradient(90deg, #ececec, #f7f7f7, #ececec);
+  background-size: 200% 100%;
+  animation: s 1.2s infinite;
+  border-radius: 0.25rem;
+}
+@keyframes s {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* --- Alertas --- */
+.alert-success {
+  background-color: var(--blue);
+  color: var(--white);
+}
+.alert-danger {
+  background-color: var(--orange);
+  color: var(--white);
+}
+.alert-warning {
+  background-color: var(--yellow);
+  color: var(--text-dark);
+}

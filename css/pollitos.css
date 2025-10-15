@@ -1,125 +1,167 @@
-:root {
-  --yellow: #FFD166;
-  --orange: #EF6C00;
-  --blue: #15616D;
-  --bg: #F7F6F3;
-  --white: #FFFFFF;
-  --text-dark: #2F2F2F;
+/* ===== Paleta unificada ===== */
+:root{
+  --yellow: #F6C445;        /* Amarillo principal */
+  --yellow-2:#EFBF2A;       /* Variante */
+  --orange: #FF8A00;        /* Acento/botones importantes */
+  --blue:   #2D6CDF;        /* Azul sistema */
+  --bg:     #F7F6F3;        /* Fondo elegante */
+  --white:  #FFFFFF;
+  --text-dark: #1F2937;     /* Gris oscuro legible */
+  --border: #E5E7EB;
 }
 
-body {
-  background-color: var(--bg);
+html,body{
+  background: var(--bg);
   color: var(--text-dark);
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
 }
 
-/* --- Navbar --- */
-.navbar {
-  background: var(--blue);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+/* ===== Barra degradada superior (en todo el sistema) ===== */
+.brand-gradient{
+  background: linear-gradient(90deg,#0D47A1 0%,#1E64C8 35%,#7B8794 60%,#FF8A00 100%);
+  color:#fff;
+  padding:14px 0;
+  border-bottom:1px solid rgba(0,0,0,.06);
 }
-.navbar-brand {
-  font-weight: 700;
+.brand-gradient .title{ font-weight:700; }
+.badge-tech{
+  background: var(--yellow);
+  color:#111;
+  font-weight:700;
+  padding:.35rem .6rem;
+  border-radius:.75rem;
+}
+
+/* ===== Navbar (para tus vistas) ===== */
+.navbar{
+  background: var(--blue);
+  box-shadow: 0 3px 10px rgba(0,0,0,.05);
+}
+.navbar-brand{ font-weight:700; color: var(--yellow) !important; }
+.nav-link{ color: var(--white) !important; opacity:.9; }
+.nav-link:hover, .nav-link.active{ opacity:1; text-decoration: underline; }
+.brand-dot{
+  width:.6rem; height:.6rem; border-radius:1rem; background: var(--yellow);
+  display:inline-block; margin-right:.35rem;
+}
+
+/* ===== Stepper (si lo usas) ===== */
+.step-badge{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:2rem; height:2rem; border-radius:999px;
+  background: var(--blue); color:#fff; font-weight:700;
+}
+.step-badge.disabled{ opacity:.35; filter:grayscale(.35); }
+
+/* ===== Cards / contenedores ===== */
+.card{
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--white);
+  box-shadow: 0 8px 20px rgba(0,0,0,.06);
+}
+.card-header{
+  background: var(--blue);
+  color:#fff;
+  border-radius: 1rem 1rem 0 0;
+  font-weight:600;
+}
+
+/* ===== Inputs / selects ===== */
+.form-control, .form-select{
+  border:1px solid var(--border);
+  border-radius:.75rem;
+}
+.form-control:focus, .form-select:focus{
+  border-color: var(--blue);
+  box-shadow: 0 0 0 .25rem rgba(45,108,223,.15);
+}
+
+/* Requerido */
+.req::after, .required::after{
+  content:" *";
+  color: var(--orange);
+  font-weight:700;
+}
+
+/* ===== Botones ===== */
+.btn-azul{
+  background: var(--blue); color:#fff; border:none; font-weight:600;
+}
+.btn-azul:hover{ filter:brightness(.95); color:#fff; }
+
+.btn-naranja{
+  background: var(--orange); color:#111; border:none; font-weight:700;
+}
+.btn-naranja:hover{ filter:brightness(.95); color:#111; }
+
+/* Compatibilidad si usas .btn-primary en tus vistas */
+.btn-primary{ background: var(--orange); border:none; color:#111; font-weight:700; }
+.btn-primary:hover{ filter:brightness(.95); color:#111; }
+.btn-outline-secondary{ color:var(--blue); border-color:var(--blue); }
+.btn-outline-secondary:hover{ background:var(--blue); color:#fff; }
+.btn-outline-danger{ border-color: var(--orange); color: var(--orange); }
+.btn-outline-danger:hover{ background: var(--orange); color:#fff; }
+
+/* ===== Tablas ===== */
+.table thead th{
+  background: var(--yellow);
+  color:#0F172A;
+  border-bottom:0;
+}
+.table tbody tr:hover{ background: rgba(246,196,69,.10); }
+
+/* ===== Skeleton ===== */
+.skeleton{
+  display:inline-block; min-width:6ch; height:1em; border-radius:.35rem;
+  background: linear-gradient(90deg,#ececec,#f7f7f7,#ececec);
+  background-size:200% 100%;
+  animation: s 1.2s infinite;
+}
+@keyframes s{ from{background-position:200% 0} to{background-position:-200% 0} }
+
+/* ===== Alertas ===== */
+.alert-success{ background: var(--blue); color:#fff; border:none; }
+.alert-danger { background: var(--orange); color:#111; border:none; }
+.alert-warning{ background: var(--yellow); color:#111; border:none; }
+
+/* ===== Utilidades ===== */
+.small-hint{ font-size:.85rem; color:#475569; }
+
+/* --- Navbar visual improvement --- */
+.navbar-nav .nav-link {
+  position: relative;
+  font-weight: 500;
+  transition: color 0.25s ease-in-out;
+}
+
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--yellow), var(--orange));
+  transition: width 0.35s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 100%;
+}
+
+.navbar-nav .nav-link.active::after {
+  width: 100%;
+  box-shadow: 0 0 6px rgba(239, 108, 0, 0.6); /* brillo suave */
+}
+
+.navbar-nav .nav-link.active {
   color: var(--yellow) !important;
 }
-.nav-link {
-  color: var(--white) !important;
-  opacity: 0.9;
-}
-.nav-link:hover,
-.nav-link.active {
-  opacity: 1;
-  text-decoration: underline;
-}
-.brand-dot {
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 1rem;
-  background: var(--yellow);
-  display: inline-block;
-  margin-right: 0.35rem;
-}
 
-/* --- Cards --- */
-.card {
-  border: 0;
-  border-radius: 1rem;
-  background-color: var(--white);
-  box-shadow: 0 8px 20px rgba(21, 97, 109, 0.08);
-}
-.card-header {
-  background-color: var(--blue);
-  color: var(--white);
-  border-radius: 1rem 1rem 0 0;
-  font-weight: 600;
-}
-
-/* --- Botones --- */
-.btn-primary {
-  background-color: var(--orange);
-  border: none;
-  transition: background-color 0.2s ease-in-out;
-}
-.btn-primary:hover {
-  background-color: var(--yellow);
-  color: var(--text-dark);
-}
-.btn-outline-secondary {
-  color: var(--blue);
-  border-color: var(--blue);
-}
-.btn-outline-secondary:hover {
-  background-color: var(--blue);
-  color: var(--white);
-}
-.btn-outline-danger {
-  border-color: var(--orange);
-  color: var(--orange);
-}
-.btn-outline-danger:hover {
-  background-color: var(--orange);
-  color: var(--white);
-}
-
-/* --- Tablas --- */
-.table thead th {
-  background-color: var(--yellow);
-  color: var(--blue);
-}
-.table tbody tr:hover {
-  background-color: rgba(255, 209, 102, 0.1);
-}
-
-/* --- Textos y detalles --- */
-.required::after {
-  content: " *";
-  color: var(--orange);
-}
-
-/* --- Animación skeleton --- */
-.skeleton {
-  display: inline-block;
-  min-width: 6ch;
-  background: linear-gradient(90deg, #ececec, #f7f7f7, #ececec);
-  background-size: 200% 100%;
-  animation: s 1.2s infinite;
-  border-radius: 0.25rem;
-}
-@keyframes s {
-  from { background-position: 200% 0; }
-  to { background-position: -200% 0; }
-}
-
-/* --- Alertas --- */
-.alert-success {
-  background-color: var(--blue);
-  color: var(--white);
-}
-.alert-danger {
-  background-color: var(--orange);
-  color: var(--white);
-}
-.alert-warning {
-  background-color: var(--yellow);
-  color: var(--text-dark);
+/* Efecto difuminado en hover */
+.navbar-nav .nav-link:hover {
+  color: var(--yellow) !important;
+  text-shadow: 0 0 8px rgba(255, 209, 102, 0.6);
 }

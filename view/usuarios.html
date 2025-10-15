@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <!-- Guard de sesión -->
+  <script>
+  (function () {
+    try {
+      const s = JSON.parse(localStorage.getItem('pollito.session') || 'null');
+      if (!s || !s.exp || Date.now() > s.exp) {
+        localStorage.removeItem('pollito.session');
+        location.replace('./login.html');
+      }
+    } catch {
+      localStorage.removeItem('pollito.session');
+      location.replace('./login.html');
+    }
+  })();
+  </script>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pollitos • Usuarios</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/pollitos.css" />
+
+  <!-- Estilos globales (misma base del index) -->
+  <style>
+    :root{
+      --accent1:#F6C445;
+      --accent2:#FF8A00;
+      --pill-hover: rgba(255,255,255,.12);
+      --pill-active-a: rgba(246,196,69,.18);
+      --pill-active-b: rgba(255,138,0,.18);
+    }
+    body{ opacity:0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
+    body.ready{ opacity:1; transform:none; }
+    body.page-leave{ opacity:.15; transform: translateY(4px) scale(.997); transition: opacity .22s ease, transform .22s ease; }
+
+    /* Anti-subrayado + pill */
+    .navbar .nav-link,
+    .navbar .nav-link:hover,
+    .navbar .nav-link:focus,
+    .navbar .nav-link.active,
+    .navbar .nav-link.is-active{
+      text-decoration:none !important;
+      border-bottom:0 !important;
+      box-shadow:none !important;
+    }
+    .navbar .nav-link::after{ display:none !important; content:none !important; }
+    .navbar-nav{ gap:.25rem; }
+    .navbar-nav .nav-link{ border-radius:999px; padding:.5rem .9rem; transition: background-color .25s ease, color .25s ease; }
+    .navbar-nav .nav-link:hover{ background:var(--pill-hover); }
+    .navbar-nav .nav-link.is-active{
+      background: linear-gradient(90deg, var(--pill-active-a), var(--pill-active-b));
+      color:#fff !important;
+      box-shadow: inset 0 6px 16px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.06) !important;
+    }
+  </style>
+
+  <style>
+  /* === Brand destacado y consistente en todas las vistas === */
+  :root{
+    --brand-pill-a: rgba(246,196,69,.18); /* #F6C445 */
+    --brand-pill-b: rgba(255,138,0,.18);  /* #FF8A00  */
+    --brand-text:   #F6C445;
+  }
+
+  .navbar .navbar-brand.brand-highlight{
+    color: var(--brand-text) !important;
+    font-weight: 800;
+    letter-spacing: .2px;
+    padding: .25rem .6rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--brand-pill-a), var(--brand-pill-b));
+    text-decoration: none !important;
+    box-shadow:
+      inset 0 6px 16px rgba(0,0,0,.12),
+      0 2px 6px rgba(0,0,0,.08);
+    text-shadow: 0 1px 0 rgba(0,0,0,.15);
+    transition: transform .2s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .navbar .navbar-brand.brand-highlight:hover{
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 8px 18px rgba(0,0,0,.14),
+      0 4px 10px rgba(0,0,0,.12);
+  }
+</style>
+  <script>
+    document.addEventListener('DOMContentLoaded', ()=> document.body.classList.add('ready'));
+  </script>
+</head>
+<body>
+  <!-- NAVBAR unificada -->
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#0D47A1;">
+    <div class="container">
+      <a class="navbar-brand fw-bold brand-highlight" href="../view/index.html" data-external="1">Operación Pollito</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div id="mainNav" class="navbar-collapse collapse">
+        <div class="navbar-nav me-auto">
+          <!-- Ir a SPA (cambo de página => external) -->
+          <a class="nav-link" href="../view/index.html#bene" data-external="1">Ingreso de Beneficiarios</a>
+          <a class="nav-link" href="../view/index.html#enc"  data-external="1">Encargado y Beneficiarios</a>
+
+          <!-- Externos -->
+          <a class="nav-link" href="./compras.html"  data-external="1">Compras de Pollitos</a>
+          <a class="nav-link" href="./usuarios.html" data-external="1">Crear Usuarios</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <div id="flash" class="mb-3"></div>
+
+    <div class="row g-3">
+      <div class="col-12 col-lg-5">
+        <div class="card h-100">
+          <div class="card-header">Crear usuario</div>
+          <div class="card-body">
+            <form id="formUsuario" class="row g-3">
+              <div class="col-12">
+                <label class="form-label required">Nombre de usuario</label>
+                <input id="usrNombre" class="form-control" maxlength="15" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label required">Contraseña</label>
+                <input id="usrPass" type="password" class="form-control" minlength="6" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label required">Rol</label>
+                <select id="usrRol" class="form-select" required></select>
+              </div>
+              <div class="col-12">
+                <button class="btn btn-primary" type="submit">
+                  <i class="bi bi-person-plus me-1"></i> Crear
+                </button>
+              </div>
+            </form>
+            <div class="form-text">
+              * Integra con tabla <code>Usuarios</code> (idUsuario, nombreUsuario, contrasena hash, idRol).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-7">
+        <div class="card h-100">
+          <div class="card-header">Usuarios</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table align-middle" id="tablaUsuarios">
+                <thead>
+                  <tr>
+                    <th>Usuario</th><th>Rol</th><th class="text-end">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="text-muted"><td colspan="3">Sin datos (esperando BD)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL LOGIN -->
+  <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content" id="formLogin">
+        <div class="modal-header">
+          <h5 class="modal-title">Iniciar sesión</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Usuario</label>
+            <input id="loginUser" class="form-control" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Contraseña</label>
+            <input id="loginPass" type="password" class="form-control" required>
+          </div>
+          <div class="form-text">La sesión y permisos vendrán del backend.</div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" type="submit">Entrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/usuarios.page.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      PollitoAuth.bindUI({ injectIfMissing: true });
+      document.body.classList.add('ready');
+    });
+
+    // Navegación con salida suave
+    document.addEventListener('click', function (e) {
+      const a = e.target.closest('a.nav-link[data-external="1"]');
+      if (!a) return;
+      e.preventDefault();
+      document.querySelectorAll('.navbar .nav-link').forEach(n=>n.classList.remove('is-active'));
+      a.classList.add('is-active');
+      document.body.classList.add('page-leave');
+      setTimeout(() => { window.location.href = a.href; }, 200);
+    }, true);
+
+    // Activo por ruta
+    (function markActiveByPath(){
+      const file = location.pathname.split('/').pop().toLowerCase();
+      document.querySelectorAll('.navbar a.nav-link[data-external="1"]').forEach(a=>{
+        const target = (a.getAttribute('href')||'').split('/').pop().toLowerCase();
+        a.classList.toggle('is-active', target === file);
+      });
+    })();
+  </script>
+</body>
+</html>

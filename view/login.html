@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Iniciar Sesión – Sistema Pollito</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/auth.css">
+  <style>
+    /* ===== Fondo azul elegante con degradado animado sutil ===== */
+    :root{
+      --azul-1:#203a72;  /* más oscuro, elegante */
+      --azul-2:#2b5aa8;  /* medio */
+      --azul-3:#4e7bd3;  /* acento */
+      --marfil:#f6f8fc;  /* base clara NO blanca pura */
+    }
+    html,body{height:100%}
+    body{
+      margin:0; font-family:"Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
+      /* degradado + blobs suaves animados */
+      background:
+        radial-gradient(1200px 800px at 10% 10%, rgba(78,123,211,.25), transparent 60%),
+        radial-gradient(1000px 700px at 90% 20%, rgba(43,90,168,.22), transparent 60%),
+        radial-gradient(900px 700px at 80% 90%, rgba(32,58,114,.22), transparent 60%),
+        linear-gradient(135deg, #eaf0fb 0%, #dee9fb 100%);
+      background-size: 100% 100%;
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+      opacity:0; transform: translateY(8px);
+      animation: pageEnter .45s ease-out forwards;
+    }
+    @keyframes pageEnter{
+      to{ opacity:1; transform:none; }
+    }
+
+    /* ===== Card con glassmorphism (NO blanco) ===== */
+    .auth-card{
+      width:min(440px, 92vw);
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(246,248,252,.85), rgba(243,247,255,.82));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 12px 36px rgba(22,36,70,.25);
+      overflow:hidden;
+      transform: translateY(8px);
+      animation: cardIn .5s .08s ease-out forwards;
+    }
+    @keyframes cardIn{
+      to{ transform:none; }
+    }
+
+    .auth-header{
+      background: linear-gradient(90deg, var(--azul-1), var(--azul-2));
+      color:#fff; text-align:center; padding:18px 22px; font-weight:700; letter-spacing:.2px;
+    }
+    .auth-body{ padding:26px 24px; }
+    .auth-row label{ font-weight:600; color:#2a2f3a; }
+    .form-control{
+      border-radius:12px; border:1px solid #d7deea;
+    }
+    .form-control:focus{
+      border-color: var(--azul-2); box-shadow: 0 0 0 .2rem rgba(43,90,168,.15);
+    }
+
+    .auth-btn.primary{
+      width:100%; border-radius:12px; padding:12px 14px; font-weight:700;
+      color:#fff; background: linear-gradient(90deg, var(--azul-2), var(--azul-3));
+      border:none; transition: transform .08s ease, filter .2s ease;
+    }
+    .auth-btn.primary:hover{ filter:brightness(1.02) }
+    .auth-btn.primary:active{ transform: translateY(1px) }
+
+    .auth-hint{ text-align:center; color:#6b7485; font-size:.86rem }
+
+    /* ===== Salida suave (fade-out) antes de redirigir ===== */
+    .leaving{
+      pointer-events:none;
+      transition: opacity .35s ease;
+      opacity:0;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <div class="auth-header">Operación Pollito</div>
+    <div class="auth-body">
+      <form id="loginForm">
+        <div class="auth-row mb-3">
+          <label for="user">Usuario</label>
+          <input id="user" name="user" type="text" class="form-control" required autofocus>
+        </div>
+        <div class="auth-row mb-4">
+          <label for="pass">Contraseña</label>
+          <input id="pass" name="pass" type="password" class="form-control" required>
+        </div>
+        <button type="submit" class="auth-btn primary btn">Entrar</button>
+        <div class="auth-hint mt-3">
+          Usuarios demo: <b>admin/admin123</b>, <b>caja/caja123</b>, <b>inv/inv123</b>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/auth.js"></script>
+  <script>
+    // Evita parpadeos de autofill en algunos navegadores
+    window.addEventListener('load', ()=> document.getElementById('user')?.focus());
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const user = document.getElementById("user").value.trim();
+      const pass = document.getElementById("pass").value;
+
+      // Usa el login del auth.js (mock o API real cuando la actives)
+      const out = await PollitoAuth.login(user, pass);
+
+      if (!out.ok) {
+        alert(out.msg || "Usuario o contraseña incorrectos");
+        return;
+      }
+
+      // Guarda sesión
+      PollitoAuth.setSession(out.data);
+
+      // Salida suave y luego redirige al index
+      document.body.classList.add('leaving');
+      setTimeout(()=> location.replace("./index.html"), 350);
+    });
+  </script>
+</body>
+</html>

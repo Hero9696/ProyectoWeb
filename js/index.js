@@ -1,11 +1,17 @@
-const contenedor = document.getElementById('contenidoPrincipal');
-
-    document.getElementById('btnVistaBeneficiarios').addEventListener('click', async ()=>{
-      const html = await fetch('../view/VistaBeneficiarios.html').then(r=>r.text());
-      contenedor.innerHTML = html;
+// /js/index.js — navegación directa a las vistas
+document.addEventListener('DOMContentLoaded', () => {
+  const go = (id, href) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('click', (e) => {
+      // opcional: permitir click medio/ctrl+click abriendo en nueva pestaña
+      if (e.ctrlKey || e.metaKey || e.button === 1) return;
+      e.preventDefault();
+      window.location.assign(href);
     });
+  };
 
-    document.getElementById('btnVistaEncargado').addEventListener('click', async ()=>{
-      const html = await fetch('../view/VistaEncargado.html').then(r=>r.text());
-      contenedor.innerHTML = html;
-    });
+  go('btnVistaBeneficiarios', './VistaBeneficiarios.html');
+  go('btnVistaEncargado',     './VistaEncargado.html');
+  go('btnVistaDonaciones',    './VistaDonaciones.html');
+});

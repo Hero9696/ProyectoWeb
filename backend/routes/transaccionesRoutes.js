@@ -1,6 +1,6 @@
-// routes/transacciones.routes.js
-
+// routes/transaccionesRoutes.js
 const express = require('express');
+
 const router = express.Router();
 
 const CajaController = require('../controllers/cajaController');
@@ -10,7 +10,7 @@ const InventarioController = require('../controllers/inventarioController');
 const VentaController = require('../controllers/ventaController');
 
 /**
- * @swagger
+ * @swaggerc
  * tags:
  *   name: Tesorería y Movimiento
  *   description: Gestión de Caja, Donaciones, Inventario y Ventas (flujo financiero y de stock).
@@ -111,9 +111,11 @@ router.get('/transacciones-caja', TransaccionCajaController.getAllTransacciones)
  *       500:
  *         description: Error en la transacción atómica.
  */
+// Donaciones (sin tipos)
 router.get('/donaciones', DonacionController.getAllDonaciones);
+router.get('/donaciones/:id', DonacionController.getDonacionById);
 router.post('/donaciones', DonacionController.createDonacion);
-
+router.delete('/donaciones/:id', DonacionController.deleteDonacion);
 // =========================================================================
 // RUTAS: INVENTARIO
 // =========================================================================

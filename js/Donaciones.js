@@ -6,15 +6,36 @@
   const $ = (s, c=document) => c.querySelector(s);
   const fmtQ = n => `Q ${Number(n||0).toFixed(2)}`;
 
+  // Pone fecha/hora local visibles (solo informativas)
+  function setNow() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    const mm   = pad(d.getMonth() + 1);
+    const dd   = pad(d.getDate());
+    const HH   = pad(d.getHours());
+    const MM   = pad(d.getMinutes());
+
+    const inpFecha = $('#inpFecha');
+    const inpHora  = $('#inpHora');
+    if (inpFecha) inpFecha.value = `${yyyy}-${mm}-${dd}`;
+    if (inpHora)  inpHora.value  = `${HH}:${MM}`;
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     const form = $('#formDonacion');
     const sel  = $('#selDonante');
     if (!form || !sel) return;
 
     cargarDonantes(sel);
+    setNow();
+
     form.addEventListener('submit', onSubmit);
     $('#btnRefrescar')?.addEventListener('click', refrescarPanel);
-    $('#btnLimpiar')?.addEventListener('click', () => form.reset());
+    $('#btnLimpiar')?.addEventListener('click', () => {
+      // El reset limpia valores; volvemos a poner el "ahora"
+      setTimeout(setNow, 0);
+    });
 
     // Si otro script reescribe el select, lo restauramos
     new MutationObserver(() => {
@@ -66,6 +87,7 @@
       idDonador,
       montoDonado,
       idUsuarioIngreso: window.USER_ID || 1
+      // fecha/hora NO se envían: el backend usa CURDATE()/CURTIME()
     };
 
     try{
@@ -80,6 +102,7 @@
       }
       form.reset();
       form.classList.remove('was-validated');
+      setNow();
       alert('Donación registrada.');
       refrescarPanel();
     }catch(err){
@@ -92,14 +115,14 @@
     const lblCaja   = $('#lblCaja');
     const tbodyMovs = $('#tbodyMovs');
 
-    // total caja (si tienes endpoint /caja; si no, deja fijo)
+    // total caja (si existe /caja en tu backend; si no, ignora)
     try{
       const r = await fetch(API + '/caja');
       if(r.ok && lblCaja){
         const caja = await r.json();
         lblCaja.textContent = fmtQ(caja?.total ?? 0);
       }
-    }catch{ /* opcional */ }
+    }catch{}
 
     // recientes
     try{
@@ -118,12 +141,6 @@
           </tr>
         `).join('');
       }
-    }catch{ /* opcional */ }
+    }catch{}
   }
-
-  // helper para recargar desde consola
-  window.recargarDonantes = () => {
-    const sel = document.querySelector('#selDonante');
-    sel && cargarDonantes(sel);
-  };
 })();

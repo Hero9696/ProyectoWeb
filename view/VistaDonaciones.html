@@ -55,15 +55,17 @@
                 <textarea class="form-control" name="descripcion" placeholder="Opcional" rows="3"></textarea>
               </div>
 
-              <!-- Fecha/Hora decorativas -->
+              <!-- Fecha/Hora (solo informativas; se asignan automáticamente) -->
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Fecha</label>
-                  <input type="date" class="form-control" name="fecha">
+                  <input type="date" class="form-control" id="inpFecha" name="fecha" disabled>
+                  <small class="text-muted">Se asigna automáticamente al guardar.</small>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Hora</label>
-                  <input type="time" class="form-control" name="hora">
+                  <input type="time" class="form-control" id="inpHora" name="hora" disabled>
+                  <small class="text-muted">Se asigna automáticamente al guardar.</small>
                 </div>
               </div>
 
@@ -114,7 +116,7 @@
   </main>
 
   <!-- Define el usuario que registra (debe existir en Usuarios) -->
-  <script>window.USER_ID = 2; /* cambia por el id real si lo requieres */</script>
+  <script>window.USER_ID = 2; /* cámbialo si tu id de usuario es otro */</script>
   <script src="../js/Donaciones.js"></script>
 </body>
 </html>

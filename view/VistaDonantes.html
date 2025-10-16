@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Ingreso de Donantes | Operación Pollito</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="brand-bar py-3 mb-4">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="h4 mb-0">Operación Pollito • Ingreso de Donantes</h1>
+    </div>
+  </header>
+
+  <main class="container mb-5">
+    <!-- Stepper -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <div id="step1Badge" class="step-badge">1</div>
+      <div><strong>Datos del Donante</strong></div>
+      <div class="flex-grow-1 border-top mx-3" style="opacity:.3;"></div>
+      <div id="step2Badge" class="step-badge disabled">2</div>
+      <div><strong>Donación</strong></div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="donante-tab" data-bs-toggle="tab" data-bs-target="#donante" type="button" role="tab">
+          Datos del Donante
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link disabled" id="donacion-tab" data-bs-toggle="tab" data-bs-target="#donacion" type="button" role="tab" tabindex="-1">
+          Registro de Donación
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content p-4 bg-white border-bottom border-start border-end rounded-bottom shadow-sm">
+      <!-- TAB: DONANTE -->
+      <div class="tab-pane fade show active" id="donante" role="tabpanel">
+        <div class="card border-0">
+          <div class="card-body p-0">
+            <form id="formDonante" novalidate>
+              <div class="row g-3">
+                <!-- Nombres -->
+                <div class="col-md-4">
+                  <label class="form-label req">Primer nombre</label>
+                  <input name="nombre1Donante" maxlength="15" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Segundo nombre</label>
+                  <input name="nombre2Donante" maxlength="15" class="form-control">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Tercer nombre</label>
+                  <input name="nombre3Donante" maxlength="15" class="form-control">
+                </div>
+
+                <!-- Apellidos -->
+                <div class="col-md-4">
+                  <label class="form-label req">Primer apellido</label>
+                  <input name="apellido1Donante" maxlength="15" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Segundo apellido</label>
+                  <input name="apellido2Donante" maxlength="15" class="form-control">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Tercer apellido</label>
+                  <input name="apellido3Donante" maxlength="15" class="form-control">
+                </div>
+
+                <!-- Contacto -->
+                <div class="col-md-6">
+                  <label class="form-label req">Teléfono</label>
+                  <input name="telefonoDonante" class="form-control" required pattern="^[0-9]{8}$" placeholder="8 dígitos">
+                </div>
+
+                <!-- Ubicación -->
+                <div class="col-md-3">
+                  <label class="form-label req">País</label>
+                  <select name="idPaisDonante" class="form-select" required></select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label req">Departamento</label>
+                  <select name="idDepartamentoDona" class="form-select" required disabled></select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label req">Municipio</label>
+                  <select name="idMunicipioDona" class="form-select" required disabled></select>
+                </div>
+
+                <!-- Usuario -->
+                <div class="col-md-3">
+                  <label class="form-label req">Usuario donante (ID)</label>
+                  <input type="number" name="idUsuarioDonante" class="form-control" required min="1">
+                </div>
+
+                <!-- Timestamps -->
+                <div class="col-md-3">
+                  <label class="form-label req">Fecha ingreso</label>
+                  <input type="date" name="fechaIngresoDona" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label req">Hora ingreso</label>
+                  <input type="time" name="horaIngresoDona" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label req">Usuario ingreso (ID)</label>
+                  <input type="number" name="idUsuarioIngreso" class="form-control" required min="1">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label req">Fecha actualización</label>
+                  <input type="date" name="fechaActualizacion" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label req">Hora actualización</label>
+                  <input type="time" name="horaActualizacion" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label req">Usuario actualiza (ID)</label>
+                  <input type="number" name="idUsuarioActualiza" class="form-control" required min="1">
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-outline-secondary" type="reset" id="btnLimpiarDonante">
+                  Limpiar
+                </button>
+                <button class="btn btn-azul" type="button" id="btnValidarDonante">
+                  Validar Donante
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: DONACIÓN -->
+      <div class="tab-pane fade" id="donacion" role="tabpanel">
+        <div class="card border-0">
+          <div class="card-body p-0">
+            <!-- Info del donante -->
+            <div class="alert alert-info mb-4">
+              <strong>Donante:</strong> <span id="donanteInfo">-</span>
+            </div>
+
+            <form id="formDonacion" novalidate>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label req">Monto donado (Q)</label>
+                  <input type="number" name="montoDonado" class="form-control" required min="0.01" step="0.01" placeholder="0.00">
+                </div>
+
+                <!-- Timestamps -->
+                <div class="col-md-3">
+                  <label class="form-label req">Fecha ingreso</label>
+                  <input type="date" name="fechaIngreso" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label req">Hora ingreso</label>
+                  <input type="time" name="horaIngreso" class="form-control" required>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label req">Usuario ingreso (ID)</label>
+                  <input type="number" name="idUsuarioIngreso" class="form-control" required min="1">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label req">Fecha actualización</label>
+                  <input type="date" name="fechaActualizacion" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label req">Hora actualización</label>
+                  <input type="time" name="horaActualizacion" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label req">Usuario actualiza (ID)</label>
+                  <input type="number" name="IdUsuarioActualizacion" class="form-control" required min="1">
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-outline-secondary" type="button" id="btnVolverDonante">
+                  Volver a Donante
+                </button>
+                <button class="btn btn-naranja" type="submit">
+                  Guardar Donación
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acción final -->
+    <div class="d-flex justify-content-end mt-4">
+      <button class="btn btn-outline-secondary" id="btnCancelarTodo">
+        Cancelar todo
+      </button>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/Donantes.js"></script>
+</body>
+</html>

@@ -117,7 +117,7 @@
 
     // total caja (si existe /caja en tu backend; si no, ignora)
     try{
-      const r = await fetch(API + '/caja');
+      const r = await fetch(API + '/caja/movimiento');
       if(r.ok && lblCaja){
         const caja = await r.json();
         lblCaja.textContent = fmtQ(caja?.total ?? 0);

@@ -1,22 +1,8 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <!-- Guard de sesión -->
-  <script>
-  (function () {
-    try {
-      const s = JSON.parse(localStorage.getItem('pollito.session') || 'null');
-      if (!s || !s.exp || Date.now() > s.exp) {
-        localStorage.removeItem('pollito.session');
-        location.replace('./login.html');
-      }
-    } catch {
-      localStorage.removeItem('pollito.session');
-      location.replace('./login.html');
-    }
-  })();
-  </script>
 
+    
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pollitos • Usuarios</title>
@@ -88,9 +74,7 @@
       0 4px 10px rgba(0,0,0,.12);
   }
 </style>
-  <script>
-    document.addEventListener('DOMContentLoaded', ()=> document.body.classList.add('ready'));
-  </script>
+ 
 </head>
 <body>
   <!-- NAVBAR unificada -->
@@ -198,35 +182,7 @@
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../js/usuarios.page.js"></script>
-  <script src="../js/auth.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      PollitoAuth.bindUI({ injectIfMissing: true });
-      document.body.classList.add('ready');
-    });
-
-    // Navegación con salida suave
-    document.addEventListener('click', function (e) {
-      const a = e.target.closest('a.nav-link[data-external="1"]');
-      if (!a) return;
-      e.preventDefault();
-      document.querySelectorAll('.navbar .nav-link').forEach(n=>n.classList.remove('is-active'));
-      a.classList.add('is-active');
-      document.body.classList.add('page-leave');
-      setTimeout(() => { window.location.href = a.href; }, 200);
-    }, true);
-
-    // Activo por ruta
-    (function markActiveByPath(){
-      const file = location.pathname.split('/').pop().toLowerCase();
-      document.querySelectorAll('.navbar a.nav-link[data-external="1"]').forEach(a=>{
-        const target = (a.getAttribute('href')||'').split('/').pop().toLowerCase();
-        a.classList.toggle('is-active', target === file);
-      });
-    })();
-  </script>
+ 
+ 
 </body>
 </html>

@@ -1,163 +1,36 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <!-- Guard de sesión -->
-  <script>
-  (function () {
-    try {
-      const s = JSON.parse(localStorage.getItem('pollito.session') || 'null');
-      if (!s || !s.exp || Date.now() > s.exp) {
-        localStorage.removeItem('pollito.session');
-        location.replace('./login.html');
-      }
-    } catch {
-      localStorage.removeItem('pollito.session');
-      location.replace('./login.html');
-    }
-  })();
-  </script>
-
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Sistema Pollito</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../css/index.css">
+<link rel="stylesheet" href="../css/pollitos.css">
+<link rel="stylesheet" href="../css/index.css"><!-- si la vista lo usa -->
 
-  <!-- Estilos globales (entrada, salida, navbar sin subrayado, pill activo) -->
-  <style>
-    :root{
-      --brand:#0D47A1;
-      --accent1:#F6C445;
-      --accent2:#FF8A00;
-      --pill-hover: rgba(255,255,255,.12);
-      --pill-active-a: rgba(246,196,69,.18);
-      --pill-active-b: rgba(255,138,0,.18);
-    }
-
-    /* Entrada global */
-    body{ opacity:0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
-    body.ready{ opacity:1; transform:none; }
-
-    /* Salida suave al navegar a otra página */
-    body.page-leave{
-      opacity:.15;
-      transform: translateY(4px) scale(.997);
-      transition: opacity .22s ease, transform .22s ease;
-    }
-
-    /* Micro-fade del contenedor (para SPA) */
-    #contenidoPrincipal{ transition: opacity .25s ease, transform .25s ease; }
-    #contenidoPrincipal.swapping{ opacity:.15; transform: scale(.995); }
-
-    /* RESET anti-subrayado, mata cualquier regla heredada */
-    .navbar .nav-link,
-    .navbar .nav-link:hover,
-    .navbar .nav-link:focus,
-    .navbar .nav-link.active,
-    .navbar .nav-link.is-active{
-      text-decoration:none !important;
-      border-bottom:0 !important;
-      box-shadow:none !important;
-    }
-    .navbar .nav-link::after{ display:none !important; content:none !important; }
-
-    /* Pill elegante */
-    .navbar-nav{ gap:.25rem; }
-    .navbar-nav .nav-link{
-      position:relative;
-      border-radius:999px;
-      padding:.5rem .9rem;
-      transition: background-color .25s ease, color .25s ease, transform .2s ease;
-    }
-    .navbar-nav .nav-link:hover{ background:var(--pill-hover); }
-    .navbar-nav .nav-link.is-active{
-      background: linear-gradient(90deg, var(--pill-active-a), var(--pill-active-b));
-      color:#fff !important;
-      box-shadow: inset 0 6px 16px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.06) !important;
-    }
-
-    /* Intro post-login (fluidez de entrada) */
-    .login-intro::before{
-      content:"";
-      position:fixed; inset:0;
-      background:
-        radial-gradient(1200px 400px at 50% -10%, rgba(255,255,255,.12), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.08), transparent 30%),
-        linear-gradient(90deg, rgba(246,196,69,.08), rgba(255,138,0,.08));
-      backdrop-filter: blur(2px);
-      opacity:0; pointer-events:none;
-      animation: introFade .65s ease forwards;
-    }
-    @keyframes introFade { 0%{opacity:1} 100%{opacity:0} }
-  </style>
-
-  <!-- Bandera de entrada fluida -->
-  <script>
-    (function(){
-      try{
-        if(localStorage.getItem('pollito.justLogged') === '1'){
-          document.documentElement.classList.add('login-intro');
-          localStorage.removeItem('pollito.justLogged');
-        }
-      }catch{}
-    })();
-  </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', ()=> document.body.classList.add('ready'));
-  </script>
-
-  <style>
-  /* === Brand destacado y consistente en todas las vistas === */
-  :root{
-    --brand-pill-a: rgba(246,196,69,.18); /* #F6C445 */
-    --brand-pill-b: rgba(255,138,0,.18);  /* #FF8A00  */
-    --brand-text:   #F6C445;
-  }
-
-  .navbar .navbar-brand.brand-highlight{
-    color: var(--brand-text) !important;
-    font-weight: 800;
-    letter-spacing: .2px;
-    padding: .25rem .6rem;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--brand-pill-a), var(--brand-pill-b));
-    text-decoration: none !important;
-    box-shadow:
-      inset 0 6px 16px rgba(0,0,0,.12),
-      0 2px 6px rgba(0,0,0,.08);
-    text-shadow: 0 1px 0 rgba(0,0,0,.15);
-    transition: transform .2s ease, box-shadow .25s ease, background .25s ease;
-  }
-  .navbar .navbar-brand.brand-highlight:hover{
-    transform: translateY(-1px);
-    box-shadow:
-      inset 0 8px 18px rgba(0,0,0,.14),
-      0 4px 10px rgba(0,0,0,.12);
-  }
-</style>
 </head>
-<body>
+<body data-page="index">
   <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#0D47A1;">
-    <div class="container">
-      <a class="navbar-brand fw-bold brand-highlight" href="./index.html" id="brandHome">Operación Pollito</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<nav class="navbar navbar-dark nav-solid">
+  <div class="container d-flex align-items-center gap-3">
 
-      <div class="collapse navbar-collapse" id="mainNav">
-        <div class="navbar-nav me-auto">
-          <!-- SPA -->
-          <a class="nav-link" href="#" id="btnVistaBeneficiarios" data-route="#bene">Ingreso de Beneficiarios</a>
-          <a class="nav-link" href="#" id="btnVistaEncargado"    data-route="#enc">Encargado y Beneficiarios</a>
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold brand-highlight" href="./index.html">Operación Pollito</a>
+    
+    <!-- Links centrados -->
+    <nav class="main-nav">
+      <a class="nav-link" href="./VistaBeneficiarios.html">Ingreso de Beneficiarios</a>
+      <a class="nav-link" href="./VistaEncargados.html">Encargado y Beneficiarios</a>
+      <a class="nav-link" href="./compras.html">Compras de Pollitos</a>
+      <a class="nav-link" href="./usuarios.html">Crear Usuarios</a>
+    </nav>
 
-          <!-- EXTERNOS (con data-external) -->
-          <a class="nav-link" href="../view/compras.html"  data-external="1">Compras de Pollitos</a>
-          <a class="nav-link" href="../view/usuarios.html" data-external="1">Crear Usuarios</a>
-        </div>
-      </div>
-    </div>
-  </nav>
+    <!-- Botón derecha -->
+    <a href="./login.html" class="btn btn-gold ms-auto">Cerrar sesión</a>
+  </div>
+</nav>
+
 
   <!-- Contenido -->
   <main class="container my-4" id="contenidoPrincipal">
@@ -170,66 +43,5 @@
   <footer class="text-center text-muted py-3">
     <small>© 2025 Operación Pollito</small>
   </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Navegación con salida suave (para TODOS los externos) -->
-  <script>
-    document.addEventListener('click', function (e) {
-      const a = e.target.closest('a.nav-link[data-external="1"]');
-      if (!a) return;
-      e.preventDefault();
-      document.querySelectorAll('.navbar .nav-link').forEach(n=>n.classList.remove('is-active'));
-      a.classList.add('is-active');
-      document.body.classList.add('page-leave');
-      setTimeout(() => { window.location.href = a.href; }, 200);
-    }, true);
-  </script>
-
-  <!-- Lógica SPA + marcado activo -->
-  <script>
-    (function () {
-      const beneBtn = document.getElementById('btnVistaBeneficiarios');
-      const encBtn  = document.getElementById('btnVistaEncargado');
-      const main    = document.getElementById('contenidoPrincipal');
-
-      const clearActive = () => document.querySelectorAll('.navbar .nav-link').forEach(a=>a.classList.remove('is-active'));
-      const setActive   = el => { if(!el) return; clearActive(); el.classList.add('is-active'); };
-      const tinySwap    = () => { if(!main) return; main.classList.add('swapping'); setTimeout(()=> main.classList.remove('swapping'), 260); };
-
-      // Hash -> activar SPA
-      function triggerFromHash() {
-        const h = (location.hash || '').toLowerCase();
-        if (h === '#bene' && beneBtn){ setActive(beneBtn); tinySwap(); beneBtn.click(); }
-        else if (h === '#enc' && encBtn){ setActive(encBtn); tinySwap(); encBtn.click(); }
-        else { clearActive(); markActiveByPath(); }
-      }
-      document.addEventListener('DOMContentLoaded', triggerFromHash);
-      window.addEventListener('hashchange', triggerFromHash);
-
-      // Clics SPA -> hash + activo + micro-fade
-      if (beneBtn) beneBtn.addEventListener('click', () => { history.replaceState(null,'','#bene'); setActive(beneBtn); tinySwap(); }, { capture:true });
-      if (encBtn)  encBtn .addEventListener('click', () => { history.replaceState(null,'','#enc');  setActive(encBtn ); tinySwap(); }, { capture:true });
-
-      // Activo por ruta (para externos al cargar directamente)
-      function markActiveByPath(){
-        const file = location.pathname.split('/').pop().toLowerCase();
-        document.querySelectorAll('.navbar a.nav-link[data-external="1"]').forEach(a=>{
-          const target = (a.getAttribute('href')||'').split('/').pop().toLowerCase();
-          a.classList.toggle('is-active', target === file);
-        });
-      }
-      document.addEventListener('DOMContentLoaded', markActiveByPath);
-    })();
-  </script>
-
-  <!-- Tu lógica original -->
-  <script src="../js/index.js"></script>
-  <script src="../js/auth.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      PollitoAuth.bindUI({ injectIfMissing: true });
-    });
-  </script>
 </body>
 </html>

@@ -1,276 +1,153 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Registro Beneficiario + Encargado | Pollito</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Registro Beneficiario + Encargado | Pollito</title>
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Estilos de paleta -->
-  <link rel="stylesheet" href="../css/index.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../css/index.css">
 </head>
 <body>
-  <!-- Header -->
-  <header class="brand-bar py-3 mb-4">
-    <div class="container d-flex align-items-center justify-content-between">
-      <h1 class="h4 mb-0">Operación Pollito • Registro</h1>
-    </div>
-  </header>
-
-  <main class="container mb-5">
-    <!-- Stepper -->
-    <div class="d-flex align-items-center gap-3 mb-3">
-      <div id="step1Badge" class="step-badge">1</div>
-      <div><strong>Beneficiario</strong> <span class="text-muted d-none d-md-inline">• Datos obligatorios primero</span></div>
-      <div class="flex-grow-1 border-top mx-3" style="opacity:.3;"></div>
-      <div id="step2Badge" class="step-badge disabled">2</div>
-      <div><strong>Encargado</strong> <span class="text-muted d-none d-md-inline">• Se habilita al validar Beneficiario</span></div>
-    </div>
-
-    <!-- Tabs (mismo archivo / misma vista) -->
-    <ul class="nav nav-tabs" id="mainTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="bene-tab" data-bs-toggle="tab" data-bs-target="#bene" type="button" role="tab" aria-controls="bene" aria-selected="true">
-          Beneficiario
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link disabled" id="enc-tab" data-bs-toggle="tab" data-bs-target="#enc" type="button" role="tab" aria-controls="enc" aria-selected="false" tabindex="-1">
-          Encargado
-        </button>
-      </li>
-    </ul>
-
-    <div class="tab-content p-3 bg-white border-bottom border-start border-end rounded-bottom">
-      <!-- TAB: BENEFICIARIO -->
-      <div class="tab-pane fade show active" id="bene" role="tabpanel" aria-labelledby="bene-tab">
-        <div class="card">
-          <div class="card-body">
-            <div class="form-section-title">Datos del Beneficiario</div>
-            <form id="formBeneficiario" novalidate>
-              <div class="row g-3">
-                <!-- Nombres -->
-                <div class="col-md-4">
-                  <label class="form-label req">Primer nombre</label>
-                  <input name="nombre1Beneficiario" maxlength="15" class="form-control" required>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Segundo nombre</label>
-                  <input name="nombre2Beneficiario" maxlength="15" class="form-control">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Tercer nombre</label>
-                  <input name="nombre3Beneficiario" maxlength="15" class="form-control">
-                </div>
-
-                <!-- Apellidos -->
-                <div class="col-md-4">
-                  <label class="form-label req">Primer apellido</label>
-                  <input name="apellido1Beneficiario" maxlength="15" class="form-control" required>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Segundo apellido</label>
-                  <input name="apellido2Beneficiario" maxlength="15" class="form-control">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Tercer apellido</label>
-                  <input name="apellido3Beneficiario" maxlength="15" class="form-control">
-                </div>
-
-                <!-- Ubicación -->
-                <div class="col-md-3">
-                  <label class="form-label req">País</label>
-                  <select name="idPaisBene" class="form-select" required></select>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Departamento</label>
-                  <select name="idDepartamentoBene" class="form-select" required disabled></select>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Municipio</label>
-                  <select name="idMunicipioBene" class="form-select" required disabled></select>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Lugar</label>
-                  <select name="idLugarBene" class="form-select" required disabled></select>
-                </div>
-
-                <!-- Estado -->
-                <div class="col-md-3">
-                  <label class="form-label req">Estado</label>
-                  <select name="estadoBeneficiario" class="form-select" required>
-                    <option value="">Seleccione…</option>
-                    <option value="A">Activo</option>
-                    <option value="I">Inactivo</option>
-                  </select>
-                </div>
-
-                <!-- Timestamps y usuarios (auto / ocultos en UI real) -->
-                <div class="col-md-3">
-                  <label class="form-label req">Fecha ingreso</label>
-                  <input type="date" name="fechaIngresoBene" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Hora ingreso</label>
-                  <input type="time" name="horaIngresoBene" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Usuario ingreso (ID)</label>
-                  <input type="number" name="idUsuarioIngreso" class="form-control" required min="1">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label req">Fecha actualización</label>
-                  <input type="date" name="fechaActualizacion" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Hora actualización</label>
-                  <input type="time" name="horaActualizacion" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Usuario actualiza (ID)</label>
-                  <input type="number" name="idUsuarioActualiza" class="form-control" required min="1">
-                </div>
-
-                <!-- Relación con Encargado (se llena después, pero puedes seleccionar si ya existe) -->
-                <div class="col-md-3">
-                  <label class="form-label">Encargado (ID, si ya existe)</label>
-                  <input type="number" name="idEncargadoBene" class="form-control" min="1" placeholder="Opcional por ahora">
-                  <div class="small-hint">Se puede completar después de registrar el Encargado.</div>
-                </div>
-              </div>
-
-              <div class="d-flex justify-content-between mt-4">
-                <button class="btn btn-azul" type="button" id="btnValidarBeneficiario">Validar Beneficiario</button>
-                <button class="btn btn-naranja" type="button" id="btnIrEncargado" disabled>Continuar a Encargado</button>
-              </div>
-            </form>
-          </div>
+    <header class="brand-bar py-3 mb-4">
+        <div class="container d-flex align-items-center justify-content-between">
+            <h1 class="h4 mb-0">Operación Pollito • Registro de Beneficiarios</h1>
         </div>
-      </div>
+    </header>
 
-      <!-- TAB: ENCARGADO -->
-      <div class="tab-pane fade" id="enc" role="tabpanel" aria-labelledby="enc-tab">
-        <div class="card">
-          <div class="card-body">
-            <div class="form-section-title">Datos del Encargado</div>
-            <form id="formEncargado" novalidate>
-              <div class="row g-3">
-                <!-- Identificación / contacto -->
-                <div class="col-md-4">
-                  <label class="form-label req">Identificación</label>
-                  <input name="IdentificacionEncarga" maxlength="15" class="form-control" required>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label req">Teléfono</label>
-                  <input name="telefonoEncargado" class="form-control" required pattern="^[0-9]{8}$" placeholder="8 dígitos">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label req">Correo</label>
-                  <input type="email" name="correoEncargado" maxlength="150" class="form-control" required>
-                </div>
-
-                <!-- Nombres -->
-                <div class="col-md-4">
-                  <label class="form-label req">Primer nombre</label>
-                  <input name="nombre1Encargado" maxlength="15" class="form-control" required>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Segundo nombre</label>
-                  <input name="nombre2Encargado" maxlength="15" class="form-control">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Tercer nombre</label>
-                  <input name="nombre3Encargado" maxlength="15" class="form-control">
-                </div>
-
-                <!-- Apellidos -->
-                <div class="col-md-4">
-                  <label class="form-label req">Primer apellido</label>
-                  <input name="apellido1Encargado" maxlength="15" class="form-control" required>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Segundo apellido</label>
-                  <input name="apellido2Encargado" maxlength="15" class="form-control">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Tercer apellido</label>
-                  <input name="apellido3Encargado" maxlength="15" class="form-control">
-                </div>
-
-                <!-- Ubicación -->
-                <div class="col-md-3">
-                  <label class="form-label req">País</label>
-                  <select name="idPaisEncargado" class="form-select" required></select>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Departamento</label>
-                  <select name="idDepartamentoEncargado" class="form-select" required disabled></select>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Municipio</label>
-                  <select name="idMuniEncarga" class="form-select" required disabled></select>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Lugar</label>
-                  <select name="idLugarEncargado" class="form-select" required disabled></select>
-                </div>
-
-                <!-- Timestamps + usuarios -->
-                <div class="col-md-3">
-                  <label class="form-label req">Fecha ingreso</label>
-                  <input type="date" name="fechaIngresoEncarga" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Hora ingreso</label>
-                  <input type="time" name="horaIngresoEncarga" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Usuario ingreso (ID)</label>
-                  <input type="number" name="idUsuarioIngreso" class="form-control" required min="1">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label req">Fecha actualización</label>
-                  <input type="date" name="fechaActualizacion" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Hora actualización</label>
-                  <input type="time" name="horaActualizacion" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Usuario actualiza (ID)</label>
-                  <input type="number" name="idUsuarioActualiza" class="form-control" required min="1">
-                </div>
-              </div>
-
-              <div class="d-flex justify-content-between mt-4">
-                <button class="btn btn-secondary" type="button" id="btnVolverBeneficiario">Volver a Beneficiario</button>
-                <button class="btn btn-azul" type="submit">Guardar Encargado</button>
-              </div>
-            </form>
-          </div>
+    <main class="container mb-5">
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <div id="step1Badge" class="step-badge">1</div>
+            <div><strong>Verificar Encargado</strong> <span class="text-muted d-none d-md-inline">• Requerido para continuar</span></div>
+            <div class="flex-grow-1 border-top mx-3" style="opacity:.3;"></div>
+            <div id="step2Badge" class="step-badge disabled">2</div>
+            <div><strong>Datos Beneficiario</strong> <span class="text-muted d-none d-md-inline">• Formulario Beneficiario</span></div>
         </div>
 
-        <div class="alert alert-info mt-3">
-          <strong>Nota:</strong> Esta vista solo define la estructura y validación en cliente. Conecta el envío a tu backend (fetch/POST) según tu API.
+        <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="bene-tab" data-bs-toggle="tab" data-bs-target="#bene" type="button" role="tab" aria-controls="bene" aria-selected="true">
+                    Beneficiario
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link disabled" id="enc-tab" type="button" tabindex="-1">
+                    Encargado
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content p-3 bg-white border-bottom border-start border-end rounded-bottom">
+            <div class="tab-pane fade show active" id="bene" role="tabpanel" aria-labelledby="bene-tab">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        
+                        <div id="seccionValidacionEncargado" class="mb-4 p-3 border rounded">
+                            <div class="form-section-title mb-3">Paso 1: Identificación del Encargado</div>
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-4">
+                                    <label class="form-label req">Identificación (DPI/CUI)</label>
+                                    <input id="dpiEncargadoBusqueda" type="text" maxlength="15" class="form-control" placeholder="Ingrese el DPI/CUI del encargado" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-azul w-100" type="button" id="btnValidarEncargado">
+                                        <i class="bi bi-search"></i> Validar Encargado
+                                    </button>
+                                </div>
+                            </div>
+                            <p id="mensajeValidacion" class="mt-3 fw-bold"></p>
+                        </div>
+                        
+                        <div id="seccionDatosBeneficiario" class="d-none">
+                            
+                            <div id="infoEncargadoAsignado" class="alert alert-success mb-4 d-none">
+                                <strong>Encargado Asignado:</strong> <span id="nombreEncargadoAsignado"></span>
+                                <input type="hidden" name="idEncargadoBene" id="idEncargadoBene">
+                            </div>
+
+                            <div class="form-section-title">Datos del Beneficiario</div>
+
+                            <form id="formBeneficiario" novalidate>
+                                <div class="row g-3">
+                                    <div class="col-md-4"><label class="form-label req">Primer nombre</label><input name="nombre1Beneficiario" maxlength="15" class="form-control" required></div>
+                                    <div class="col-md-4"><label class="form-label">Segundo nombre</label><input name="nombre2Beneficiario" maxlength="15" class="form-control"></div>
+                                    <div class="col-md-4"><label class="form-label">Tercer nombre</label><input name="nombre3Beneficiario" maxlength="15" class="form-control"></div>
+
+                                    <div class="col-md-4"><label class="form-label req">Primer apellido</label><input name="apellido1Beneficiario" maxlength="15" class="form-control" required></div>
+                                    <div class="col-md-4"><label class="form-label">Segundo apellido</label><input name="apellido2Beneficiario" maxlength="15" class="form-control"></div>
+                                    <div class="col-md-4"><label class="form-label">Tercer apellido</label><input name="apellido3Beneficiario" maxlength="15" class="form-control"></div>
+
+                                    <div class="col-md-3"><label class="form-label req">País</label><select name="idPaisBene" class="form-select" id="idPaisBene" required></select></div>
+                                    <div class="col-md-3"><label class="form-label req">Departamento</label><select name="idDepartamentoBene" class="form-select" id="idDepartamentoBene" required disabled></select></div>
+                                    <div class="col-md-3"><label class="form-label req">Municipio</label><select name="idMunicipioBene" class="form-select" id="idMunicipioBene" required disabled></select></div>
+                                    <div class="col-md-3"><label class="form-label req">Lugar</label><select name="idLugarBene" class="form-select" id="idLugarBene" required disabled></select></div>
+
+                                    <div class="col-md-3">
+                                        <label class="form-label req">Estado</label>
+                                        <select name="estadoBeneficiario" class="form-select" required>
+                                            <option value="">Seleccione…</option>
+                                            <option value="A">Activo</option>
+                                            <option value="I">Inactivo</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        <label class="form-label req">Usuario ingreso (ID)</label>
+                                        <input type="number" name="idUsuarioIngreso" class="form-control" value="1" required min="1" id="idUsuarioIngreso">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label class="form-label req">Fecha ingreso</label>
+                                        <input type="date" name="fechaIngresoBene" class="form-control bg-light" id="fechaIngresoBene" required readonly>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label req">Hora ingreso</label>
+                                        <input type="time" name="horaIngresoBene" class="form-control bg-light" id="horaIngresoBene" required readonly>
+                                    </div>
+                                    
+                                    <input type="hidden" name="fechaActualizacion" id="fechaActualizacion" value="">
+                                    <input type="hidden" name="horaActualizacion" id="horaActualizacion" value="">
+                                    <input type="hidden" name="idUsuarioActualiza" id="idUsuarioActualiza" value="1">
+                                
+                                    <div class="d-flex justify-content-end mt-4 col-12">
+                                        <button class="btn btn-naranja" type="submit" id="btnGuardarBeneficiario">
+                                            <i class="bi bi-save"></i> Guardar Beneficiario
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="enc" role="tabpanel" aria-labelledby="enc-tab">
+                 <div class="alert alert-warning">
+                    **AVISO:** Esta sección está temporalmente deshabilitada. Úsela si necesita registrar un Encargado nuevo, de lo contrario, valide al Encargado existente en la pestaña Beneficiario.
+                 </div>
+                 <div class="card">
+                    <div class="card-body">
+                        <div class="form-section-title">Datos del Encargado (PENDIENTE)</div>
+                         <form id="formEncargado" novalidate>
+                            <div class="row g-3">
+                                <div class="col-md-4"><label class="form-label req">Identificación</label><input name="IdentificacionEncarga" class="form-control" required></div>
+                                <div class="col-md-4"><label class="form-label req">Teléfono</label><input name="telefonoEncargado" class="form-control" required></div>
+                                <div class="col-md-4"><label class="form-label req">Correo</label><input type="email" name="correoEncargado" class="form-control" required></div>
+                                <div class="col-12"><div class="alert alert-info mt-3">Este formulario solo se usaría si el Encargado no existe y necesita ser creado.</div></div>
+                            </div>
+                         </form>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Acciones finales (simular guardar ambos) -->
-    <div class="d-flex justify-content-end mt-3 gap-2">
-      <button class="btn btn-outline-secondary" id="btnLimpiarTodo">Limpiar todo</button>
-      <button class="btn btn-naranja" id="btnGuardarTodo">Guardar Todo (Demo)</button>
-    </div>
-  </main>
+        <div class="d-flex justify-content-end mt-3 gap-2">
+            <button class="btn btn-outline-secondary" id="btnLimpiarTodo">Limpiar todo</button>
+        </div>
+    </main>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Lógica JS -->
-  <script src="../js/Beneficiarios.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/Beneficiarios.js"></script>
 </body>
 </html>

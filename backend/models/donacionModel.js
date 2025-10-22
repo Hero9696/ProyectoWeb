@@ -1,91 +1,78 @@
-// models/DonacionModel.js
-
+// models/donacionModel.js
 const pool = require('../config/dbconfig');
 
 /**
- * Modelo para la tabla Donaciones.
- * Dependencias: Donantes, TiposDonaciones, Usuarios, TransaccionesCaja (Opcional)
+ * Donaciones SIN tipos.
+ * Guarda: idDonador, montoDonado, fecha/hora (auto), idUsuarioIngreso y idUsuarioActualizacion.
  */
 class DonacionModel {
+  static async findAll() {
+    const sql = `
+      SELECT
+        idDonacion,
+        idDonador,
+        montoDonado,
+        fechaIngreso,
+        horaIngreso,
+        idUsuarioIngreso,
+        fechaActualizacion,
+        horaActualizacion,
+        IdUsuarioActualizacion
+      FROM donaciones
+      ORDER BY fechaIngreso DESC, horaIngreso DESC, idDonacion DESC
+    `;
+    const [rows] = await pool.query(sql);
+    return rows;
+  }
 
-    /**
-     * Obtiene todas las donaciones con la información detallada.
-     */
-    static async findAll() {
-        const query = `
-            SELECT 
-                d.idDonacion, 
-                d.montoDonacion, 
-                d.cantidadDona, 
-                d.fechaDonacion, 
-                d.descripcionDona,
-                td.descripcionTipo AS tipoDonacion,
-                CONCAT(dn.nombre1Donante, ' ', dn.apellido1Donante) AS nombreDonante,
-                u.nombreUsuario AS usuarioIngreso,
-                d.idTrxAsociada
-            FROM Donaciones d
-            JOIN TiposDonaciones td ON d.idTipoDona = td.idTipoDona
-            JOIN Donantes dn ON d.idDonante = dn.idDonador
-            JOIN Usuarios u ON d.idUsuarioIngreso = u.idUsuario
-            ORDER BY d.fechaDonacion DESC
-        `;
-        const [rows] = await pool.query(query);
-        return rows;
-    }
+  static async findById(id) {
+    const sql = `
+      SELECT
+        idDonacion,
+        idDonador,
+        montoDonado,
+        fechaIngreso,
+        horaIngreso,
+        idUsuarioIngreso,
+        fechaActualizacion,
+        horaActualizacion,
+        IdUsuarioActualizacion
+      FROM donaciones
+      WHERE idDonacion = ?
+      LIMIT 1
+    `;
+    const [rows] = await pool.query(sql, [id]);
+    return rows[0] || null;
+  }
 
-    /**
-     * Obtiene una donación por su ID.
-     */
-    static async findById(id) {
-        const query = `
-            SELECT 
-                d.*, 
-                td.descripcionTipo AS tipoDonacion,
-                dn.nombre1Donante, dn.apellido1Donante,
-                u.nombreUsuario AS usuarioIngreso
-            FROM Donaciones d
-            JOIN TiposDonaciones td ON d.idTipoDona = td.idTipoDona
-            JOIN Donantes dn ON d.idDonante = dn.idDonador
-            JOIN Usuarios u ON d.idUsuarioIngreso = u.idUsuario
-            WHERE d.idDonacion = ?
-        `;
-        const [rows] = await pool.query(query, [id]);
-        return rows[0] || null;
-    }
+  static async create({ idDonador, montoDonado, idUsuarioIngreso, fechaIngreso = null, horaIngreso = null }) {
+    // Guardamos también fecha/hora de actualización e idUsuarioActualizacion
+    const sql = `
+      INSERT INTO donaciones
+        (idDonador, montoDonado,
+         fechaIngreso,  horaIngreso,  idUsuarioIngreso,
+         fechaActualizacion, horaActualizacion, idUsuarioActualizacion)
+      VALUES
+        (?, ?,
+         COALESCE(?, CURDATE()), COALESCE(?, CURTIME()), ?,
+         CURDATE(), CURTIME(), ?)
+    `;
+    const user = Number(idUsuarioIngreso) || 1;
+    const [r] = await pool.query(sql, [
+      Number(idDonador),
+      Number(montoDonado),
+      fechaIngreso,
+      horaIngreso,
+      user,
+      user
+    ]);
+    return r.insertId;
+  }
 
-    /**
-     * Crea una nueva donación.
-     * Nota: En el controlador, esta acción debe ir acompañada de una inserción en TransaccionesCaja
-     * si se trata de una donación en efectivo (idTrxAsociada no es NULL).
-     */
-    static async create(data) {
-        const {
-            idDonante, idTipoDona, idTrxAsociada = null, montoDonacion = null, cantidadDona = null,
-            descripcionDona, idUsuarioIngreso
-        } = data;
-
-        const [result] = await pool.query(
-            `INSERT INTO Donaciones (
-                idDonante, idTipoDona, idTrxAsociada, montoDonacion, cantidadDona,
-                descripcionDona, fechaDonacion, horaDonacion, idUsuarioIngreso
-             ) VALUES (
-                ?, ?, ?, ?, ?, ?, CURDATE(), CURTIME(), ?
-             )`,
-            [
-                idDonante, idTipoDona, idTrxAsociada, montoDonacion, cantidadDona,
-                descripcionDona, idUsuarioIngreso
-            ]
-        );
-        return result.insertId;
-    }
-
-    /**
-     * Elimina una donación por su ID.
-     */
-    static async delete(id) {
-        const [result] = await pool.query('DELETE FROM Donaciones WHERE idDonacion = ?', [id]);
-        return result.affectedRows;
-    }
+  static async delete(id) {
+    const [r] = await pool.query('DELETE FROM donaciones WHERE idDonacion = ?', [id]);
+    return r.affectedRows;
+  }
 }
 
 module.exports = DonacionModel;

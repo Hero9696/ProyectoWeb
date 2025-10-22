@@ -13,16 +13,16 @@
     <div class="container">
       <a class="navbar-brand fw-bold" href="#">Operación Pollito</a>
       <div class="navbar-nav">
-        <a class="nav-link active" href="#" id="btnVistaBeneficiarios">Ingreso de Beneficiarios</a>
-        <a class="nav-link" href="#" id="btnVistaEncargado">Encargado y Beneficiarios</a>
-        <!-- NUEVAS OPCIONES PARA DANIEL -->
-        <a class="nav-link" href="#" id="btnVistaVentas">Ingreso de Ventas</a>
-        <a class="nav-link" href="#" id="btnVistaDonantes">Ingreso de Donantes</a>
-      </div>
+        <!-- Enlaces DIRECTOS a las vistas (sin SPA) -->
+        <a class="nav-link" href="view/VistaBeneficiarios.html" id="btnVistaBeneficiarios">Ingreso de Beneficiarios</a>
+        <a class="nav-link" href="view/VistaEncargado.html"     id="btnVistaEncargado">Encargado y Beneficiarios</a>
+       <a class="nav-link" href="view/VistaDonaciones.html">Ingreso de Donaciones</a>
+     </div>
+
     </div>
   </nav>
 
-  <!-- Contenedor dinámico -->
+  <!-- Contenido inicial -->
   <main class="container my-4" id="contenidoPrincipal">
     <div class="text-center py-5">
       <h1 class="mb-3">Bienvenido</h1>
@@ -33,6 +33,8 @@
   <footer class="text-center text-muted py-3">
     <small>© 2025 Operación Pollito</small>
   </footer>
-  <script src="../js/index.js"></script>
+
+  <!-- JS del index: navegación directa (no inyecta HTML) -->
+  <script src="../js/index.js" defer></script>
 </body>
 </html>

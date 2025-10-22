@@ -14,48 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Define la página de fallback (el Canvas actual)
     const notFoundPage = './404.html';
 
-<<<<<<< HEAD
-    document.getElementById('btnVistaEncargado').addEventListener('click', async ()=>{
-      const html = await fetch('../view/VistaEncargado.html').then(r=>r.text());
-      contenedor.innerHTML = html;
-    });
-// Marca activo en navbar por URL
-(function markActive(){
-  const path = location.pathname.replace(/\/+$/,'');
-  document.querySelectorAll('.navbar a').forEach(a=>{
-    try{
-      if (new URL(a.href, location.origin).pathname.replace(/\/+$/,'') === path) {
-        a.classList.add('is-active');
-      }
-    }catch(_){}
-  });
-})();
-
-// Fade-in del contenedor principal
-window.addEventListener('DOMContentLoaded', () => {
-  const root = document.querySelector('.page');
-  if (root) requestAnimationFrame(() => root.classList.add('is-ready'));
-});
-
-// Prefetch simple de vistas (hover/touch)
-(function prefetchLinks(){
-  if (!('fetch' in window) || !('requestIdleCallback' in window)) return;
-  const cache = new Map();
-  const prefetch = (url) => {
-    if (!url || cache.has(url)) return;
-    cache.set(url, true);
-    requestIdleCallback(() => fetch(url, { mode:'no-cors' }).catch(()=>{}));
-  };
-  document.addEventListener('mouseover', e=>{
-    const a = e.target.closest('a[data-prefetch]');
-    if (a) prefetch(a.href);
-  });
-  document.addEventListener('touchstart', e=>{
-    const a = e.target.closest('a[data-prefetch]');
-    if (a) prefetch(a.href);
-  });
-})();
-=======
     /**
      * Función centralizada para manejar la navegación interna.
      * Si el ID del botón tiene una ruta mapeada en validRoutes, navega.
@@ -104,4 +62,3 @@ window.addEventListener('DOMContentLoaded', () => {
     
     console.log('Lógica de navegación inicializada con fallback a 404.');
 });
->>>>>>> 36166a4a78b59cbb891534f48082074fb6617bb7

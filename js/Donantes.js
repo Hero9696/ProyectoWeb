@@ -1,25 +1,8 @@
-// ===== Datos mock para cascada =====
+// ===== Datos para cascada (inicialmente vacío, se llenará desde la API) =====
 const DATA = {
-    paises: [{ id: 1, nombre: 'Guatemala' }],
-    departamentos: {
-        1: [
-            { id: 101, nombre: 'Guatemala' },
-            { id: 102, nombre: 'Sacatepéquez' },
-            { id: 103, nombre: 'El Progreso' }
-        ]
-    },
-    municipios: {
-        101: [
-            { id: 10101, nombre: 'Guatemala' },
-            { id: 10102, nombre: 'Mixco' }
-        ],
-        102: [
-            { id: 10201, nombre: 'Antigua Guatemala' }
-        ],
-        103: [
-            { id: 10301, nombre: 'Guastatoya' }
-        ]
-    }
+    paises: [],
+    departamentos: {},
+    municipios: {}
 };
 
 // ===== Utilidades =====
@@ -40,34 +23,83 @@ function validateForm(form) {
     return ok;
 }
 
+async function fetchPaises() {
+    try {
+        const response = await fetch('/api/paises');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        DATA.paises = await response.json();
+    } catch (error) {
+        console.error('Error al cargar países:', error);
+        alert('No se pudieron cargar los países.');
+    }
+}
+
+async function fetchDepartamentos() {
+    try {
+        const response = await fetch('/api/departamentos');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const deps = await response.json();
+        DATA.departamentos = deps.reduce((acc, dep) => {
+            if (!acc[dep.idPaisDepa]) acc[dep.idPaisDepa] = [];
+            acc[dep.idPaisDepa].push({ id: dep.idDepartamento, nombre: dep.nombreDepartamento });
+            return acc;
+        }, {});
+    } catch (error) {
+        console.error('Error al cargar departamentos:', error);
+        alert('No se pudieron cargar los departamentos.');
+    }
+}
+
+async function fetchMunicipios() {
+    try {
+        const response = await fetch('/api/municipios');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const munis = await response.json();
+        DATA.municipios = munis.reduce((acc, muni) => {
+            if (!acc[muni.idDepartamentoMuni]) acc[muni.idDepartamentoMuni] = [];
+            acc[muni.idDepartamentoMuni].push({ id: muni.idMunicipio, nombre: muni.nombreMunicipio });
+            return acc;
+        }, {});
+    } catch (error) {
+        console.error('Error al cargar municipios:', error);
+        alert('No se pudieron cargar los municipios.');
+    }
+}
+
 function fillSelect(select, items, placeholder = "Seleccione…") {
     select.innerHTML = `<option value="">${placeholder}</option>` +
         items.map(o => `<option value="${o.id}">${o.nombre}</option>`).join('');
     select.disabled = false;
 }
 
-function setupCascada(scope) {
+async function setupCascada(scope) {
     const sPais = scope.querySelector('select[name="idPaisDonante"]');
     const sDepa = scope.querySelector('select[name="idDepartamentoDona"]');
     const sMuni = scope.querySelector('select[name="idMunicipioDona"]');
 
-    // País
+    await fetchPaises();
     fillSelect(sPais, DATA.paises);
-    sPais.addEventListener('change', () => {
+
+    sPais.addEventListener('change', async () => {
         sDepa.innerHTML = "";
         sDepa.disabled = true;
         sMuni.innerHTML = "";
         sMuni.disabled = true;
-        const deps = DATA.departamentos[sPais.value] || [];
-        fillSelect(sDepa, deps, "Departamento…");
+        if (sPais.value) {
+            await fetchDepartamentos();
+            const deps = DATA.departamentos[sPais.value] || [];
+            fillSelect(sDepa, deps, "Departamento…");
+        }
     });
 
-    // Departamento
-    sDepa.addEventListener('change', () => {
+    sDepa.addEventListener('change', async () => {
         sMuni.innerHTML = "";
         sMuni.disabled = true;
-        const munis = DATA.municipios[sDepa.value] || [];
-        fillSelect(sMuni, munis, "Municipio…");
+        if (sDepa.value) {
+            await fetchMunicipios();
+            const munis = DATA.municipios[sDepa.value] || [];
+            fillSelect(sMuni, munis, "Municipio…");
+        }
     });
 }
 
@@ -76,7 +108,7 @@ let DONANTE_ID = null;
 let DONANTE_DATA = null;
 
 // ===== Inicialización =====
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const formDonante = document.getElementById('formDonante');
     const formDonacion = document.getElementById('formDonacion');
     const btnValidarDonante = document.getElementById('btnValidarDonante');
@@ -89,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const donanteInfo = document.getElementById('donanteInfo');
 
     // Inicializar cascada y fechas
-    setupCascada(document.getElementById('donante'));
+    await setupCascada(document.getElementById('donante'));
     setNowDates(formDonante, 'fechaIngresoDona', 'horaIngresoDona');
     setNowDates(formDonante, 'fechaActualizacion', 'horaActualizacion');
     setNowDates(formDonacion, 'fechaIngreso', 'horaIngreso');
@@ -102,35 +134,46 @@ document.addEventListener('DOMContentLoaded', function() {
         const donanteData = Object.fromEntries(new FormData(formDonante));
         DONANTE_DATA = donanteData;
 
-        // 🔗 Simular creación en backend
-        // const res = await fetch('/api/donantes', { 
-        //     method: 'POST', 
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(donanteData)
-        // });
-        // const created = await res.json();
-        // DONANTE_ID = created.idDonador;
+        try {
+            const response = await fetch('/api/donantes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(donanteData)
+            });
 
-        DONANTE_ID = Math.floor(Math.random() * 9000) + 1000; // Demo
+            const result = await response.json();
 
-        // Mostrar info del donante
-        const nombreCompleto = `${donanteData.nombre1Donante} ${donanteData.apellido1Donante}`;
-        donanteInfo.textContent = `${nombreCompleto} (ID: ${DONANTE_ID})`;
+            if (!response.ok) {
+                throw new Error(result.message || 'Error al crear el donante.');
+            }
 
-        // Habilitar siguiente paso
-        donacionTabBtn.classList.remove('disabled');
-        donacionTabBtn.removeAttribute('tabindex');
-        step2Badge.classList.remove('disabled');
-        step2Badge.style.background = 'var(--amarillo)';
-        step2Badge.style.borderColor = 'var(--azul)';
+            DONANTE_ID = result.idDonador; // Asumiendo que el backend devuelve idDonador
 
-        // Ir a pestaña de donación
-        const tab = new bootstrap.Tab(donacionTabBtn);
-        tab.show();
+            // Mostrar info del donante
+            const nombreCompleto = `${donanteData.nombre1Donante} ${donanteData.apellido1Donante}`;
+            donanteInfo.textContent = `${nombreCompleto} (ID: ${DONANTE_ID})`;
 
-        // Bloquear formulario de donante
-        [...formDonante.elements].forEach(el => el.disabled = true);
-        btnValidarDonante.disabled = true;
+            // Habilitar siguiente paso
+            donacionTabBtn.classList.remove('disabled');
+            donacionTabBtn.removeAttribute('tabindex');
+            step2Badge.classList.remove('disabled');
+            step2Badge.style.background = 'var(--amarillo)';
+            step2Badge.style.borderColor = 'var(--azul)';
+
+            // Ir a pestaña de donación
+            const tab = new bootstrap.Tab(donacionTabBtn);
+            tab.show();
+
+            // Bloquear formulario de donante
+            [...formDonante.elements].forEach(el => el.disabled = true);
+            btnValidarDonante.disabled = true;
+
+        } catch (error) {
+            console.error('Error al crear donante:', error);
+            alert(`Error al crear donante: ${error.message}`);
+        }
     });
 
     // Volver a donante
@@ -152,26 +195,66 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const donacionData = Object.fromEntries(new FormData(formDonacion));
         donacionData.idDonador = DONANTE_ID;
+        donacionData.idUsuarioIngreso = donacionData.idUsuarioIngreso || 1; // Default a 1 si no se especifica
 
-        // 🔗 Envío al backend
-        console.log('DONACIÓN A GUARDAR:', donacionData);
-        console.log('DONANTE ASOCIADO:', DONANTE_DATA);
+        try {
+            // 1. Registrar Donación
+            const donacionResponse = await fetch('/api/donaciones', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    idDonador: donacionData.idDonador,
+                    montoDonado: parseFloat(donacionData.montoDonado),
+                    idUsuarioIngreso: parseInt(donacionData.idUsuarioIngreso)
+                })
+            });
 
-        // Simular envío exitoso
-        alert('Donación registrada exitosamente (demo). Ver consola para detalles.');
+            const donacionResult = await donacionResponse.json();
 
-        // Aquí también se actualizarían Caja y TransaccionesCaja
-        console.log('ACTUALIZAR CAJA con monto:', donacionData.montoDonado);
-        console.log('CREAR TRANSACCIÓN EN CAJA para donación');
+            if (!donacionResponse.ok) {
+                throw new Error(donacionResult.message || 'Error al registrar la donación.');
+            }
 
-        // Limpiar todo después de guardar
-        btnCancelarTodo.click();
+            // 2. Actualizar Caja y registrar Transacción de Caja
+            const cajaMovimientoData = {
+                montoTrx: parseFloat(donacionData.montoDonado),
+                idTipoTrx: 1, // Asumiendo que 1 es el ID para 'Ingreso por Donación'
+                descripcionTrx: `Donación de ${DONANTE_DATA.nombre1Donante} ${DONANTE_DATA.apellido1Donante} (ID: ${DONANTE_ID})`,
+                idUsuarioIngreso: parseInt(donacionData.idUsuarioIngreso)
+            };
+
+            const cajaResponse = await fetch('/api/caja/movimiento', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cajaMovimientoData)
+            });
+
+            const cajaResult = await cajaResponse.json();
+
+            if (!cajaResponse.ok) {
+                throw new Error(cajaResult.message || 'Error al actualizar la caja.');
+            }
+
+            alert('Donación registrada y caja actualizada exitosamente.');
+            
+            // Limpiar todo después de guardar
+            btnCancelarTodo.click();
+
+        } catch (error) {
+            console.error('Error en la transacción de donación:', error);
+            alert(`Error en la transacción de donación: ${error.message}`);
+        }
     });
 
     // Limpiar formulario donante
     btnLimpiarDonante.addEventListener('click', function() {
         formDonante.reset();
         formDonante.classList.remove('was-validated');
+        // Re-inicializar cascada y fechas
         setupCascada(document.getElementById('donante'));
         setNowDates(formDonante, 'fechaIngresoDona', 'horaIngresoDona');
         setNowDates(formDonante, 'fechaActualizacion', 'horaActualizacion');

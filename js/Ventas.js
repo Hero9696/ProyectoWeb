@@ -1,10 +1,6 @@
-// ===== Datos mock para demostración =====
+// ===== Datos para demostración (inicialmente vacío, se llenará desde la API) =====
 const DATA = {
-    beneficiarios: [
-        { id: 1, nombre: 'Juan Pérez García' },
-        { id: 2, nombre: 'María López Hernández' },
-        { id: 3, nombre: 'Carlos Ramírez Santos' }
-    ]
+    beneficiarios: []
 };
 
 // ===== Estado global =====
@@ -29,6 +25,28 @@ function validateForm(form) {
     const ok = form.checkValidity();
     form.classList.add('was-validated');
     return ok;
+}
+
+async function fetchBeneficiarios() {
+    try {
+        const response = await fetch('/api/beneficiarios'); // Asumiendo que el backend está en el mismo origen
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const beneficiarios = await response.json();
+        DATA.beneficiarios = beneficiarios; // Actualizar los datos globales
+        const selectBeneficiario = document.querySelector('select[name="idBeneficiarioVenta"]');
+        selectBeneficiario.innerHTML = '<option value="">Seleccione beneficiario...</option>'; // Limpiar opciones existentes
+        DATA.beneficiarios.forEach(bene => {
+            const option = document.createElement('option');
+            option.value = bene.idBeneficiario; // Asegúrate de que el campo sea idBeneficiario
+            option.textContent = `${bene.nombre1Beneficiario} ${bene.apellido1Beneficiario}`; // Ajusta según los campos reales
+            selectBeneficiario.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error al cargar beneficiarios:', error);
+        alert('No se pudieron cargar los beneficiarios. Intente de nuevo más tarde.');
+    }
 }
 
 function calcularDistribucion(cantidad, valorUnidad) {
@@ -67,12 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tablaDetalles = document.querySelector('#tablaDetalles tbody');
 
     // Llenar select de beneficiarios
-    DATA.beneficiarios.forEach(bene => {
-        const option = document.createElement('option');
-        option.value = bene.id;
-        option.textContent = bene.nombre;
-        selectBeneficiario.appendChild(option);
-    });
+    fetchBeneficiarios(); // Llama a la función para cargar beneficiarios
 
     // Fechas automáticas
     setNowDates(formVenta, 'fechaVenta', 'horaVenta');
@@ -91,6 +104,10 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('subtotalCalculado').value = subtotal.toFixed(2);
             document.getElementById('montoCaja').textContent = montoCaja.toFixed(2);
             document.getElementById('montoInventario').textContent = montoInventario.toFixed(2);
+        } else {
+            document.getElementById('subtotalCalculado').value = "0.00";
+            document.getElementById('montoCaja').textContent = "0.00";
+            document.getElementById('montoInventario').textContent = "0.00";
         }
     }
 
@@ -179,17 +196,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const ventaData = Object.fromEntries(new FormData(formVenta));
         ventaData.TotalVenta = TOTAL_VENTA;
+        ventaData.detalles = DETALLES_VENTA.map(det => ({
+            cantidad: det.cantidad,
+            valorUnidad: det.valorUnidad,
+            subtotal: det.subtotal
+        }));
 
-        // 🔗 Aquí iría el envío al backend
-        console.log('VENTA PRINCIPAL:', ventaData);
-        console.log('DETALLES:', DETALLES_VENTA);
-        console.log('DISTRIBUCIÓN - Caja:', TOTAL_CAJA, 'Inventario:', TOTAL_INVENTARIO);
+        try {
+            const response = await fetch('/api/ventas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(ventaData)
+            });
 
-        // Simular envío exitoso
-        alert('Venta guardada exitosamente (demo). Ver consola para detalles.');
-        
-        // Limpiar todo después de guardar
-        btnCancelarTodo.click();
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Error al guardar la venta.');
+            }
+
+            alert(result.message || 'Venta guardada exitosamente.');
+            
+            // Limpiar todo después de guardar
+            btnCancelarTodo.click();
+        } catch (error) {
+            console.error('Error al guardar la venta:', error);
+            alert(`Error al guardar la venta: ${error.message}`);
+        }
     });
 
     // Limpiar detalle individual

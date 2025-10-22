@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Progreso Pollito — Operación Pollito</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/PollitoProgress.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="pp-navbar">
+    <div class="pp-nav-left">
+      <a class="pp-brand" href="./index.html"><span class="dot"></span>Operación Pollito</a>
+      <a href="./VistaBeneficiarios.html">Ingreso de Beneficiarios</a>
+      <a href="./VistaEncargados.html">Encargado y Beneficiarios</a>
+      <a href="./compras.html">Compras de Pollitos</a>
+      <a href="./usuarios.html">Crear Usuarios</a>
+      <a href="./VistaPollitoProgress.html" class="active">Progreso</a>
+    </div>
+    <div class="pp-nav-right">
+      <span class="role">Operador de Caja (CAJA)</span>
+      <a class="btn btn-gold" href="./login.html">Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <main class="pp-frame container-xxl my-4">
+    <header class="pp-header">
+      <div class="pp-chip">Operación Pollito</div>
+      <h1 class="pp-title">Progreso general y por donantes</h1>
+    </header>
+
+    <section class="pp-card">
+      <div class="pp-card-head">
+        <div><small class="pp-muted">Meta total</small><div class="pp-strong">Q 50,000</div></div>
+        <div class="text-end"><small class="pp-muted">Recaudado</small><div class="pp-strong">Q 36,000</div></div>
+      </div>
+      <div class="pp-progress-wrap mt-3">
+        <div class="pp-track">
+          <div class="pp-fill" style="--p:72%;">
+            <span class="pp-label">72%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pp-card">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="pp-subtitle">Detalle por donantes</div>
+        <small class="pp-muted">Acumulado = porcentaje de la meta</small>
+      </div>
+
+      <div class="pp-donor-row">
+        <div class="pp-donor-name">David (organizador)</div>
+        <div class="pp-donor-track"><div class="pp-donor-fill" style="--p:40%;"></div></div>
+        <div class="pp-donor-meta">Q 20,000 • 40%</div>
+      </div>
+
+      <div class="pp-donor-row">
+        <div class="pp-donor-name">María</div>
+        <div class="pp-donor-track"><div class="pp-donor-fill" style="--p:20%;"></div></div>
+        <div class="pp-donor-meta">Q 10,000 • 20%</div>
+      </div>
+
+      <div class="pp-donor-row">
+        <div class="pp-donor-name">Juan</div>
+        <div class="pp-donor-track"><div class="pp-donor-fill" style="--p:12%;"></div></div>
+        <div class="pp-donor-meta">Q 6,000 • 12%</div>
+      </div>
+
+      <div class="pp-donor-row">
+        <div class="pp-donor-name">Colecta Local</div>
+        <div class="pp-donor-track"><div class="pp-donor-fill" style="--p:0%;"></div></div>
+        <div class="pp-donor-meta">Q 0 • 0%</div>
+      </div>
+
+      <p class="pp-note mt-3">Vista de demostración con datos fijos.</p>
+    </section>
+  </main>
+</body>
+</html>

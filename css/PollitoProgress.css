@@ -1,0 +1,229 @@
+/* Paleta Operación Pollito */
+:root{
+  --blue: #005BBB;
+  --blue-2: #2E73DE;
+  --gold: #F6C445;
+  --orange: #FF8A00;
+  --white: #FFFFFF;
+  --ink: #132238;
+  --muted: #7B8794;
+  --border: rgba(0,0,0,.06);
+  --panel: #ffffff;
+  --bg: #F5F8FF;
+  --sky: #EAF3FF;           /* celeste pastel */
+}
+
+/* Layout base */
+html,body{
+  background: linear-gradient(180deg, #FAFBFF 0%, var(--bg) 100%);
+  color: var(--ink);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+.pp-frame{ max-width: 1100px; }
+
+/* Header */
+.pp-header{
+  background: linear-gradient(90deg, var(--blue) 0%, var(--blue-2) 100%);
+  border-radius: 16px;
+  padding: 18px 20px;
+  color: var(--white);
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  margin-bottom: 18px;
+}
+.pp-chip{
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  color: var(--white);
+  font-weight: 800;
+  padding: 6px 14px; border-radius: 999px;
+}
+.pp-title{ font-size: 1.125rem; font-weight: 600; margin: 0; }
+
+/* Tarjetas */
+.pp-card{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 10px 28px rgba(10,20,40,.06);
+  margin-bottom: 18px;
+}
+.pp-card-head{ display:flex; justify-content:space-between; align-items:center; }
+.pp-muted{ color: var(--muted); }
+.pp-strong{ color: var(--blue); font-weight: 800; font-size: 1.125rem; }
+.pp-subtitle{ font-weight: 700; color: var(--blue); }
+
+/* Contenedor barra */
+.pp-progress-wrap{
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(0,91,187,.04), rgba(246,196,69,.04));
+  border: 1px solid rgba(0,91,187,.08);
+}
+
+/* Pista con cielo pastel */
+.pp-track{
+  height: 56px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.5)),
+    radial-gradient(120% 100% at 0% 0%, var(--sky) 0%, #ffffff 70%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.03);
+}
+
+/* Animación de pollitos */
+@keyframes chicks-loop {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to   { background-position: -288px 0, -288px 0, -288px 0; }
+}
+
+/* Fill general con pollitos mejorados */
+.pp-fill{
+  --p: 0%;
+  position: absolute; inset: 0 auto 0 0;
+  width: var(--p); height: 100%;
+  border-radius: 12px 0 0 12px;
+  display: flex; align-items: center;
+  box-shadow: inset 0 -10px 22px rgba(0,0,0,.06);
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.14), rgba(255,255,255,.06)),
+    linear-gradient(90deg, rgba(255,138,0,.16) 0%, rgba(246,196,69,.24) 60%),
+    url("data:image/svg+xml;utf8,\
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 56'>\
+        <defs>\
+          <radialGradient id='chickBody' cx='50%' cy='50%' r='60%'>\
+            <stop offset='0%' stop-color='%23FFF8D8'/>\
+            <stop offset='100%' stop-color='%23F6C445'/>\
+          </radialGradient>\
+        </defs>\
+        <!-- contorno suave -->\
+        <ellipse cx='36' cy='32' rx='20' ry='15' fill='url(%23chickBody)' stroke='%23E7B93A' stroke-width='1.2'/>\
+        <!-- ala -->\
+        <ellipse cx='28' cy='32' rx='7' ry='5' fill='%23FFDD7A'/>\
+        <!-- pico -->\
+        <polygon points='48,32 57,27 57,37' fill='%23FF8A00'/>\
+        <!-- ojo con brillo -->\
+        <circle cx='43' cy='24' r='3.2' fill='%23000'/>\
+        <circle cx='44' cy='23' r='1.2' fill='%23FFF'/>\
+        <!-- patitas -->\
+        <path d='M26 44 l-3 6 M33 44 l3 6' stroke='%23C57A00' stroke-width='2'/>\
+      </svg>");
+  background-repeat: repeat-x;
+  background-size: 80px 56px;
+  animation: chicks-loop 4.5s linear infinite;
+}
+
+.pp-label{
+  margin-left: auto; margin-right: 14px;
+  font-weight: 800; color: #0e1b2b;
+  text-shadow: 0 1px 0 rgba(255,255,255,.65);
+}
+
+/* Donantes */
+.pp-donor-row{
+  display: grid;
+  grid-template-columns: 240px 1fr 160px;
+  gap: 12px; align-items: center; margin-top: 12px;
+}
+.pp-donor-name{ font-weight: 600; color: #1b2740; }
+.pp-donor-track{
+  height: 36px; border-radius: 10px; position: relative; overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.55)),
+    radial-gradient(120% 100% at 0% 0%, var(--sky) 0%, #ffffff 70%);
+  border: 1px solid rgba(0,91,187,.08);
+}
+.pp-donor-fill{
+  --p: 0%;
+  position: absolute; inset: 0 auto 0 0;
+  width: var(--p); height: 100%;
+  border-radius: 10px 0 0 10px;
+  box-shadow: inset 0 -6px 14px rgba(0,0,0,.05);
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.10), rgba(255,255,255,.03)),
+    linear-gradient(90deg, rgba(255,138,0,.12) 0%, rgba(246,196,69,.20) 60%),
+    url("data:image/svg+xml;utf8,\
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 48'>\
+        <defs>\
+          <radialGradient id='chickSmall' cx='50%' cy='50%' r='60%'>\
+            <stop offset='0%' stop-color='%23FFF8D8'/>\
+            <stop offset='100%' stop-color='%23F6C445'/>\
+          </radialGradient>\
+        </defs>\
+        <ellipse cx='30' cy='28' rx='16' ry='12' fill='url(%23chickSmall)' stroke='%23E7B93A' stroke-width='1'/>\
+        <ellipse cx='24' cy='28' rx='5.5' ry='4' fill='%23FFDD7A'/>\
+        <polygon points='38,28 46,24 46,32' fill='%23FF8A00'/>\
+        <circle cx='35' cy='22' r='2.8' fill='%23000'/>\
+        <circle cx='36' cy='21' r='1' fill='%23FFF'/>\
+      </svg>");
+  background-repeat: repeat-x;
+  background-size: 72px 48px;
+  animation: chicks-loop 5s linear infinite;
+}
+.pp-donor-meta{ text-align: right; font-weight: 800; color: #123055; }
+
+/* Nota */
+.pp-note{ font-size: .9rem; color: var(--muted); }
+
+/* Responsive */
+@media (max-width: 720px){
+  .pp-donor-row{ grid-template-columns: 1fr; }
+  .pp-donor-meta{ text-align: left; margin-top: 4px; }
+  .pp-track{ height: 50px; }
+}
+
+/* ===== NAVBAR ===== */
+.pp-navbar{
+  background: linear-gradient(90deg, var(--blue) 0%, var(--blue-2) 100%);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 22px;
+  color:white;
+  font-family:inherit;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);
+}
+.pp-navbar a{
+  color:white;
+  text-decoration:none;
+  margin-right:18px;
+  font-weight:500;
+  transition:.3s;
+}
+.pp-navbar a:hover{ color:#FFEBB7; }
+.pp-navbar a.active{
+  background:rgba(255,255,255,.25);
+  padding:6px 12px;
+  border-radius:8px;
+}
+.pp-brand{
+  font-weight:800;
+  font-size:1.1rem;
+  margin-right:24px;
+}
+.pp-nav-left{display:flex;align-items:center;}
+.pp-nav-right{display:flex;align-items:center;gap:16px;}
+.btn-gold{
+  background:var(--orange);
+  color:white!important;
+  border-radius:8px;
+  padding:6px 12px;
+  font-weight:600;
+  transition:.3s;
+}
+.btn-gold:hover{ background:#f8ad3a; color:white!important; }
+
+/* ===== FONDO CELESTE MÁS MARCADO ===== */
+.pp-track,
+.pp-donor-track {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.9) 0%, rgba(255,255,255,.7) 50%, rgba(234,243,255,1) 100%),
+    linear-gradient(90deg, rgba(255,255,255,.5) 0%, rgba(234,243,255,.9) 100%);
+}
+
+
+

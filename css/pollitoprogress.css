@@ -1,0 +1,803 @@
+/* Variables de colores profesionales */
+:root {
+    --primary-red: #7d1f1f;
+    --primary-blue: #4472c4;
+    --primary-blue-dark: #2c5aa0;
+    --accent-yellow: #f9b233;
+    --accent-yellow-dark: #e09a1a;
+    --text-dark: #1a1a1a;
+    --text-medium: #4a4a4a;
+    --text-light: #6c757d;
+    --bg-light: #f0f2f5;
+    --card-bg: #ffffff;
+    --border-color: #dee2e6;
+    --success-color: #28a745;
+    --gold: #FFD700;
+    --silver: #C0C0C0;
+    --bronze: #CD7F32;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* Barra superior roja */
+.top-bar {
+    background-color: var(--primary-red);
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+/* Navbar profesional */
+.navbar-custom {
+    background-color: var(--primary-blue);
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.navbar-brand {
+    color: var(--accent-yellow) !important;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+}
+
+.navbar-custom .nav-link {
+    color: rgba(255,255,255,0.95) !important;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    margin: 0 5px;
+    font-weight: 500;
+}
+
+.navbar-custom .nav-link:hover {
+    background-color: rgba(255,255,255,0.15);
+    color: white !important;
+    transform: translateY(-2px);
+}
+
+.navbar-custom .nav-link.active {
+    background-color: rgba(255,255,255,0.2);
+    color: white !important;
+    font-weight: 600;
+}
+
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.5);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Contenedor principal */
+.main-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 25px;
+}
+
+/* Sección de barra principal - Diseño profesional */
+.main-progress-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    padding: 50px 45px;
+    border-radius: 16px;
+    margin-bottom: 45px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid var(--border-color);
+}
+
+.main-progress-title {
+    color: var(--primary-blue);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.title-icon {
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 1.8rem;
+}
+
+.main-progress-subtitle {
+    color: var(--text-medium);
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+
+.main-progress-bar-container {
+    position: relative;
+    height: 70px;
+    background: #f0f0f0;
+    border-radius: 35px;
+    overflow: visible;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+    border: 2px solid var(--primary-blue);
+    margin: 30px 0;
+}
+
+.main-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-yellow) 0%, #ffc107 50%, var(--accent-yellow) 100%);
+    border-radius: 35px;
+    position: relative;
+    transition: width 0.6s ease-in-out;
+}
+
+.chick {
+    position: absolute;
+    font-size: 2.2rem;
+    animation: bounce-subtle 1.2s ease-in-out infinite;
+    top: 50%;
+    left: 15%;
+    transform: translateY(-50%);
+    filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.15));
+}
+
+@keyframes bounce-subtle {
+    0%, 100% { 
+        transform: translateY(-50%) scale(1); 
+    }
+    50% { 
+        transform: translateY(-55%) scale(1.05); 
+    }
+}
+
+.progress-percentage {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    background: rgba(255,255,255,0.9);
+    padding: 5px 15px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Estadísticas de progreso */
+.progress-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin-top: 25px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+}
+
+.stat-value.remaining {
+    color: var(--text-medium);
+}
+
+.stat-divider {
+    width: 2px;
+    height: 50px;
+    background: var(--border-color);
+}
+
+/* Sección de donadores profesional */
+.donors-section {
+    margin-top: 50px;
+}
+
+.section-header-professional {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+    padding: 20px 30px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(68,114,196,0.2);
+}
+
+.section-title-pro {
+    color: white;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.title-icon-pro {
+    margin-right: 12px;
+    font-size: 1.8rem;
+}
+
+/* Tarjetas de donadores profesionales */
+.donor-card-pro {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    height: 100%;
+}
+
+.donor-card-pro:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 25px rgba(68,114,196,0.15);
+    border-color: var(--primary-blue);
+}
+
+.donor-header-pro {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.donor-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.donor-rank {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.donor-rank.gold {
+    background: linear-gradient(135deg, var(--gold) 0%, #FFA500 100%);
+    box-shadow: 0 4px 12px rgba(255,215,0,0.4);
+}
+
+.donor-rank.silver {
+    background: linear-gradient(135deg, var(--silver) 0%, #A8A8A8 100%);
+    box-shadow: 0 4px 12px rgba(192,192,192,0.4);
+}
+
+.donor-rank.bronze {
+    background: linear-gradient(135deg, var(--bronze) 0%, #B87333 100%);
+    box-shadow: 0 4px 12px rgba(205,127,50,0.4);
+}
+
+.donor-name-pro {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 2px 0;
+}
+
+.donor-date {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.donor-amount-pro {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-yellow);
+}
+
+.donor-progress-container-pro {
+    position: relative;
+    height: 40px;
+    background: #f0f0f0;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.donor-progress-bar-pro {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-blue) 0%, #5a8fd9 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    transition: width 0.8s ease-in-out;
+}
+
+.donor-percentage-pro {
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+/* Tarjetas vacías */
+.empty-card {
+    background: repeating-linear-gradient(
+        45deg,
+        #f8f9fa,
+        #f8f9fa 10px,
+        #ffffff 10px,
+        #ffffff 20px
+    );
+    border: 2px dashed var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+}
+
+.empty-card:hover {
+    transform: none;
+    border-color: var(--primary-blue);
+}
+
+.empty-state {
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+
+.empty-text {
+    color: var(--text-light);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Botones de acción profesionales */
+.action-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 40px 0;
+    flex-wrap: wrap;
+}
+
+.btn-action {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.btn-icon-action {
+    font-size: 1.2rem;
+}
+
+.btn-primary-action {
+    background: linear-gradient(135deg, var(--accent-yellow) 0%, var(--accent-yellow-dark) 100%);
+    color: var(--text-dark);
+}
+
+.btn-primary-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(249,178,51,0.4);
+}
+
+.btn-secondary-action {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+    color: white;
+}
+
+.btn-secondary-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(68,114,196,0.4);
+}
+
+.btn-warning-action {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+}
+
+.btn-warning-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(108,117,125,0.4);
+}
+
+.btn-export {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.btn-export:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+}
+
+/* Tabla profesional */
+.transactions-section {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    margin-top: 50px;
+}
+
+.section-header-table-pro {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+    padding: 25px 35px;
+    color: white;
+}
+
+.table-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.table-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-table-control {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-table-control:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+}
+
+.table-professional {
+    margin: 0;
+}
+
+.table-professional thead {
+    background-color: #f8f9fa;
+}
+
+.table-professional thead th {
+    padding: 18px 20px;
+    font-weight: 700;
+    border: none;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table-professional tbody td {
+    padding: 18px 20px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-professional tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table-professional tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table-professional tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.amount-highlight {
+    color: var(--accent-yellow);
+    font-size: 1.1rem;
+}
+
+.badge-pro {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-high {
+    background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+    color: white;
+}
+
+.badge-medium {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #5a8fd9 100%);
+    color: white;
+}
+
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.empty-row {
+    background: #f8f9fa;
+}
+
+.empty-table-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 10px;
+    opacity: 0.4;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .progress-stats {
+        gap: 25px;
+    }
+    
+    .action-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-action {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-progress-title {
+        font-size: 1.6rem;
+    }
+    
+    .main-progress-subtitle {
+        font-size: 1rem;
+    }
+    
+    .chick {
+        font-size: 1.8rem;
+    }
+    
+    .progress-percentage {
+        font-size: 1.3rem;
+        padding: 4px 12px;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .progress-stats {
+        gap: 20px;
+    }
+    
+    .stat-divider {
+        height: 40px;
+    }
+    
+    .donor-name-pro {
+        font-size: 1.05rem;
+    }
+    
+    .donor-amount-pro {
+        font-size: 1.3rem;
+    }
+    
+    .donor-rank {
+        width: 38px;
+        height: 38px;
+        font-size: 0.9rem;
+    }
+    
+    .navbar-custom .nav-link {
+        margin: 5px 0;
+    }
+    
+    .main-progress-section {
+        padding: 35px 25px;
+    }
+    
+    .section-header-professional {
+        padding: 18px 20px;
+    }
+    
+    .section-title-pro {
+        font-size: 1.3rem;
+    }
+    
+    .table-controls {
+        margin-top: 15px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .section-header-table-pro {
+        padding: 20px 25px;
+    }
+    
+    .table-title {
+        font-size: 1.2rem;
+    }
+    
+    .donor-card-pro {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-container {
+        padding: 0 15px;
+    }
+    
+    .main-progress-section {
+        padding: 25px 20px;
+    }
+    
+    .main-progress-bar-container {
+        height: 60px;
+    }
+    
+    .chick {
+        font-size: 1.6rem;
+    }
+    
+    .progress-percentage {
+        font-size: 1.1rem;
+        right: 15px;
+    }
+    
+    .progress-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .stat-divider {
+        width: 100%;
+        height: 1px;
+    }
+    
+    .donor-info {
+        gap: 10px;
+    }
+    
+    .donor-header-pro {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .donor-amount-pro {
+        font-size: 1.5rem;
+    }
+    
+    .table-professional {
+        font-size: 0.85rem;
+    }
+    
+    .table-professional thead th,
+    .table-professional tbody td {
+        padding: 12px 10px;
+    }
+    
+    .btn-action {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+    }
+    
+    .section-header-table-pro {
+        padding: 18px 20px;
+    }
+    
+    .table-controls {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-table-control {
+        width: 100%;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+}
+
+/* Animaciones adicionales para interactividad */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.donor-card-pro,
+.transactions-section {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Efectos de carga para elementos vacíos */
+.empty-card {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Mejoras de accesibilidad */
+.btn-action:focus,
+.btn-table-control:focus,
+.navbar-custom .nav-link:focus {
+    outline: 3px solid var(--accent-yellow);
+    outline-offset: 2px;
+}
+
+/* Mejoras visuales para impresión */
+@media print {
+    .top-bar,
+    .navbar-custom,
+    .action-controls,
+    .table-controls,
+    .btn-export {
+        display: none;
+    }
+    
+    .main-container {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    .donor-card-pro,
+    .transactions-section {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}   

@@ -1,31 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<<<<<<< HEAD
-  <script>
-(function () {
-  try {
-    const s = JSON.parse(localStorage.getItem('pollito.session') || 'null');
-    if (!s || !s.exp || Date.now() > s.exp) {
-      localStorage.removeItem('pollito.session');
-      // Todas tus páginas están en /view, así que login está en el mismo nivel
-      location.replace('./login.html');
-    }
-  } catch {
-    localStorage.removeItem('pollito.session');
-    location.replace('./login.html');
-  }
-})();
-</script>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Encargado ➜ Beneficiarios | Pollito</title>
-
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Tus estilos -->
-  <link rel="stylesheet" href="../css/index.css">
-=======
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Encargados | Pollito</title>
@@ -33,7 +8,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../css/index.css"> 
     <link rel="stylesheet" href="../css/estilos.css"> 
->>>>>>> 58275386d327e752d6fe26fc619cfa82b23f96ae
 </head>
 <body>
     
@@ -362,34 +336,8 @@
         
     </main>
 
-<<<<<<< HEAD
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Lógica -->
-  <script src="../js/Encargado.js"></script>
-  <script src="../js/auth.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Asegura que existan los widgets de sesión y los sincroniza
-    PollitoAuth.bindUI({ injectIfMissing: true });
-  });
-</script>
-<script>
-  (function markActiveByPath(){
-    // archivo actual (ej. "compras.html")
-    const file = location.pathname.split('/').pop().toLowerCase();
-    // marca activo en <a> que navegan a otras páginas
-    document.querySelectorAll('.navbar a.nav-link[data-external="1"]').forEach(a=>{
-      const target = (a.getAttribute('href')||'').split('/').pop().toLowerCase();
-      a.classList.toggle('is-active', target === file);
-    });
-  })();
-</script>
-=======
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     
     <script src="../js/Encargado.js"></script> 
->>>>>>> 58275386d327e752d6fe26fc619cfa82b23f96ae
 </body>
 </html>

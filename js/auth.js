@@ -2,6 +2,7 @@
 (() => {
   const STORAGE_KEY = "pollito.session";
   const SESSION_TTL_MIN = 240;              // 4h
+  const LOGIN_PAGE = "view/login.html";          // Página de login
   const LOGIN_ENDPOINT = "/api/auth/login"; // tu API real cuando exista
   const USE_MOCK = true;                    // pon false cuando uses tu API
 
@@ -15,37 +16,29 @@
   // --- helpers sesión ---
   const now = () => Date.now();
   function getSession(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(!raw) return null;
-      const s = JSON.parse(raw);
-      if(!s?.exp || now() > s.exp){ localStorage.removeItem(STORAGE_KEY); return null; }
-      return s;
-    }catch{ return null; }
+    // AUTH DESHABILITADO: Siempre devuelve una sesión falsa para acceso libre.
+    return {
+      token: "fake-token-auth-disabled",
+      user: {
+        id: 1,
+        nombre: "Usuario (Auth Deshabilitado)",
+        rol: "ADMIN",
+        user: "dev"
+      },
+      exp: now() + 999999999 // Expiración en el futuro lejano
+    };
   }
   function setSession(payload){
-    const exp = now() + SESSION_TTL_MIN*60*1000;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...payload, exp }));
+    // AUTH DESHABILITADO: No hacer nada.
   }
-  function clearSession(){ localStorage.removeItem(STORAGE_KEY); }
+  function clearSession(){
+    // AUTH DESHABILITADO: No hacer nada.
+  }
 
   // --- login público (mock o API) ---
   async function login(user, pass){
-    if(!USE_MOCK){
-      const res = await fetch(LOGIN_ENDPOINT, {
-        method:"POST", headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ user, pass })
-      });
-      if(res.status === 401) return { ok:false, msg:"Usuario o contraseña incorrectos" };
-      if(!res.ok) return { ok:false, msg:"Error de servidor" };
-      const json = await res.json();
-      if(!json?.ok) return { ok:false, msg: json?.msg || "Error" };
-      return { ok:true, data:{ token: json.token, user: json.user } };
-    }else{
-      const f = MOCK_USERS.find(x=>x.user===user && x.pass===pass);
-      if(!f) return { ok:false, msg:"Usuario o contraseña incorrectos" };
-      return { ok:true, data:{ token:"demo-token", user:{ id:1, nombre:f.nombre, rol:f.rol, user:f.user } } };
-    }
+    // AUTH DESHABILITADO: No es necesario, pero devolvemos éxito para no romper flujos.
+    return { ok: true, data: getSession() };
   }
 
   // --- UI: sincronizar/inyectar widgets de sesión ---
@@ -65,12 +58,14 @@
     if (!host) return;
 
     const wrap = document.createElement("div");
-    wrap.className = "ms-auto d-flex align-items-center gap-2";
+    wrap.className = "ms-auto d-flex align-items-center gap-2 d-none"; // Oculto por defecto
     wrap.innerHTML = `
       <span class="text-light small" data-auth-user>Sin sesión</span>
       <button class="btn btn-sm btn-warning" type="button" data-auth-btn>Iniciar sesión</button>
     `;
     host.appendChild(wrap);
+    // AUTH DESHABILITADO: Ocultar el contenedor.
+    wrap.style.display = 'none';
   }
 
   function applyHeaderState(){
@@ -79,22 +74,13 @@
     const badges = document.querySelectorAll("[data-auth-user]");
 
     btns.forEach(btn=>{
-      btn.textContent = s ? "Cerrar sesión" : "Iniciar sesión";
-      btn.dataset.mode = s ? "logout" : "login";
-      btn.onclick = () => {
-        if(getSession()){
-          clearSession();
-          // al cerrar sesión, volver al login para no dejar fugas
-          location.replace("./login.html");
-        }else{
-          location.replace("./login.html");
-        }
-      };
+      // AUTH DESHABILITADO: Ocultar botones.
+      btn.style.display = 'none';
     });
 
     badges.forEach(b=>{
-      const u = s?.user;
-      b.textContent = s ? `${u?.nombre ?? u?.user ?? "Usuario"} (${u?.rol ?? "?"})` : "Sin sesión";
+      // AUTH DESHABILITADO: Ocultar badges.
+      b.style.display = 'none';
     });
   }
 
@@ -105,13 +91,8 @@
 
   // --- Protección de enlaces (si por algo llegaran sin sesión) ---
   function protectNavLinks(){
-    document.querySelectorAll("a[href]").forEach(a=>{
-      if(!a.hasAttribute("data-skip-auth")){
-        a.addEventListener("click", (e)=>{
-          if(!getSession()){ e.preventDefault(); location.replace("./login.html"); }
-        });
-      }
-    });
+    // AUTH DESHABILITADO: No proteger ningún enlace.
+    return;
   }
 
   // --- API pública para vistas (no login) ---
@@ -121,12 +102,21 @@
     protectNavLinks();
   }
 
+  // --- Helper para redirigir a la home page ---
+  function redirectToHome() {
+    // Asume que la página principal es index.html en la raíz
+    window.location.replace("index.html");
+  }
+
   // --- Exponer helpers para login.html y vistas ---
   window.PollitoAuth = {
     // sesión
     getSession, setSession, clearSession,
     // login
     login,
+    // navegación
+    redirectToHome,
+    LOGIN_PAGE,
     // UI en vistas
     bindUI
   };

@@ -1,8 +1,6 @@
 <!doctype html>
 <html lang="es">
 <head>
-
-    
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pollitos • Usuarios</title>
@@ -10,71 +8,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../css/pollitos.css" />
-
-  <!-- Estilos globales (misma base del index) -->
-  <style>
-    :root{
-      --accent1:#F6C445;
-      --accent2:#FF8A00;
-      --pill-hover: rgba(255,255,255,.12);
-      --pill-active-a: rgba(246,196,69,.18);
-      --pill-active-b: rgba(255,138,0,.18);
-    }
-    body{ opacity:0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
-    body.ready{ opacity:1; transform:none; }
-    body.page-leave{ opacity:.15; transform: translateY(4px) scale(.997); transition: opacity .22s ease, transform .22s ease; }
-
-    /* Anti-subrayado + pill */
-    .navbar .nav-link,
-    .navbar .nav-link:hover,
-    .navbar .nav-link:focus,
-    .navbar .nav-link.active,
-    .navbar .nav-link.is-active{
-      text-decoration:none !important;
-      border-bottom:0 !important;
-      box-shadow:none !important;
-    }
-    .navbar .nav-link::after{ display:none !important; content:none !important; }
-    .navbar-nav{ gap:.25rem; }
-    .navbar-nav .nav-link{ border-radius:999px; padding:.5rem .9rem; transition: background-color .25s ease, color .25s ease; }
-    .navbar-nav .nav-link:hover{ background:var(--pill-hover); }
-    .navbar-nav .nav-link.is-active{
-      background: linear-gradient(90deg, var(--pill-active-a), var(--pill-active-b));
-      color:#fff !important;
-      box-shadow: inset 0 6px 16px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.06) !important;
-    }
-  </style>
-
-  <style>
-  /* === Brand destacado y consistente en todas las vistas === */
-  :root{
-    --brand-pill-a: rgba(246,196,69,.18); /* #F6C445 */
-    --brand-pill-b: rgba(255,138,0,.18);  /* #FF8A00  */
-    --brand-text:   #F6C445;
-  }
-
-  .navbar .navbar-brand.brand-highlight{
-    color: var(--brand-text) !important;
-    font-weight: 800;
-    letter-spacing: .2px;
-    padding: .25rem .6rem;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--brand-pill-a), var(--brand-pill-b));
-    text-decoration: none !important;
-    box-shadow:
-      inset 0 6px 16px rgba(0,0,0,.12),
-      0 2px 6px rgba(0,0,0,.08);
-    text-shadow: 0 1px 0 rgba(0,0,0,.15);
-    transition: transform .2s ease, box-shadow .25s ease, background .25s ease;
-  }
-  .navbar .navbar-brand.brand-highlight:hover{
-    transform: translateY(-1px);
-    box-shadow:
-      inset 0 8px 18px rgba(0,0,0,.14),
-      0 4px 10px rgba(0,0,0,.12);
-  }
-</style>
- 
 </head>
 <body>
   <!-- NAVBAR unificada -->
@@ -182,7 +115,6 @@
     </div>
   </div>
 
- 
- 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

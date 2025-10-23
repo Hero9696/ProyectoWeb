@@ -59,3 +59,55 @@ body{ background:#f7f9fc; }
       margin: 1.25rem 0 .75rem;
     }
     .small-hint{ font-size:.86rem; color:#6c757d; }
+
+    /* Navbar underline elegante */
+.navbar-nav .nav-link{
+  position: relative;
+  text-decoration: none !important;
+  transition: color .25s ease;
+  padding-bottom: .35rem; /* deja espacio al subrayado */
+}
+
+.navbar-nav .nav-link::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -.35rem;      /* altura constante */
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #F6C445, #FF8A00);
+  width: 0;             /* por defecto oculto */
+  transition: width .3s ease;
+}
+
+/* Hover y ACTIVO comparten el mismo estilo */
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.is-active::after{
+  width: 100%;
+}
+
+/* Color del texto cuando está activo (como en tu 2ª imagen) */
+.navbar-nav .nav-link.is-active{
+  color: #F6C445 !important;
+  font-weight: 600;
+}
+
+/* ===== Index.css – ajustes sin JS para la portada ===== */
+
+/* Forzar que el menú esté siempre visible (sin Bootstrap JS) */
+.navbar .navbar-collapse { display: block !important; }
+.navbar .navbar-toggler { display: none !important; }
+
+/* Micro-animación de entrada (si no quieres depender del global) */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+body[data-page="index"] { animation: page-in .35s ease both; }
+@media (prefers-reduced-motion: reduce){
+  body[data-page="index"] { animation: none; }
+}
+
+/* Opcional: centrado y respiración del héroe */
+#contenidoPrincipal .lead { max-width: 56ch; margin-inline: auto; }

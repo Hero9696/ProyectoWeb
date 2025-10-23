@@ -1,0 +1,145 @@
+/* Modal bloqueador de sesión */
+.auth-backdrop{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:9999}
+.auth-card{width:min(560px,92vw);background:#fff;border-radius:14px;box-shadow:0 10px 30px #0004;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Roboto}
+.auth-header{background:#144a96;color:#fff;padding:18px 20px;font-weight:600}
+.auth-header-wrap{display:flex;align-items:center;justify-content:space-between}
+.auth-close{background:transparent;border:0;color:#fff;font-size:22px;line-height:1;cursor:pointer}
+.auth-body{padding:20px}
+.auth-row{margin-bottom:12px}
+.auth-row label{display:block;font-size:.9rem;color:#333;margin-bottom:6px}
+.auth-row input{width:100%;padding:10px 12px;border:1px solid #d0d7de;border-radius:10px;outline:none}
+.auth-row input:focus{border-color:#144a96}
+.auth-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
+.auth-btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer}
+.auth-btn.primary{background:#f5a524;color:#111;font-weight:600}
+.auth-hint{font-size:.85rem;color:#666;margin-top:6px}
+.hidden{display:none!important}
+/* =====================================================
+   AUTH.CSS — Pantalla de inicio de sesión elegante
+   ===================================================== */
+
+/* ======= Variables de color ======= */
+:root {
+  --azul-1: #203a72; /* más oscuro, elegante */
+  --azul-2: #2b5aa8; /* medio */
+  --azul-3: #4e7bd3; /* acento */
+  --marfil: #f6f8fc; /* base clara NO blanca pura */
+}
+
+/* ======= Fondo principal ======= */
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
+
+  /* Degradado y blobs suaves animados */
+  background:
+    radial-gradient(1200px 800px at 10% 10%, rgba(78,123,211,.25), transparent 60%),
+    radial-gradient(1000px 700px at 90% 20%, rgba(43,90,168,.22), transparent 60%),
+    radial-gradient(900px 700px at 80% 90%, rgba(32,58,114,.22), transparent 60%),
+    linear-gradient(135deg, #eaf0fb 0%, #dee9fb 100%);
+  background-size: 100% 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  opacity: 0;
+  transform: translateY(8px);
+  animation: pageEnter .45s ease-out forwards;
+}
+
+@keyframes pageEnter {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ======= Card principal ======= */
+.auth-card {
+  width: min(440px, 92vw);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(246,248,252,.85), rgba(243,247,255,.82));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 12px 36px rgba(22,36,70,.25);
+  overflow: hidden;
+  transform: translateY(8px);
+  animation: cardIn .5s .08s ease-out forwards;
+}
+
+@keyframes cardIn {
+  to {
+    transform: none;
+  }
+}
+
+/* ======= Encabezado ======= */
+.auth-header {
+  background: linear-gradient(90deg, var(--azul-1), var(--azul-2));
+  color: #fff;
+  text-align: center;
+  padding: 18px 22px;
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+/* ======= Cuerpo del formulario ======= */
+.auth-body {
+  padding: 26px 24px;
+}
+
+.auth-row label {
+  font-weight: 600;
+  color: #2a2f3a;
+}
+
+/* ======= Campos de formulario ======= */
+.form-control {
+  border-radius: 12px;
+  border: 1px solid #d7deea;
+}
+
+.form-control:focus {
+  border-color: var(--azul-2);
+  box-shadow: 0 0 0 .2rem rgba(43,90,168,.15);
+}
+
+/* ======= Botón principal ======= */
+.auth-btn.primary {
+  width: 100%;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(90deg, var(--azul-2), var(--azul-3));
+  border: none;
+  transition: transform .08s ease, filter .2s ease;
+}
+
+.auth-btn.primary:hover {
+  filter: brightness(1.02);
+}
+
+.auth-btn.primary:active {
+  transform: translateY(1px);
+}
+
+/* ======= Texto informativo ======= */
+.auth-hint {
+  text-align: center;
+  color: #6b7485;
+  font-size: .86rem;
+}
+
+/* ======= Animación de salida (fade-out) ======= */
+.leaving {
+  pointer-events: none;
+  transition: opacity .35s ease;
+  opacity: 0;
+}

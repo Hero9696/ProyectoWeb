@@ -1,190 +1,294 @@
-    // ===== utilidades =====
-    function setNowDates(formEl, fechaName, horaName){
-      const now = new Date();
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth()+1).padStart(2,'0');
-      const dd = String(now.getDate()).padStart(2,'0');
-      const HH = String(now.getHours()).padStart(2,'0');
-      const II = String(now.getMinutes()).padStart(2,'0');
-      formEl.querySelector(`[name="${fechaName}"]`).value ||= `${yyyy}-${mm}-${dd}`;
-      formEl.querySelector(`[name="${horaName}"]`).value ||= `${HH}:${II}`;
+// Variables globales para almacenar TODAS las listas (Reutilizadas del módulo Encargado)
+let listaEncargados = []; 
+let listaPaises = [];
+let listaDepartamentos = [];
+let listaMunicipios = [];
+let listaLugares = [];
+
+const API_BASE = 'http://localhost:3000/api';
+
+// Objeto para mantener el Encargado ID activo
+let encargadoAsignado = null; 
+
+// ************************************************************
+// FUNCIONES DE UTILIDAD
+// ************************************************************
+
+function obtenerFechaHoraActual() {
+    const ahora = new Date();
+    const year = ahora.getFullYear();
+    const month = String(ahora.getMonth() + 1).padStart(2, '0');
+    const day = String(ahora.getDate()).padStart(2, '0');
+    const fecha = `${year}-${month}-${day}`;
+    const hours = String(ahora.getHours()).padStart(2, '0');
+    const minutes = String(ahora.getMinutes()).padStart(2, '0');
+    const seconds = String(ahora.getSeconds()).padStart(2, '0');
+    const hora = `${hours}:${minutes}:${seconds}`;
+
+    return { fecha, hora };
+}
+
+async function cargarTodosLosDatosIniciales() {
+    // Carga inicial de Encargados y listas de ubicación
+    try {
+        const [resEncargados, resPaises, resDepartamentos, resMunicipios, resLugares] = await Promise.all([
+            fetch(`${API_BASE}/encargados`),
+            fetch(`${API_BASE}/paises`),
+            fetch(`${API_BASE}/departamentos`),
+            fetch(`${API_BASE}/municipios`),
+            fetch(`${API_BASE}/lugares`)
+        ]);
+
+        if (!resEncargados.ok || !resPaises.ok || !resDepartamentos.ok || !resMunicipios.ok || !resLugares.ok) {
+            throw new Error('Error al cargar datos iniciales del servidor.');
+        }
+
+        listaEncargados = await resEncargados.json();
+        listaPaises = await resPaises.json();
+        listaDepartamentos = await resDepartamentos.json();
+        listaMunicipios = await resMunicipios.json();
+        listaLugares = await resLugares.json();
+        console.log("Datos iniciales de encargados y ubicación cargados.");
+
+    } catch (error) {
+        console.error("⛔ Error Crítico:", error);
+        alert("Error al cargar datos del servidor. Verifique que la API esté corriendo.");
+    }
+}
+
+function rellenarSelect(selectId, dataArray, valueKey, textKey, defaultText, valorSeleccionado = null) {
+    const selectElement = document.getElementById(selectId);
+    selectElement.innerHTML = `<option value="">${defaultText}</option>`;
+    
+    if (!dataArray || dataArray.length === 0) {
+        selectElement.disabled = true;
+        return;
+    }
+    
+    selectElement.disabled = false;
+    
+    dataArray.forEach(item => {
+        const value = item[valueKey];
+        const text = item[textKey];
+        const selected = (valorSeleccionado !== null && value == valorSeleccionado) ? 'selected' : '';
+        selectElement.innerHTML += `<option value="${value}" ${selected}>${text}</option>`;
+    });
+}
+
+// LÓGICA DE CASCADA (REUTILIZADA)
+function cargarPaises(selectPaisId, selectDeptoId, selectMuniId, selectLugarId, valorSeleccionado = null) {
+    rellenarSelect(selectPaisId, listaPaises, 'idPais', 'nombrePais', 'Seleccione un País', valorSeleccionado);
+    rellenarSelect(selectDeptoId, [], 'idDepartamento', 'nombreDepartamento', 'Seleccione un Departamento');
+    rellenarSelect(selectMuniId, [], 'idMunicipio', 'nombreMunicipio', 'Seleccione un Municipio');
+    rellenarSelect(selectLugarId, [], 'idLugar', 'nombreLugar', 'Seleccione un Lugar');
+}
+
+function cargarDepartamentos(selectDeptoId, selectMuniId, selectLugarId, idPais, valorSeleccionado = null) {
+    const selectMuni = document.getElementById(selectMuniId);
+    const selectLugar = document.getElementById(selectLugarId);
+    
+    const departamentosFiltrados = listaDepartamentos.filter(d => d.idPaisDepa == idPais);
+    rellenarSelect(selectDeptoId, departamentosFiltrados, 'idDepartamento', 'nombreDepartamento', 'Seleccione un Departamento', valorSeleccionado);
+    rellenarSelect(selectMuniId, [], 'idMunicipio', 'nombreMunicipio', 'Seleccione un Municipio');
+    rellenarSelect(selectLugarId, [], 'idLugar', 'nombreLugar', 'Seleccione un Lugar');
+}
+
+function cargarMunicipios(selectMuniId, selectLugarId, idDepartamento, valorSeleccionado = null) {
+    const selectLugar = document.getElementById(selectLugarId);
+
+    const municipiosFiltrados = listaMunicipios.filter(m => m.idDepartamentoMuni == idDepartamento);
+    rellenarSelect(selectMuniId, municipiosFiltrados, 'idMunicipio', 'nombreMunicipio', 'Seleccione un Municipio', valorSeleccionado);
+    rellenarSelect(selectLugarId, [], 'idLugar', 'nombreLugar', 'Seleccione un Lugar');
+}
+
+function cargarLugares(selectLugarId, idMunicipio, valorSeleccionado = null) {
+    const lugaresFiltrados = listaLugares.filter(l => l.idMunicipioLugar == idMunicipio);
+    rellenarSelect(selectLugarId, lugaresFiltrados, 'idLugar', 'nombreLugar', 'Seleccione un Lugar', valorSeleccionado);
+}
+// ************************************************************
+
+/**
+ * Lógica específica del módulo Beneficiarios
+ */
+
+async function validarEncargado() {
+    const dpi = document.getElementById('dpiEncargadoBusqueda').value.trim();
+    const mensajeDiv = document.getElementById('mensajeValidacion');
+    const seccionForm = document.getElementById('seccionDatosBeneficiario');
+    const infoEncargadoDiv = document.getElementById('infoEncargadoAsignado');
+
+    mensajeDiv.textContent = 'Validando...';
+    seccionForm.classList.add('d-none');
+    infoEncargadoDiv.classList.add('d-none');
+    encargadoAsignado = null; // Resetear encargado
+    document.getElementById('step2Badge').classList.add('disabled');
+    document.getElementById('formBeneficiario').reset(); // Limpiar formulario si había datos
+
+    if (!dpi) {
+        mensajeDiv.innerHTML = '<span class="text-danger">Ingrese un DPI/Identificación para buscar.</span>';
+        return;
     }
 
-    function validateForm(form){
-      // HTML5 constraint validation + marcar campos
-      let ok = form.checkValidity();
-      form.classList.add('was-validated');
-      return ok;
-    }
+    // Buscamos el encargado en la lista cargada en memoria
+    const encargadoEncontrado = listaEncargados.find(e => e.IdentificacionEncarga === dpi);
 
-    // ===== datos de selects (placeholder para cascada) =====
-    // Sustituye por fetch a tu API. Ejemplo mínimo para Guatemala.
-    const DATA = {
-      paises: [{id: 1, nombre: "Guatemala"}],
-      departamentos: { 1: [
-        {id: 101, nombre: "Guatemala"},
-        {id: 102, nombre: "Sacatepéquez"},
-        {id: 103, nombre: "El Progreso"}
-      ]},
-      municipios: {
-        101: [{id: 10101, nombre: "Guatemala"}, {id:10102,nombre:"Mixco"}],
-        102: [{id: 10201, nombre: "Antigua Guatemala"}],
-        103: [{id: 10301, nombre: "Guastatoya"}]
-      },
-      lugares: {
-        10101: [{id: 50001, nombre:"Zona 1"}, {id:50002,nombre:"Zona 7"}],
-        10102: [{id: 50011, nombre:"El Milagro"}],
-        10201: [{id: 50021, nombre:"Centro"}],
-        10301: [{id: 50031, nombre:"Barrio El Pacífico"}]
-      }
+    if (!encargadoEncontrado) {
+        mensajeDiv.innerHTML = '<span class="text-danger">❌ **Error: Encargado no encontrado.** Por favor, realice primero el registro del Encargado.</span>';
+        return;
+    }
+    
+    // Encargado encontrado: preparamos el formulario
+    encargadoAsignado = encargadoEncontrado;
+    
+    // Habilitar la siguiente sección
+    mensajeDiv.innerHTML = '<span class="text-success">✅ Encargado validado. Complete los datos del beneficiario.</span>';
+    
+    // Asignar el ID del encargado al campo oculto del formulario de Beneficiario
+    document.getElementById('idEncargadoBene').value = encargadoEncontrado.idEncargado; 
+    document.getElementById('nombreEncargadoAsignado').textContent = `${encargadoEncontrado.nombreCompleto} (${encargadoEncontrado.IdentificacionEncarga})`;
+
+    // Mostrar el formulario y actualizar stepper
+    infoEncargadoDiv.classList.remove('d-none');
+    seccionForm.classList.remove('d-none');
+    document.getElementById('step2Badge').classList.remove('disabled');
+
+    // Llenar datos de auditoría y cascada al inicio
+    inicializarFormularioBeneficiario();
+}
+
+function inicializarFormularioBeneficiario() {
+    // 1. Auto-sellado de Fecha/Hora de Ingreso
+    const { fecha, hora } = obtenerFechaHoraActual();
+    const inputFecha = document.getElementById('fechaIngresoBene');
+    const inputHora = document.getElementById('horaIngresoBene');
+    
+    inputFecha.value = fecha;
+    inputHora.value = hora.substring(0, 5); // HH:MM
+    
+    inputFecha.classList.add('bg-light');
+    inputHora.classList.add('bg-light');
+
+    // 2. Carga de la cascada
+    cargarPaises('idPaisBene', 'idDepartamentoBene', 'idMunicipioBene', 'idLugarBene');
+}
+
+
+async function guardarBeneficiario(e) {
+    e.preventDefault(); 
+    const form = e.target;
+    
+    if (!encargadoAsignado) {
+        alert("Error: No hay Encargado asignado. Vuelva al Paso 1.");
+        return;
+    }
+    
+    // --- CAPTURA Y VALIDACIÓN CRÍTICA ---
+    const idEncargado = parseInt(document.getElementById('idEncargadoBene').value) || 0;
+    const idPais = parseInt(form.idPaisBene.value) || 0; 
+    const idDepartamento = parseInt(form.idDepartamentoBene.value) || 0; 
+    const idMunicipio = parseInt(form.idMunicipioBene.value) || 0; 
+    const idLugar = parseInt(form.idLugarBene.value) || 0;
+    
+    const nombre1 = form.nombre1Beneficiario.value.trim();
+    const apellido1 = form.apellido1Beneficiario.value.trim();
+    
+    // Manejo de IDs de Usuario
+    const idUsuarioIngreso = parseInt(form.idUsuarioIngreso.value) || 1;
+    const idUsuarioActualiza = parseInt(form.idUsuarioActualiza.value) || 1;
+    
+    // **VALIDACIÓN CRÍTICA AJUSTADA:** SOLO REQUIERE nombre1, apellido1, y la cascada completa.
+    if (!nombre1 || !apellido1 || idLugar === 0 || idEncargado === 0 || idPais === 0 || idDepartamento === 0 || idMunicipio === 0) {
+        alert("Error: Por favor, complete los campos obligatorios (Primer Nombre, Primer Apellido y toda la cascada de Ubicación).");
+        return;
+    }
+    
+    // CONSTRUCCIÓN DEL OBJETO DE DATOS con TODOS los 18 campos NOT NULL
+    const data = {
+        // --- 1. Nombres y Apellidos (Usamos " " para evadir NOT NULL si están vacíos) ---
+        "nombre1Beneficiario": nombre1,
+        "nombre2Beneficiario": form.nombre2Beneficiario.value || " ", // Enviamos un espacio si está vacío
+        "nombre3Beneficiario": form.nombre3Beneficiario.value || " ", // Enviamos un espacio si está vacío
+        "apellido1Beneficiario": apellido1,
+        "apellido2Beneficiario": form.apellido2Beneficiario.value || " ", // Enviamos un espacio si está vacío
+        "apellido3Beneficiario": form.apellido3Beneficiario.value || " ", // Enviamos un espacio si está vacío
+        
+        // --- 2. Ubicación y Encargado (INT UNSIGNED NOT NULL) ---
+        "idPaisBene": idPais,
+        "idDepartamentoBene": idDepartamento,
+        "idMunicipioBene": idMunicipio,
+        "idLugarBene": idLugar,
+        "idEncargadoBene": idEncargado, // Campo clave asociado
+        
+        // --- 3. Estado y Auditoría de Ingreso ---
+        "estadoBeneficiario": form.estadoBeneficiario.value || "A", 
+        "fechaIngresoBene": form.fechaIngresoBene.value || "2000-01-01", 
+        "horaIngresoBene": form.horaIngresoBene.value || "00:00:00", 
+        "idUsuarioIngreso": idUsuarioIngreso,
+        
+        // --- 4. Auditoría de Actualización (Usamos valores de Ingreso o default) ---
+        "fechaActualizacion": form.fechaActualizacion.value || form.fechaIngresoBene.value || "2000-01-01", 
+        "horaActualizacion": form.horaActualizacion.value || form.horaIngresoBene.value || "00:00:00",     
+        "idUsuarioActualiza": idUsuarioActualiza, 
     };
+    
+    // ENVÍO DE DATOS A LA API
+    try {
+        const response = await fetch(`${API_BASE}/beneficiarios`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
 
-    function fillSelect(select, items, placeholder="Seleccione…"){
-      select.innerHTML = `<option value="">${placeholder}</option>` +
-        items.map(o => `<option value="${o.id}">${o.nombre}</option>`).join('');
-      select.disabled = false;
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Respuesta de error de API (POST):", errorText);
+            throw new Error(`Error en el servidor: ${errorText}`);
+        }
+        
+        alert("Beneficiario creado exitosamente. 🎉");
+        
+        // Resetear la UI después de guardar
+        document.getElementById('btnLimpiarTodo').click(); 
+        
+    } catch (error) {
+        console.error("Error al crear beneficiario:", error);
+        alert(`Error al crear beneficiario: ${error.message || 'Error desconocido.'}. Verifique el log del servidor.`);
     }
+}
 
-    function setupCascada(scope){
-      const sPais = scope.querySelector('select[name^="idPais"]');
-      const sDepa = scope.querySelector('select[name^="idDepartamento"]');
-      const sMuni = scope.querySelector('select[name^="idMunicipio"], select[name="idMuniEncarga"]');
-      const sLugar = scope.querySelector('select[name^="idLugar"]');
 
-      // País
-      fillSelect(sPais, DATA.paises);
-      sPais.addEventListener('change', () => {
-        sDepa.innerHTML = ""; sDepa.disabled = true;
-        sMuni.innerHTML = ""; sMuni.disabled = true;
-        sLugar.innerHTML = ""; sLugar.disabled = true;
-        const deps = DATA.departamentos[sPais.value] || [];
-        fillSelect(sDepa, deps, "Departamento…");
-      });
+// ************************************************************
+// ENLACE DE EVENTOS AL DOM
+// ************************************************************
 
-      // Departamento
-      sDepa.addEventListener('change', () => {
-        sMuni.innerHTML = ""; sMuni.disabled = true;
-        sLugar.innerHTML = ""; sLugar.disabled = true;
-        const munis = DATA.municipios[sDepa.value] || [];
-        fillSelect(sMuni, munis, "Municipio…");
-      });
+document.addEventListener('DOMContentLoaded', () => {
+    cargarTodosLosDatosIniciales();
+    
+    // Referencias de Selectores
+    const selectPais = document.getElementById('idPaisBene');
+    const selectDepto = document.getElementById('idDepartamentoBene');
+    const selectMuni = document.getElementById('idMunicipioBene');
+    
+    // Lógica de Validación
+    document.getElementById('btnValidarEncargado').addEventListener('click', validarEncargado);
 
-      // Municipio
-      sMuni.addEventListener('change', () => {
-        sLugar.innerHTML = ""; sLugar.disabled = true;
-        const lugs = DATA.lugares[sMuni.value] || [];
-        fillSelect(sLugar, lugs, "Lugar…");
-      });
-    }
+    // Lógica de Guardado
+    document.getElementById('formBeneficiario').addEventListener('submit', guardarBeneficiario);
 
-    // ===== referencias =====
-    const formB = document.getElementById('formBeneficiario');
-    const formE = document.getElementById('formEncargado');
-    const btnValidarBeneficiario = document.getElementById('btnValidarBeneficiario');
-    const btnIrEncargado = document.getElementById('btnIrEncargado');
-    const btnVolverBeneficiario = document.getElementById('btnVolverBeneficiario');
-    const btnGuardarTodo = document.getElementById('btnGuardarTodo');
-    const btnLimpiarTodo = document.getElementById('btnLimpiarTodo');
-    const encTabBtn = document.getElementById('enc-tab');
-    const step1Badge = document.getElementById('step1Badge');
-    const step2Badge = document.getElementById('step2Badge');
-
-    // Inicializar fechas/horas por defecto
-    setNowDates(formB, 'fechaIngresoBene', 'horaIngresoBene');
-    setNowDates(formB, 'fechaActualizacion', 'horaActualizacion');
-    setNowDates(formE, 'fechaIngresoEncarga', 'horaIngresoEncarga');
-    setNowDates(formE, 'fechaActualizacion', 'horaActualizacion');
-
-    // Cascadas
-    setupCascada(document.getElementById('bene'));
-    setupCascada(document.getElementById('enc'));
-
-    // Validar Beneficiario y habilitar Encargado
-    btnValidarBeneficiario.addEventListener('click', () => {
-      if (validateForm(formB)) {
-        encTabBtn.classList.remove('disabled');
-        encTabBtn.removeAttribute('tabindex');
-        btnIrEncargado.disabled = false;
-        step1Badge.classList.remove('disabled');
-        step2Badge.classList.remove('disabled');
-        step2Badge.style.background = 'var(--amarillo)';
-        step2Badge.style.borderColor = 'var(--azul)';
-        // Aviso visual
-        const toastDiv = document.createElement('div');
-        toastDiv.className = 'alert alert-success mt-3';
-        toastDiv.textContent = 'Beneficiario validado. Ya puedes continuar con Encargado.';
-        formB.appendChild(toastDiv);
-        setTimeout(()=> toastDiv.remove(), 2500);
-      } else {
-        window.scrollTo({ top: formB.offsetTop - 80, behavior: 'smooth' });
-      }
+    // Lógica de Limpieza
+    document.getElementById('btnLimpiarTodo').addEventListener('click', () => {
+        document.getElementById('formBeneficiario').reset();
+        document.getElementById('dpiEncargadoBusqueda').value = '';
+        document.getElementById('seccionDatosBeneficiario').classList.add('d-none');
+        document.getElementById('infoEncargadoAsignado').classList.add('d-none');
+        document.getElementById('mensajeValidacion').textContent = '';
+        document.getElementById('step2Badge').classList.add('disabled');
+        encargadoAsignado = null;
+        cargarPaises('idPaisBene', 'idDepartamentoBene', 'idMunicipioBene', 'idLugarBene'); // Recargar cascada
     });
 
-    btnIrEncargado.addEventListener('click', () => {
-      const tab = new bootstrap.Tab(encTabBtn);
-      tab.show();
-    });
-
-    btnVolverBeneficiario?.addEventListener('click', () => {
-      const beneTabBtn = document.getElementById('bene-tab');
-      const tab = new bootstrap.Tab(beneTabBtn);
-      tab.show();
-    });
-
-    // Guardar Encargado (solo demo)
-    formE.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!validateForm(formE)) return;
-
-      const beneData = Object.fromEntries(new FormData(formB));
-      const encData  = Object.fromEntries(new FormData(formE));
-
-      // Aquí harías fetch POST a tu backend; por ahora mostramos en consola
-      console.log('Beneficiario listo para enviar:', beneData);
-      console.log('Encargado listo para enviar:', encData);
-
-      alert('Datos validados (demo). Reemplaza con fetch() a tu API.');
-    });
-
-    // Guardar todo (demo)
-    btnGuardarTodo.addEventListener('click', () => {
-      const okB = validateForm(formB);
-      const okE = !encTabBtn.classList.contains('disabled') ? validateForm(formE) : false;
-      if (!okB) {
-        alert('Falta completar/validar Beneficiario.');
-        return;
-      }
-      if (!okE) {
-        alert('Falta completar/validar Encargado.');
-        return;
-      }
-      const beneData = Object.fromEntries(new FormData(formB));
-      const encData  = Object.fromEntries(new FormData(formE));
-      console.log('TODO EL PAQUETE:', { beneficiario: beneData, encargado: encData });
-      alert('Paquete completo listo para enviar (demo).');
-    });
-
-    // Limpiar
-    btnLimpiarTodo.addEventListener('click', () => {
-      formB.reset(); formE.reset();
-      formB.classList.remove('was-validated');
-      formE.classList.remove('was-validated');
-      // Deshabilitar Encargado nuevamente
-      encTabBtn.classList.add('disabled');
-      encTabBtn.setAttribute('tabindex','-1');
-      document.getElementById('bene-tab').click();
-      btnIrEncargado.disabled = true;
-      step2Badge.classList.add('disabled');
-      // Reset selects cascada
-      document.querySelectorAll('#bene select, #enc select').forEach(s=>{
-        s.innerHTML = '<option value="">Seleccione…</option>';
-        s.disabled = true;
-      });
-      setupCascada(document.getElementById('bene'));
-      setupCascada(document.getElementById('enc'));
-      // Fechas / horas de nuevo
-      setNowDates(formB, 'fechaIngresoBene', 'horaIngresoBene');
-      setNowDates(formB, 'fechaActualizacion', 'horaActualizacion');
-      setNowDates(formE, 'fechaIngresoEncarga', 'horaIngresoEncarga');
-      setNowDates(formE, 'fechaActualizacion', 'horaActualizacion');
-    });
+    // Lógica de Cascada 
+    selectPais.addEventListener('change', (e) => cargarDepartamentos(selectDepto.id, selectMuni.id, document.getElementById('idLugarBene').id, e.target.value));
+    selectDepto.addEventListener('change', (e) => cargarMunicipios(selectMuni.id, document.getElementById('idLugarBene').id, e.target.value));
+    selectMuni.addEventListener('change', (e) => cargarLugares(document.getElementById('idLugarBene').id, e.target.value));
+});

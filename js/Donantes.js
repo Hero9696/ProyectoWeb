@@ -25,9 +25,10 @@ function validateForm(form) {
 
 async function fetchPaises() {
     try {
-        const response = await fetch('/api/paises');
+        const response = await fetch('http://localhost:3000/api/paises');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        DATA.paises = await response.json();
+        const paisesData = await response.json();
+        DATA.paises = paisesData.map(p => ({ id: p.idPais, nombre: p.nombrePais }));
     } catch (error) {
         console.error('Error al cargar países:', error);
         alert('No se pudieron cargar los países.');
@@ -36,7 +37,7 @@ async function fetchPaises() {
 
 async function fetchDepartamentos() {
     try {
-        const response = await fetch('/api/departamentos');
+        const response = await fetch('http://localhost:3000/api/departamentos');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const deps = await response.json();
         DATA.departamentos = deps.reduce((acc, dep) => {
@@ -52,7 +53,7 @@ async function fetchDepartamentos() {
 
 async function fetchMunicipios() {
     try {
-        const response = await fetch('/api/municipios');
+        const response = await fetch('http://localhost:3000/api/municipios');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const munis = await response.json();
         DATA.municipios = munis.reduce((acc, muni) => {
@@ -135,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         DONANTE_DATA = donanteData;
 
         try {
-            const response = await fetch('/api/donantes', {
+            const response = await fetch('http://localhost:3000/api/donantes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -199,7 +200,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         try {
             // 1. Registrar Donación
-            const donacionResponse = await fetch('/api/donaciones', {
+            const donacionResponse = await fetch('http://localhost:3000/api/donaciones', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -225,7 +226,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 idUsuarioIngreso: parseInt(donacionData.idUsuarioIngreso)
             };
 
-            const cajaResponse = await fetch('/api/caja/movimiento', {
+            const cajaResponse = await fetch('http://localhost:3000/api/caja/movimiento', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

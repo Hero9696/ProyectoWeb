@@ -29,7 +29,7 @@ function validateForm(form) {
 
 async function fetchBeneficiarios() {
     try {
-        const response = await fetch('/api/beneficiarios'); // Asumiendo que el backend está en el mismo origen
+        const response = await fetch('http://localhost:3000/api/beneficiarios');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -40,7 +40,7 @@ async function fetchBeneficiarios() {
         DATA.beneficiarios.forEach(bene => {
             const option = document.createElement('option');
             option.value = bene.idBeneficiario; // Asegúrate de que el campo sea idBeneficiario
-            option.textContent = `${bene.nombre1Beneficiario} ${bene.apellido1Beneficiario}`; // Ajusta según los campos reales
+            option.textContent = bene.nombreCompleto;
             selectBeneficiario.appendChild(option);
         });
     } catch (error) {
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }));
 
         try {
-            const response = await fetch('/api/ventas', {
+            const response = await fetch('http://localhost:3000/api/ventas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -1,9 +1,10 @@
 // Variables globales para almacenar TODAS las listas
-let listaEncargados = [];
+let listaEncargados = []; 
 let listaPaises = [];
 let listaDepartamentos = [];
 let listaMunicipios = [];
 let listaLugares = [];
+let listaBeneficiarios = []; // Variable que contiene la lista de beneficiarios
 
 const API_BASE = 'http://localhost:3000/api';
 
@@ -12,14 +13,10 @@ const API_BASE = 'http://localhost:3000/api';
  */
 function obtenerFechaHoraActual() {
     const ahora = new Date();
-    
-    // Formato de fecha (YYYY-MM-DD)
     const year = ahora.getFullYear();
     const month = String(ahora.getMonth() + 1).padStart(2, '0');
     const day = String(ahora.getDate()).padStart(2, '0');
     const fecha = `${year}-${month}-${day}`;
-    
-    // Formato de hora (HH:MM:SS)
     const hours = String(ahora.getHours()).padStart(2, '0');
     const minutes = String(ahora.getMinutes()).padStart(2, '0');
     const seconds = String(ahora.getSeconds()).padStart(2, '0');
@@ -30,21 +27,23 @@ function obtenerFechaHoraActual() {
 
 /**
  * Función central para cargar TODOS los datos necesarios del Backend
+ * (MODIFICADA para incluir Beneficiarios)
  */
 async function cargarTodosLosDatosIniciales() {
     try {
-        console.log("Iniciando carga de datos de ubicación y encargados...");
+        console.log("Iniciando carga de datos de ubicación, encargados y beneficiarios...");
 
-        const [resEncargados, resPaises, resDepartamentos, resMunicipios, resLugares] = await Promise.all([
+        const [resEncargados, resPaises, resDepartamentos, resMunicipios, resLugares, resBeneficiarios] = await Promise.all([
             fetch(`${API_BASE}/encargados`),
             fetch(`${API_BASE}/paises`),
             fetch(`${API_BASE}/departamentos`),
             fetch(`${API_BASE}/municipios`),
-            fetch(`${API_BASE}/lugares`)
+            fetch(`${API_BASE}/lugares`),
+            fetch(`${API_BASE}/beneficiarios`) // <-- Carga de Beneficiarios
         ]);
 
-        if (!resEncargados.ok || !resPaises.ok || !resDepartamentos.ok || !resMunicipios.ok || !resLugares.ok) {
-            throw new Error('Al menos una de las peticiones a la API falló. Código: ' + resEncargados.status);
+        if (!resEncargados.ok || !resPaises.ok || !resDepartamentos.ok || !resMunicipios.ok || !resLugares.ok || !resBeneficiarios.ok) {
+            throw new Error('Al menos una de las peticiones a la API falló.');
         }
 
         listaEncargados = await resEncargados.json();
@@ -52,8 +51,9 @@ async function cargarTodosLosDatosIniciales() {
         listaDepartamentos = await resDepartamentos.json();
         listaMunicipios = await resMunicipios.json();
         listaLugares = await resLugares.json();
+        listaBeneficiarios = await resBeneficiarios.json(); // <-- Asignación de Beneficiarios
 
-        console.log("Datos iniciales de encargados y ubicación cargados con éxito.");
+        console.log("Datos iniciales de encargados, beneficiarios y ubicación cargados con éxito.");
 
     } catch (error) {
         console.error("⛔ Error Crítico al cargar datos iniciales:", error);
@@ -91,37 +91,27 @@ function rellenarSelect(selectId, dataArray, valueKey, textKey, defaultText, val
 
 function cargarPaises(selectPaisId, selectDeptoId, selectMuniId, selectLugarId, valorSeleccionado = null) {
     rellenarSelect(selectPaisId, listaPaises, 'idPais', 'nombrePais', 'Seleccione un País', valorSeleccionado);
-    
-    if (valorSeleccionado) {
-        cargarDepartamentos(selectDeptoId, selectMuniId, selectLugarId, valorSeleccionado, valorSeleccionado);
-    } else {
-        rellenarSelect(selectDeptoId, [], 'idDepartamento', 'nombreDepartamento', 'Seleccione un Departamento');
-        rellenarSelect(selectMuniId, [], 'idMunicipio', 'nombreMunicipio', 'Seleccione un Municipio');
-        rellenarSelect(selectLugarId, [], 'idLugar', 'nombreLugar', 'Seleccione un Lugar');
-    }
+    rellenarSelect(selectDeptoId, [], 'idDepartamento', 'nombreDepartamento', 'Seleccione un Departamento');
+    rellenarSelect(selectMuniId, [], 'idMunicipio', 'nombreMunicipio', 'Seleccione un Municipio');
+    rellenarSelect(selectLugarId, [], 'idLugar', 'nombreLugar', 'Seleccione un Lugar');
 }
 
 function cargarDepartamentos(selectDeptoId, selectMuniId, selectLugarId, idPais, valorSeleccionado = null) {
-    const deptosFiltrados = listaDepartamentos.filter(d => d.idPaisDepa == idPais);
-    rellenarSelect(selectDeptoId, deptosFiltrados, 'idDepartamento', 'nombreDepartamento', 'Seleccione un Departamento', valorSeleccionado);
-
-    if (valorSeleccionado) {
-        cargarMunicipios(selectMuniId, selectLugarId, valorSeleccionado, valorSeleccionado);
-    } else {
-        rellenarSelect(selectMuniId, [], 'idMunicipio', 'nombreMunicipio', 'Seleccione un Municipio');
-        rellenarSelect(selectLugarId, [], 'idLugar', 'nombreLugar', 'Seleccione un Lugar');
-    }
+    const selectMuni = document.getElementById(selectMuniId);
+    const selectLugar = document.getElementById(selectLugarId);
+    
+    const departamentosFiltrados = listaDepartamentos.filter(d => d.idPaisDepa == idPais);
+    rellenarSelect(selectDeptoId, departamentosFiltrados, 'idDepartamento', 'nombreDepartamento', 'Seleccione un Departamento', valorSeleccionado);
+    rellenarSelect(selectMuniId, [], 'idMunicipio', 'nombreMunicipio', 'Seleccione un Municipio');
+    rellenarSelect(selectLugarId, [], 'idLugar', 'nombreLugar', 'Seleccione un Lugar');
 }
 
 function cargarMunicipios(selectMuniId, selectLugarId, idDepartamento, valorSeleccionado = null) {
-    const munisFiltrados = listaMunicipios.filter(m => m.idDepartamentoMuni == idDepartamento);
-    rellenarSelect(selectMuniId, munisFiltrados, 'idMunicipio', 'nombreMunicipio', 'Seleccione un Municipio', valorSeleccionado);
+    const selectLugar = document.getElementById(selectLugarId);
 
-    if (valorSeleccionado) {
-        cargarLugares(selectLugarId, valorSeleccionado, valorSeleccionado);
-    } else {
-        rellenarSelect(selectLugarId, [], 'idLugar', 'nombreLugar', 'Seleccione un Lugar');
-    }
+    const municipiosFiltrados = listaMunicipios.filter(m => m.idDepartamentoMuni == idDepartamento);
+    rellenarSelect(selectMuniId, municipiosFiltrados, 'idMunicipio', 'nombreMunicipio', 'Seleccione un Municipio', valorSeleccionado);
+    rellenarSelect(selectLugarId, [], 'idLugar', 'nombreLugar', 'Seleccione un Lugar');
 }
 
 function cargarLugares(selectLugarId, idMunicipio, valorSeleccionado = null) {
@@ -167,21 +157,21 @@ function mostrarDatosEncargado(encargado) {
 
 function verificarDpiCrear() {
     const dpi = document.getElementById('dpiCrear').value.trim();
-    const mensajeDpi = document.getElementById('mensajeDpiCrear');
+    const mensajeDiv = document.getElementById('mensajeDpiCrear');
     
     if (!dpi) {
-        mensajeDpi.innerHTML = '<span class="text-danger">Por favor, ingrese el DPI.</span>';
+        mensajeDiv.innerHTML = '<span class="text-danger">Por favor, ingrese el DPI.</span>';
         return;
     }
 
     const encargadoExistente = listaEncargados.find(e => e.IdentificacionEncarga === dpi);
 
     if (encargadoExistente) {
-        mensajeDpi.innerHTML = '<span class="text-danger">❌ ¡Error! El encargado con este DPI ya existe.</span>';
+        mensajeDiv.innerHTML = '<span class="text-danger">❌ ¡Error! El encargado con este DPI ya existe.</span>';
         document.getElementById('formularioCrear').classList.add('d-none');
         document.getElementById('btnGuardarCrear').disabled = true;
     } else {
-        mensajeDpi.innerHTML = '<span class="text-success">✅ DPI no registrado. Puede proceder con la creación.</span>';
+        mensajeDiv.innerHTML = '<span class="text-success">✅ DPI no registrado. Puede proceder con la creación.</span>';
         document.getElementById('IdentificacionEncargaCrear').value = dpi; 
         document.getElementById('seccionDpiCrear').classList.add('d-none');
         document.getElementById('formularioCrear').classList.remove('d-none');
@@ -191,17 +181,17 @@ function verificarDpiCrear() {
 
 async function verificarDpiActualizar() {
     const dpi = document.getElementById('dpiActualizar').value.trim();
-    const mensajeDpi = document.getElementById('mensajeDpiActualizar');
+    const mensajeDiv = document.getElementById('mensajeDpiActualizar');
 
     if (!dpi) {
-        mensajeDpi.innerHTML = '<span class="text-danger">Por favor, ingrese el DPI.</span>';
+        mensajeDiv.innerHTML = '<span class="text-danger">Por favor, ingrese el DPI.</span>';
         return;
     }
     
     const encargadoBusqueda = listaEncargados.find(e => e.IdentificacionEncarga === dpi);
 
     if (!encargadoBusqueda) {
-        mensajeDpi.innerHTML = '<span class="text-danger">❌ ¡Error! Primero debes crear al encargado.</span>';
+        mensajeDiv.innerHTML = '<span class="text-danger">❌ ¡Error! Primero debes crear al encargado.</span>';
         document.getElementById('formularioActualizar').classList.add('d-none');
         document.getElementById('btnGuardarActualizar').disabled = true;
         return;
@@ -212,7 +202,7 @@ async function verificarDpiActualizar() {
     let encargadoCompleto = null;
 
     try {
-        mensajeDpi.innerHTML = '<span class="text-info">✅ Encargado encontrado. Obteniendo detalles completos...</span>';
+        mensajeDiv.innerHTML = '<span class="text-info">✅ Encargado encontrado. Obteniendo detalles completos...</span>';
         const response = await fetch(`${API_BASE}/encargados/${idEncargado}`);
         
         if (!response.ok) throw new Error('Error al obtener detalles del encargado.');
@@ -221,11 +211,11 @@ async function verificarDpiActualizar() {
         
     } catch (error) {
         console.error("Error al obtener detalles del encargado:", error);
-        mensajeDpi.innerHTML = '<span class="text-danger">Error al cargar datos detallados.</span>';
+        mensajeDiv.innerHTML = '<span class="text-danger">Error al cargar datos detallados.</span>';
         return;
     }
     
-    mensajeDpi.innerHTML = '<span class="text-success">✅ Detalles cargados.</span>';
+    mensajeDiv.innerHTML = '<span class="text-success">✅ Detalles cargados.</span>';
     
     // Asignar el ID al campo hidden para el PUT y el DPI
     document.getElementById('idEncargadoActualizar').value = idEncargado;
@@ -311,7 +301,6 @@ async function guardarNuevoEncargado() {
     const idMunicipioSeleccionado = parseInt(document.getElementById('idMunicipioBeneCrear').value) || null;
     const idLugarSeleccionado = parseInt(document.getElementById('idLugarEncargadoCrear').value) || null;
     
-    // Obtener la fecha y hora auto-selladas del formulario de CREACIÓN
     const fechaIngreso = document.getElementById('fechaIngresoEncargaCrear').value || "";
     const horaIngreso = document.getElementById('horaIngresoEncargaCrear').value || "";
     
@@ -330,7 +319,6 @@ async function guardarNuevoEncargado() {
         "nombre1Encargado": document.getElementById('nombre1EncargadoCrear').value,
         "apellido1Encargado": document.getElementById('apellido1EncargadoCrear').value,
         
-        // IDs DE LA CASCADA 
         "idPaisEncargado": idPaisSeleccionado,
         "idDepartamentoEncargado": idDepartamentoSeleccionado, 
         "idMuniEncarga": idMunicipioSeleccionado, 
@@ -338,11 +326,10 @@ async function guardarNuevoEncargado() {
         
         "idUsuarioIngreso": parseInt(document.getElementById('idUsuarioIngresoCrear').value),
         
-        // Otros campos (Asegurar string vacío)
         "telefonoEncargado": document.getElementById('telefonoEncargadoCrear').value || "",
         "correoEncargado": document.getElementById('correoEncargadoCrear').value || "",
-        "fechaIngresoEncarga": fechaIngreso, // Usamos el valor auto-sellado
-        "horaIngresoEncarga": horaIngreso, // Usamos el valor auto-sellado
+        "fechaIngresoEncarga": fechaIngreso,
+        "horaIngresoEncarga": horaIngreso,
 
         "nombre2Encargado": document.getElementById('nombre2EncargadoCrear').value || "",
         "nombre3Encargado": document.getElementById('nombre3EncargadoCrear').value || "",
@@ -386,7 +373,6 @@ async function actualizarEncargado() {
     const idMunicipioSeleccionado = parseInt(document.getElementById('idMunicipioBeneActualizar').value) || null;
     const idLugarSeleccionado = parseInt(document.getElementById('idLugarEncargadoActualizar').value) || null;
     
-    // Captura de FECHA/HORA AUTO-SELLADAS
     const fechaActualiza = document.getElementById('fechaActualizacionActualizar').value || "";
     const horaActualiza = document.getElementById('horaActualizacionActualizar').value || "";
 
@@ -395,7 +381,6 @@ async function actualizarEncargado() {
         
         "IdentificacionEncarga": IdentificacionEncargaActualiza,
         
-        // --- NOMBRES Y APELLIDOS (TODOS) ---
         "nombre1Encargado": document.getElementById('nombre1EncargadoActualizar').value || "", 
         "nombre2Encargado": document.getElementById('nombre2EncargadoActualizar').value || "", 
         "nombre3Encargado": document.getElementById('nombre3EncargadoActualizar').value || "", 
@@ -403,21 +388,17 @@ async function actualizarEncargado() {
         "apellido2Encargado": document.getElementById('apellido2EncargadoActualizar').value || "", 
         "apellido3Encargado": document.getElementById('apellido3EncargadoActualizar').value || "", 
 
-        // UBICACIÓN (Editable)
         "idPaisEncargado": idPaisSeleccionado,
         "idDepartamentoEncargado": idDepartamentoSeleccionado,
         "idMuniEncarga": idMunicipioSeleccionado,
         "idLugarEncargado": idLugarSeleccionado,
 
-        // Contacto y Auditoría (Editables o Solo Lectura que se envían)
         "telefonoEncargado": document.getElementById('telefonoEncargadoActualizar').value || "",
         "correoEncargado": document.getElementById('correoEncargadoActualizar').value || "",
         
-        // AUDITORÍA DE ACTUALIZACIÓN (AUTO-SELLADA)
         "fechaActualizacion": fechaActualiza, 
         "horaActualizacion": horaActualiza,
         
-        // Campos de Ingreso (Solo Lectura, pero deben enviarse para el PUT)
         "fechaIngresoEncarga": document.getElementById('fechaIngresoEncargaActualizar').value || "",
         "horaIngresoEncarga": document.getElementById('horaIngresoEncargaActualizar').value || "",
         "idUsuarioIngreso": parseInt(document.getElementById('idUsuarioIngresoActualizar').value) || null,
@@ -538,9 +519,33 @@ function generarReporteGeneralHTML(datos, tituloFiltro = "REPORTE GENERAL DE ENC
     }
 }
 
-
 function generarReporteGeneral() {
     generarReporteGeneralHTML(listaEncargados);
+}
+
+function generarReportePorDPI() {
+    const dpi = document.getElementById('dpiReporteBusqueda').value.trim();
+
+    if (!dpi) {
+        alert("Por favor, ingrese un DPI/Identificación.");
+        return;
+    }
+
+    const encargado = listaEncargados.find(e => e.IdentificacionEncarga === dpi);
+
+    if (!encargado) {
+        alert(`Error: No se encontró ningún encargado con DPI: ${dpi}.`);
+        return;
+    }
+
+    // Filtrar beneficiarios ASOCIADOS POR NOMBRE, convertido a minúsculas para mayor seguridad
+    const nombreCompletoEncargado = encargado.nombreCompleto ? encargado.nombreCompleto.toLowerCase() : '';
+
+    const beneficiariosAsociados = listaBeneficiarios.filter(b => 
+        b.nombreEncargado && b.nombreEncargado.toLowerCase() === nombreCompletoEncargado
+    );
+
+    generarReporteDetalladoHTML(encargado, beneficiariosAsociados);
 }
 
 function generarReportePorUbicacion() {
@@ -580,6 +585,100 @@ function generarReportePorUbicacion() {
 }
 
 
+function generarReporteDetalladoHTML(encargado, beneficiarios) {
+    const fechaHoy = new Date().toLocaleDateString('es-GT', { 
+        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+
+    // --- Detalles del Encargado ---
+    let encargadoDetalles = `
+        <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; background-color: #f9f9f9;">
+            <h3>Detalles del Encargado</h3>
+            <p><strong>DPI/Identificación:</strong> ${encargado.IdentificacionEncarga}</p>
+            <p><strong>Nombre Completo:</strong> ${encargado.nombreCompleto || 'N/A'}</p>
+            <p><strong>Teléfono:</strong> ${encargado.telefonoEncargado || 'N/A'}</p>
+            <p><strong>Ubicación:</strong> ${encargado.lugar} (${encargado.municipio}, ${encargado.departamento}, ${encargado.pais})</p>
+        </div>
+        <h3>Beneficiarios Asociados (${beneficiarios.length})</h3>
+    `;
+
+    // --- Tabla de Beneficiarios ---
+    let contenidoTabla = '';
+    if (beneficiarios.length > 0) {
+        beneficiarios.forEach(b => {
+            contenidoTabla += `
+                <tr>
+                    <td>${b.idBeneficiario}</td>
+                    <td>${b.nombreCompleto}</td>
+                    <td>${b.estadoBeneficiario === 'A' ? 'Activo' : 'Inactivo'}</td>
+                    <td>${b.fechaIngresoBene}</td>
+                    <td>${b.lugar}</td>
+                </tr>
+            `;
+        });
+    } else {
+        contenidoTabla = '<tr><td colspan="5" style="text-align: center;">Este encargado no tiene beneficiarios registrados.</td></tr>';
+    }
+
+
+    const htmlReporte = `
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Reporte Detalle Encargado</title>
+            <style>
+                /* Estilos para impresión (similares a los anteriores) */
+                body { font-family: Arial, sans-serif; margin: 30px; }
+                h1 { text-align: center; color: #333; margin-bottom: 5px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+                .no-print { display: none; }
+            </style>
+        </head>
+        <body>
+            <h1>REPORTE DETALLADO DE ENCARGADO</h1>
+            <div style="text-align: center; font-size: 0.9em; color: #666;">Generado el: ${fechaHoy}</div>
+            
+            ${encargadoDetalles}
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Beneficiario</th>
+                        <th>Nombre Completo</th>
+                        <th>Estado</th>
+                        <th>Fecha Ingreso</th>
+                        <th>Lugar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${contenidoTabla}
+                </tbody>
+            </table>
+
+            <div class="no-print" style="text-align:center; margin-top: 30px;">
+                <button onclick="window.print()" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Imprimir / Guardar como PDF
+                </button>
+            </div>
+            
+        </body>
+        </html>
+    `;
+
+    const ventanaImpresion = window.open('', '_blank');
+    if (ventanaImpresion) {
+        ventanaImpresion.document.write(htmlReporte);
+        ventanaImpresion.document.close();
+    } else {
+        alert("El navegador bloqueó la ventana de impresión.");
+    }
+}
+
+
 /**
  * 8. Carga del DOM y Enlace de Eventos (Punto de entrada)
  */
@@ -606,6 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const btnReporteTodos = document.getElementById('btnReporteTodos');
     const btnReporteGenerarFiltro = document.getElementById('btnReporteGenerarFiltro');
+    const btnReporteDPI = document.getElementById('btnReporteDPI'); // Nuevo botón de DPI
     const modalReportes = document.getElementById('modalReportes');
 
     const modalCrear = document.getElementById('modalCrearEncargado');
@@ -613,24 +713,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Evento de apertura modal CREAR
     modalCrear.addEventListener('show.bs.modal', () => {
-        // Primero, resetear el formulario para limpiar campos (incluyendo fechas/horas)
-        document.getElementById('formCrearEncargado').reset(); 
-
-        // AUTOSellado de fecha y hora al crear (CORREGIDO: Despues del reset)
         const { fecha, hora } = obtenerFechaHoraActual();
         document.getElementById('fechaIngresoEncargaCrear').value = fecha;
-        document.getElementById('horaIngresoEncargaCrear').value = hora.substring(0, 5); // HH:MM
+        document.getElementById('horaIngresoEncargaCrear').value = hora.substring(0, 5);
         
-        // Aplicar la clase visual de bloqueo (la funcionalidad readonly está en el HTML)
-        document.getElementById('fechaIngresoEncargaCrear').classList.add('bg-light');
-        document.getElementById('horaIngresoEncargaCrear').classList.add('bg-light');
-
-        // Lógica de UI
-        cargarPaises(selectPaisCrear.id, selectDeptoCrear.id, selectMuniCrear.id, selectLugarCrear.id);
+        cargarPaises('idPaisBeneCrear', 'idDepartamentoBeneCrear', 'idMunicipioBeneCrear', 'idLugarEncargadoCrear');
         document.getElementById('seccionDpiCrear').classList.remove('d-none');
         document.getElementById('formularioCrear').classList.add('d-none');
         document.getElementById('btnGuardarCrear').disabled = true;
         document.getElementById('mensajeDpiCrear').textContent = '';
+        document.getElementById('formCrearEncargado').reset();
     });
     
     // Evento de apertura modal ACTUALIZAR
@@ -640,10 +732,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btnGuardarActualizar').disabled = true;
         document.getElementById('mensajeDpiActualizar').textContent = '';
         document.getElementById('formActualizarEncargado').reset();
-        
-        // Limpiar el estilo de bloqueo en el campo de actualización
-        document.getElementById('fechaActualizacionActualizar').classList.remove('bg-secondary', 'text-white');
-        document.getElementById('horaActualizacionActualizar').classList.remove('bg-secondary', 'text-white');
     });
     
     // Evento de apertura modal REPORTES
@@ -694,17 +782,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // Enlace de Eventos de Botones y Formularios
-    document.getElementById('btnVerificarDpiCrear').addEventListener('click', verificarDpiCrear);
-    document.getElementById('btnVerificarDpiActualizar').addEventListener('click', verificarDpiActualizar);
-    
+    // Enlace de Eventos de Botones de Reportes
     if (btnReporteTodos) {
         btnReporteTodos.addEventListener('click', generarReporteGeneral); 
     }
     if (btnReporteGenerarFiltro) {
         btnReporteGenerarFiltro.addEventListener('click', generarReportePorUbicacion); 
     }
-
+    if (btnReporteDPI) {
+        btnReporteDPI.addEventListener('click', generarReportePorDPI); 
+    }
+    
+    // Enlace de Eventos de Botones y Formularios CRUD
+    document.getElementById('btnVerificarDpiCrear').addEventListener('click', verificarDpiCrear);
+    document.getElementById('btnVerificarDpiActualizar').addEventListener('click', verificarDpiActualizar);
+    
     document.getElementById('formCrearEncargado').addEventListener('submit', (e) => {
         e.preventDefault();
         guardarNuevoEncargado();

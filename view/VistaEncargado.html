@@ -12,7 +12,7 @@
 <body>
     
     <header class="brand-bar py-3 mb-4">
-        <div class="container d-flex justify-content-between align-items-center">
+        <div class="container d-flex align-items-center justify-content-between">
             <h1 class="h5 mb-0">Gestión de Encargados | Registro Encargado y Beneficiarios</h1>
             <span class="badge text-bg-warning text-dark">Módulos de Reportes y CRUD</span>
         </div>
@@ -53,8 +53,21 @@
                         
                         <hr>
                         
-                        <h6>Filtro de Ubicación (Reporte Detallado)</h6>
+                        <h6>Reporte Detallado por Encargado</h6>
 
+                        <div id="seccionFiltroDPI">
+                            <div class="mb-3">
+                                <label for="dpiReporteBusqueda" class="form-label">DPI/Identificación del Encargado</label>
+                                <input id="dpiReporteBusqueda" type="text" maxlength="15" class="form-control" placeholder="Ingrese el DPI del encargado" required>
+                            </div>
+                            <button type="button" class="btn btn-success w-100" id="btnReporteDPI">
+                                <i class="bi bi-person-badge-fill"></i> Generar Reporte por DPI (Imprimible)
+                            </button>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h6>Filtro de Ubicación</h6>
                         <div class="row mb-3">
                             <div class="col-md-6 mb-3">
                                 <label for="filtroPais" class="form-label">País</label>
@@ -174,11 +187,11 @@
                                 <div class="row mb-3">
                                     <div class="col-md-3">
                                         <label for="fechaIngresoEncargaCrear" class="form-label">Fecha Ingreso</label>
-                                        <input type="date" class="form-control" id="fechaIngresoEncargaCrear" readonly> 
+                                        <input type="date" class="form-control bg-light" id="fechaIngresoEncargaCrear" readonly> 
                                     </div>
                                     <div class="col-md-3">
                                         <label for="horaIngresoEncargaCrear" class="form-label">Hora Ingreso</label>
-                                        <input type="time" class="form-control" id="horaIngresoEncargaCrear" readonly>
+                                        <input type="time" class="form-control bg-light" id="horaIngresoEncargaCrear" readonly>
                                     </div>
                                     <div class="col-md-3">
                                         <label for="idUsuarioIngresoCrear" class="form-label req">ID Usuario Ingreso <span class="text-danger">*</span></label>

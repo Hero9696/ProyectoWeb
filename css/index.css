@@ -111,3 +111,33 @@ body[data-page="index"] { animation: page-in .35s ease both; }
 
 /* Opcional: centrado y respiración del héroe */
 #contenidoPrincipal .lead { max-width: 56ch; margin-inline: auto; }
+/* ---------- Componente de barra general ---------- */
+.componente-barra {
+  width: 100%;
+  height: 350px;       /* Ajusta según el tamaño real */
+  border: none;
+  display: block;
+  overflow: hidden;
+  background: transparent;
+  margin: 2rem 0;      /* Separación del bloque superior e inferior */
+  box-shadow: none;    /* Quita cualquier sombra visual */
+}
+
+/* Evita scroll interno (por seguridad visual) */
+.componente-barra::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ajuste SOLO para VistaDonaciones */
+.barra-donaciones-wrapper .componente-barra{
+  height: 322px;      /* sube a 360–380px hasta que se vea todo */
+  transform: scale(0.96);    /* quita el scale para evitar recortes */
+  display: top center;
+}
+@media (max-width: 768px){
+  .barra-donaciones-wrapper .componente-barra{
+    height: 380px;    /* en móvil suele necesitar un poco más */
+  }
+}
+
+

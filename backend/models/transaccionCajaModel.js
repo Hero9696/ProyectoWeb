@@ -78,6 +78,31 @@ class TransaccionCajaModel {
     
     // Las transacciones de caja generalmente no se actualizan ni se eliminan 
     // para mantener la integridad contable.
+
+    /**
+     * Obtiene las últimas N transacciones, mostrando los nombres de las entidades relacionadas.
+     * @param {number} limit - El número máximo de transacciones a devolver.
+     */
+    static async findLatest(limit) {
+        const query = `
+            SELECT 
+                t.idTransaccion, 
+                t.montoTrx, 
+                t.nuevoMonto, 
+                DATE_FORMAT(t.fechaIngreso, '%d/%m/%Y') as fechaIngreso, 
+                TIME_FORMAT(t.horaIngreso, '%H:%i') as horaIngreso, 
+                t.descripcionTrx,
+                tt.descripcionTrx AS tipoTransaccion,
+                u.nombreUsuario AS usuarioIngreso
+            FROM TransaccionesCaja t
+            JOIN TiposTransacciones tt ON t.idTipoTrx = tt.idTipoTrx
+            JOIN Usuarios u ON t.idUsuarioIngreso = u.idUsuario
+            ORDER BY t.fechaIngreso DESC, t.horaIngreso DESC
+            LIMIT ?
+        `;
+        const [rows] = await pool.query(query, [limit]);
+        return rows;
+    }
 }
 
 module.exports = TransaccionCajaModel;

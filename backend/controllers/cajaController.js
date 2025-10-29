@@ -126,6 +126,49 @@ class CajaController {
             }
         }
     }
+    // Las transacciones generadas por Ventas y Donaciones se manejan en sus respectivos controladores.
+
+    /**
+     * Obtiene el resumen de ingresos y egresos para el día actual.
+     * (GET /api/caja/resumen-diario)
+     */
+    static async getDailySummary(req, res) {
+        try {
+            const today = new Date().toISOString().slice(0, 10); // Formato YYYY-MM-DD
+            const query = `
+                SELECT
+                    SUM(CASE WHEN montoTrx > 0 THEN montoTrx ELSE 0 END) AS ingresosHoy,
+                    SUM(CASE WHEN montoTrx < 0 THEN montoTrx ELSE 0 END) AS egresosHoy
+                FROM TransaccionesCaja
+                WHERE fechaIngreso = ?;
+            `;
+            const [rows] = await pool.query(query, [today]);
+            const summary = rows[0];
+
+            res.status(200).json({
+                ingresosHoy: parseFloat(summary.ingresosHoy || 0),
+                egresosHoy: parseFloat(summary.egresosHoy || 0)
+            });
+        } catch (error) {
+            console.error('Error al obtener resumen diario de caja:', error.message);
+            res.status(500).json({ message: 'Error interno del servidor.' });
+        }
+    }
+
+    /**
+     * Obtiene las últimas N transacciones de caja.
+     * (GET /api/caja/ultimos-movimientos?limit=X)
+     */
+    static async getLatestTransactions(req, res) {
+        try {
+            const limit = parseInt(req.query.limit) || 5; // Por defecto 5 movimientos
+            const transacciones = await TransaccionCajaModel.findLatest(limit);
+            res.status(200).json(transacciones);
+        } catch (error) {
+            console.error('Error al obtener últimos movimientos de caja:', error.message);
+            res.status(500).json({ message: 'Error interno del servidor.' });
+        }
+    }
 }
 
 module.exports = CajaController;

@@ -71,6 +71,8 @@ const VentaController = require('../controllers/ventaController');
  *     tags: [Tesorería y Movimiento]
  */
 router.get('/caja/estado', CajaController.getCajaStatus);
+router.get('/caja/resumen-diario', CajaController.getDailySummary);
+router.get('/caja/ultimos-movimientos', CajaController.getLatestTransactions);
 router.post('/caja/movimiento', CajaController.createMovimiento);
 router.get('/transacciones-caja', TransaccionCajaController.getAllTransacciones);
 

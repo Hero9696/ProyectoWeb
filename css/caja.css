@@ -1,0 +1,19 @@
+.card-header.bg-azul {
+    background-color: var(--azul) !important;
+}
+
+.card-header.bg-naranja {
+    background-color: var(--naranja) !important;
+}
+
+.display-4 {
+    font-size: 3.5rem;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 71, 161, 0.05);
+}
+
+.fw-bold {
+    font-weight: 700 !important;
+}

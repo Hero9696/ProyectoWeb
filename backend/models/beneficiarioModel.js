@@ -11,23 +11,77 @@ class BeneficiarioModel {
     /**
      * Obtiene todos los beneficiarios con la información detallada.
      */
-    static async findAll() {
-        const query = `
+    static async findAll(filtros = {}) {
+        const { q = '', estado = '' } = filtros;
+
+        let sql = `
             SELECT 
                 b.idBeneficiario,
-                CONCAT(b.nombre1Beneficiario, ' ', b.apellido1Beneficiario) AS nombreCompleto,
-                b.estadoBeneficiario, -- Agregado para visibilidad
+                b.nombre1Beneficiario,
+                b.nombre2Beneficiario,
+                b.nombre3Beneficiario,
+                b.apellido1Beneficiario,
+                b.apellido2Beneficiario,
+                b.apellido3Beneficiario,
+                
+                -- IDs de ubicación y encargado (la vista los necesita)
+                b.idPaisBene,
+                b.idDepartamentoBene,
+                b.idMunicipioBene,
+                b.idLugarBene,
+                b.idEncargadoBene,
+
+                -- Estado e info de fechas
+                b.estadoBeneficiario,
+                b.fechaIngresoBene,
+                b.horaIngresoBene,
+                b.fechaActualizacion,
+                b.horaActualizacion,
+
+                b.idUsuarioIngreso,
+                b.idUsuarioActualiza,
+
+                -- Campos “bonitos” para mostrar
+                CONCAT(b.nombre1Beneficiario, ' ', b.nombre2Beneficiario, ' ', b.nombre3Beneficiario, ' ',
+                       b.apellido1Beneficiario, ' ', b.apellido2Beneficiario, ' ', b.apellido3Beneficiario
+                ) AS nombreCompleto,
+
                 CONCAT(e.nombre1Encargado, ' ', e.apellido1Encargado) AS nombreEncargado,
-                l.nombreLugar AS lugar,
-                b.fechaIngresoBene, 
-                u_ing.nombreUsuario AS usuarioIngreso
+                l.nombreLugar AS nombreLugar
             FROM beneficiarios b
-            JOIN Encargados e ON b.idEncargadoBene = e.idEncargado -- Corregido FK
-            JOIN Lugares l ON b.idLugarBene = l.idLugar -- Corregido FK
-            JOIN Usuarios u_ing ON b.idUsuarioIngreso = u_ing.idUsuario
-            ORDER BY b.apellido1Beneficiario
+            JOIN Encargados  e ON b.idEncargadoBene  = e.idEncargado
+            JOIN Lugares     l ON b.idLugarBene      = l.idLugar
+            -- si quisieras más adelante puedes hacer JOIN a País, Depto, Muni también aquí
+            WHERE 1 = 1
         `;
-        const [rows] = await pool.query(query);
+
+        const params = [];
+
+        // 🔍 Filtro por nombre / apellido (q)
+        if (q) {
+            sql += `
+              AND (
+                    b.nombre1Beneficiario    LIKE ?
+                OR  b.nombre2Beneficiario    LIKE ?
+                OR  b.nombre3Beneficiario    LIKE ?
+                OR  b.apellido1Beneficiario  LIKE ?
+                OR  b.apellido2Beneficiario  LIKE ?
+                OR  b.apellido3Beneficiario  LIKE ?
+              )
+            `;
+            const like = `%${q}%`;
+            params.push(like, like, like, like, like, like);
+        }
+
+        // 🔍 Filtro por estado (A / I)
+        if (estado === 'A' || estado === 'I') {
+            sql += ` AND b.estadoBeneficiario = ? `;
+            params.push(estado);
+        }
+
+        sql += ' ORDER BY b.apellido1Beneficiario, b.nombre1Beneficiario';
+
+        const [rows] = await pool.query(sql, params);
         return rows;
     }
 
@@ -41,7 +95,7 @@ class BeneficiarioModel {
                 p.nombrePais,
                 d.nombreDepartamento,
                 m.nombreMunicipio,
-                l.nombreLugar,
+                l.nombreLugar as nombreLugar,
                 CONCAT(e.nombre1Encargado, ' ', e.apellido1Encargado) AS nombreEncargado,
                 u_ing.nombreUsuario AS usuarioIngreso,
                 u_act.nombreUsuario AS usuarioActualiza

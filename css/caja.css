@@ -1,0 +1,49 @@
+/* Vista plana para Caja */
+body[data-page="caja"] main.container {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 1.5rem 0 2.5rem;
+}
+
+body[data-page="caja"] .card {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #e5e7eb;
+}
+
+/* Footer plano y centrado */
+body[data-page="caja"] footer,
+body[data-page="caja"] .footer {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body[data-page="caja"] footer .container,
+body[data-page="caja"] .footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+}
+/* ===== Tarjetas amarillas en Caja ===== */
+.card-yellow {
+    background: #fff8d5;     /* amarillo suave */
+    border: 1px solid #f2d98a;
+}
+
+.card-yellow .card-header {
+    background: #FFC107 !important; /* amarillo fuerte */
+    color: #000 !important;
+}
+
+.card-yellow h2,
+.card-yellow h3,
+.card-yellow p {
+    color: #000 !important;
+}

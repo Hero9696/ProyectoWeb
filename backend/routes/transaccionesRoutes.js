@@ -8,6 +8,8 @@ const TransaccionCajaController = require('../controllers/transaccionCajaControl
 const DonacionController = require('../controllers/donacionController');
 const InventarioController = require('../controllers/inventarioController');
 const VentaController = require('../controllers/ventaController');
+const InventarioGeneralController = require('../controllers/InventarioGeneralController');
+
 
 /**
  * @swaggerc
@@ -73,6 +75,28 @@ const VentaController = require('../controllers/ventaController');
 router.get('/caja/estado', CajaController.getCajaStatus);
 router.post('/caja/movimiento', CajaController.createMovimiento);
 router.get('/transacciones-caja', TransaccionCajaController.getAllTransacciones);
+/**
+ * @swagger
+ * /caja/resumen-diario:
+ *   get:
+ *     summary: Obtiene un resumen de ingresos y egresos del día actual.
+ *     tags: [Tesorería y Movimiento]
+ */
+
+/**
+ * @swagger
+ * /caja/ultimos-movimientos:
+ *   get:
+ *     summary: Obtiene los últimos movimientos de caja (por defecto 5).
+ *     tags: [Tesorería y Movimiento]
+ */
+
+// Resumen diario de caja
+router.get('/caja/resumen-diario', CajaController.getResumenDiario);
+
+// Últimos movimientos de caja (los que usa la vista)
+router.get('/caja/ultimos-movimientos', CajaController.getUltimosMovimientos);
+
 
 // =========================================================================
 // RUTAS: DONACIONES
@@ -141,6 +165,9 @@ router.delete('/donaciones/:id', DonacionController.deleteDonacion);
 router.get('/inventario', InventarioController.getAllInventario);
 router.get('/inventario/beneficiario/:id', InventarioController.getInventarioByBeneficiarioId);
 router.post('/inventario', InventarioController.createInventario);
+
+router.get('/inventario-general', InventarioGeneralController.getAllInventarioGeneral);
+router.post('/inventario/entregar', InventarioController.entregarPollitos);
 
 // =========================================================================
 // RUTAS: VENTAS

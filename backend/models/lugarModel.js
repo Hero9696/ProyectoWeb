@@ -11,25 +11,67 @@ class LugarModel {
     /**
      * Obtiene todos los lugares con la jerarquía completa.
      */
-    static async findAll() {
-        const query = `
-            SELECT 
-                l.idLugar, 
-                l.nombreLugar,
-                l.idPaisLugar, 
-                p.nombrePais,
-                l.idDepartamentoLugar, 
-                d.nombreDepartamento,
-                l.idMunicipioLugar, 
-                m.nombreMunicipio
-            FROM Lugares l
-            JOIN Paises p ON l.idPaisLugar = p.idPais
-            JOIN Departamentos d ON l.idDepartamentoLugar = d.idDepartamento
-            JOIN Municipios m ON l.idMunicipioLugar = m.idMunicipio
-        `;
-        const [rows] = await pool.query(query);
-        return rows;
+static async findAll(filtros = {}) {
+    const { idPais, idDepartamento, idMunicipio } = filtros;
+
+    let sql = `
+      SELECT 
+        l.idLugar,
+        l.nombreLugar,
+        l.idPaisLugar,
+        l.idDepartamentoLugar,
+        l.idMunicipioLugar,
+        p.nombrePais,
+        d.nombreDepartamento,
+        m.nombreMunicipio
+      FROM Lugares l
+      INNER JOIN Paises p
+        ON l.idPaisLugar = p.idPais
+      INNER JOIN Departamentos d
+        ON l.idDepartamentoLugar = d.idDepartamento
+      INNER JOIN Municipios m
+        ON l.idMunicipioLugar = m.idMunicipio
+    `;
+
+    const where  = [];
+    const params = [];
+
+    if (idPais) {
+      where.push('l.idPaisLugar = ?');
+      params.push(Number(idPais));
     }
+
+    if (idDepartamento) {
+      where.push('l.idDepartamentoLugar = ?');
+      params.push(Number(idDepartamento));
+    }
+
+    if (idMunicipio) {
+      where.push('l.idMunicipioLugar = ?');
+      params.push(Number(idMunicipio));
+    }
+
+    if (where.length) {
+      sql += ' WHERE ' + where.join(' AND ');
+    }
+
+    sql += `
+      ORDER BY p.nombrePais,
+               d.nombreDepartamento,
+               m.nombreMunicipio,
+               l.nombreLugar
+    `;
+
+    try {
+      const [rows] = await pool.query(sql, params);
+      return rows;
+    } catch (err) {
+      console.error('[LugaresModel.findAll] ERROR:', err);
+      throw err; // se va al catch del controller
+    }
+  }
+
+
 
     /**
      * Obtiene un lugar por su ID.

@@ -6,14 +6,12 @@
   <title>Ingreso de Donantes | Operación Pollito</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="../css/navbar.css">
 </head>
-<body>
+<!-- NOTA: data-page="donantes" para que el CSS plano aplique solo aquí -->
+<body data-page="donantes">
   <!-- Header -->
-  <header class="brand-bar py-3 mb-4">
-    <div class="container d-flex align-items-center justify-content-between">
-      <h1 class="h4 mb-0">Operación Pollito • Ingreso de Donantes</h1>
-    </div>
-  </header>
+  <header data-include="/view/partials/navbar.html"></header>
 
   <main class="container mb-5">
     <!-- Stepper -->
@@ -94,38 +92,8 @@
                   <select name="idMunicipioDona" class="form-select" required disabled></select>
                 </div>
 
-                <!-- Usuario -->
-                <div class="col-md-3">
-                  <label class="form-label req">Usuario donante (ID)</label>
-                  <input type="number" name="idUsuarioDonante" class="form-control" required min="1">
-                </div>
-
-                <!-- Timestamps -->
-                <div class="col-md-3">
-                  <label class="form-label req">Fecha ingreso</label>
-                  <input type="date" name="fechaIngresoDona" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Hora ingreso</label>
-                  <input type="time" name="horaIngresoDona" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Usuario ingreso (ID)</label>
-                  <input type="number" name="idUsuarioIngreso" class="form-control" required min="1">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label req">Fecha actualización</label>
-                  <input type="date" name="fechaActualizacion" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Hora actualización</label>
-                  <input type="time" name="horaActualizacion" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Usuario actualiza (ID)</label>
-                  <input type="number" name="idUsuarioActualiza" class="form-control" required min="1">
-                </div>
+                <!-- 🔒 Ya NO se muestran campos de usuario/fechas -->
+                <!-- Todo se llenará en el backend vía JS con el usuario logueado y la fecha/hora actual -->
               </div>
 
               <div class="d-flex justify-content-between mt-4">
@@ -157,33 +125,7 @@
                   <input type="number" name="montoDonado" class="form-control" required min="0.01" step="0.01" placeholder="0.00">
                 </div>
 
-                <!-- Timestamps -->
-                <div class="col-md-3">
-                  <label class="form-label req">Fecha ingreso</label>
-                  <input type="date" name="fechaIngreso" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Hora ingreso</label>
-                  <input type="time" name="horaIngreso" class="form-control" required>
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label req">Usuario ingreso (ID)</label>
-                  <input type="number" name="idUsuarioIngreso" class="form-control" required min="1">
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label req">Fecha actualización</label>
-                  <input type="date" name="fechaActualizacion" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Hora actualización</label>
-                  <input type="time" name="horaActualizacion" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label req">Usuario actualiza (ID)</label>
-                  <input type="number" name="IdUsuarioActualizacion" class="form-control" required min="1">
-                </div>
+                <!-- 🔒 Sin campos de auditoría visibles, todo lo llena JS -->
               </div>
 
               <div class="d-flex justify-content-between mt-4">
@@ -207,8 +149,14 @@
       </button>
     </div>
   </main>
+  <div data-include="/view/partials/footer.html"></div>
+
+  <script src="/js/include.js"></script>
+  <!-- Asegúrate de cargar auth.js para tener PollitoAuth -->
+  <script src="../js/auth.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../js/Donantes.js"></script>
+    <script src="../js/Donantes.js"></script>
+  <script src="../js/CargaUsuarios.js"></script>
 </body>
 </html>

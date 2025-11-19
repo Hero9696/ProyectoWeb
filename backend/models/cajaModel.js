@@ -43,20 +43,45 @@ class CajaModel {
      * @param {number} montoTotal - El nuevo monto total de la caja.
      * @returns {Promise<number>} El número de filas afectadas.
      */
-    static async updateMonto(idCaja, montoTotal, idUsuarioActualiza) {
+    static async grabaTransaccionCaja(idTipoTrx, montoTrx, nuevoMonto, idUsuarioIngresa) {
         const [result] = await pool.query(
-            `INSERT INTO Caja (idCaja, montoTotal, fechaActualizacion, horaActualizacion, idUsuarioActualiza) 
-             VALUES (?, ?, CURDATE(), CURTIME(), ?)
-             ON DUPLICATE KEY UPDATE 
-                montoTotal = VALUES(montoTotal),
-                fechaActualizacion = CURDATE(),
-                horaActualizacion = CURTIME(),
-                idUsuarioActualiza = VALUES(idUsuarioActualiza)`,
+            `INSERT INTO TransaccionesCaja(idTipoTrx, montoTrx, nuevoMonto, fechaIngreso, horaIngreso, idUsuarioIngreso)
+             VALUES (?, ?, ?, ?, ?, ?)
+                idTipoTrx = idTipoTrx,
+                montoTrx = montoTrx,
+                nuevoMonto = montoTotal + montoTrx
+                fechaIngreso = CURDATE(),
+                horaIngreso = CURTIME(),
+                idUsuarioIngresa = VALUES(idUsuarioActualiza)`,
             [idCaja, montoTotal, idUsuarioActualiza]
         );
         // affectedRows será 1 para INSERT, 2 para UPDATE.
         return result.affectedRows; 
     }
+
+    /**
+     * Inicializa o actualiza el registro de la caja.
+     * NOTA: Este método está diseñado para ser llamado fuera de la transacción principal.
+     * La lógica principal de UPDATE dentro de la transacción se realiza con un connection.query() directo en el Controller.
+     * * @param {number} idUsuarioActualiza - ID del usuario que realiza la operación.
+     * @param {number} montoTotal - El nuevo monto total de la caja.
+     * @returns {Promise<number>} El número de filas afectadas.
+     */
+    static async updateMonto(idCaja, montoTotal, montoTrx, idUsuarioActualiza) {
+        const [result] = await pool.query(
+            `UPDATE Caja SET
+                montoTotal = VALUES(montoTotal+montoTrx),
+                fechaActualizacion = CURDATE(),
+                horaActualizacion = CURTIME(),
+                idUsuarioActualiza = VALUES(idUsuarioActualiza)
+            Where idCaja = idCaja`,
+            [idCaja, montoTotal, idUsuarioActualiza] 
+        );
+        // affectedRows será 1 para INSERT, 2 para UPDATE.
+        return result.affectedRows; 
+    }
+
+    
 }
 
 module.exports = CajaModel;

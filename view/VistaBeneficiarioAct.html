@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Actualizar Beneficiario | Operación Pollito</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  />
+  <link rel="stylesheet" href="../css/index.css" />
+  <link rel="stylesheet" href="../css/navbar.css" />
+</head>
+<body class="page-editar-beneficiario">
+  <!-- NAVBAR unificada -->
+  <header data-include="/view/partials/navbar.html"></header>
+
+  <main class="container mb-5">
+    <!-- Encabezado / pasos -->
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <div class="step-badge">1</div>
+      <div>
+        <strong>Buscar Beneficiario</strong>
+        <span class="text-muted d-none d-md-inline">
+          • Ingrese el ID del beneficiario a actualizar
+        </span>
+      </div>
+      <div class="flex-grow-1 border-top mx-3" style="opacity:.3"></div>
+      <div id="badgePaso2" class="step-badge disabled">2</div>
+      <div>
+        <strong>Editar Datos</strong>
+        <span class="text-muted d-none d-md-inline">
+          • Modifique la información necesaria
+        </span>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <!-- Paso 1: búsqueda por ID -->
+        <div class="mb-4 p-3 border rounded">
+          <div class="form-section-title mb-3">
+            Paso 1: Identificar Beneficiario
+          </div>
+
+          <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+              <label class="form-label req">ID Beneficiario</label>
+              <input
+                type="number"
+                id="buscarIdBeneficiario"
+                class="form-control"
+                min="1"
+                placeholder="Ej. 5"
+                required
+              />
+            </div>
+            <div class="col-md-3">
+              <button
+                class="btn btn-azul w-100"
+                type="button"
+                id="btnBuscarBeneficiario"
+              >
+                <i class="bi bi-search"></i> Buscar
+              </button>
+            </div>
+          </div>
+
+          <p id="msgBusquedaBene" class="mt-3 fw-bold"></p>
+        </div>
+
+        <!-- Paso 2: formulario de edición (se muestra cuando se encuentre el bene) -->
+        <div id="seccionEdicionBene" class="d-none">
+          <div class="form-section-title">Datos del Beneficiario</div>
+
+          <form id="formActualizarBene" novalidate>
+            <!-- ID beneficiario (solo lectura) -->
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label">ID Beneficiario</label>
+                <input
+                  type="number"
+                  id="idBeneficiario"
+                  name="idBeneficiario"
+                  class="form-control bg-light"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <div class="row g-3 mt-1">
+              <!-- Nombres -->
+              <div class="col-md-4">
+                <label class="form-label req">Primer nombre</label>
+                <input
+                  name="nombre1Beneficiario"
+                  id="nombre1Beneficiario"
+                  maxlength="15"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Segundo nombre</label>
+                <input
+                  name="nombre2Beneficiario"
+                  id="nombre2Beneficiario"
+                  maxlength="15"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Tercer nombre</label>
+                <input
+                  name="nombre3Beneficiario"
+                  id="nombre3Beneficiario"
+                  maxlength="15"
+                  class="form-control"
+                />
+              </div>
+
+              <!-- Apellidos -->
+              <div class="col-md-4">
+                <label class="form-label req">Primer apellido</label>
+                <input
+                  name="apellido1Beneficiario"
+                  id="apellido1Beneficiario"
+                  maxlength="15"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Segundo apellido</label>
+                <input
+                  name="apellido2Beneficiario"
+                  id="apellido2Beneficiario"
+                  maxlength="15"
+                  class="form-control"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Tercer apellido</label>
+                <input
+                  name="apellido3Beneficiario"
+                  id="apellido3Beneficiario"
+                  maxlength="15"
+                  class="form-control"
+                />
+              </div>
+
+              <!-- Geografía -->
+              <div class="col-md-3">
+                <label class="form-label req">País</label>
+                <select
+                  name="idPaisBene"
+                  id="idPaisBene"
+                  class="form-select"
+                  required
+                ></select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label req">Departamento</label>
+                <select
+                  name="idDepartamentoBene"
+                  id="idDepartamentoBene"
+                  class="form-select"
+                  required
+                  disabled
+                ></select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label req">Municipio</label>
+                <select
+                  name="idMunicipioBene"
+                  id="idMunicipioBene"
+                  class="form-select"
+                  required
+                  disabled
+                ></select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label req">Lugar</label>
+                <select
+                  name="idLugarBene"
+                  id="idLugarBene"
+                  class="form-select"
+                  required
+                  disabled
+                ></select>
+              </div>
+
+              <!-- Encargado (solo info, si quieres editable lo cambias) -->
+              <div class="col-md-4">
+                <label class="form-label">ID Encargado</label>
+                <input
+                  type="number"
+                  name="idEncargadoBene"
+                  id="idEncargadoBene"
+                  class="form-control"
+                  min="1"
+                />
+              </div>
+
+              <!-- Estado -->
+              <div class="col-md-3">
+                <label class="form-label req">Estado</label>
+                <select
+                  name="estadoBeneficiario"
+                  id="estadoBeneficiario"
+                  class="form-select"
+                  required
+                >
+                  <option value="">Seleccione…</option>
+                  <option value="A">Activo</option>
+                  <option value="I">Inactivo</option>
+                </select>
+              </div>
+
+              <!-- Información de ingreso: solo lectura -->
+              <input type="hidden" id="fechaIngresoBene">
+<input type="hidden" id="horaIngresoBene">
+<input type="hidden" id="idUsuarioIngreso">
+
+<input type="hidden" id="fechaActualizacion">
+<input type="hidden" id="horaActualizacion">
+<input type="hidden" id="idUsuarioActualiza">
+
+
+              <!-- Botones -->
+              <div class="col-12 d-flex justify-content-end mt-4 gap-2">
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  id="btnCancelarEdicion"
+                >
+                  Cancelar
+                </button>
+                <button
+                  class="btn btn-naranja"
+                  type="submit"
+                  id="btnGuardarCambios"
+                >
+                  <i class="bi bi-save"></i> Guardar cambios
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div data-include="/view/partials/footer.html"></div>
+
+  <script src="/js/include.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- JS que haría la búsqueda y el PUT/UPDATE al backend -->
+   <script src="/js/auth.js"></script>
+     <script src="../js/CargaUsuarios.js"></script>
+  <script src="../js/BeneficiariosAct.js"></script>
+
+
+</body>
+</html>

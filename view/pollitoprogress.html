@@ -6,40 +6,12 @@
     <title>Pollitos • Compras</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/pollitoprogress.css">
-</head>
-<body>
-    <!-- Barra superior roja -->
-    <div class="top-bar">
-        <div class="container-fluid">
-            <span class="text-white">🌐 Pollitos • Compras</span>
-        </div>
-    </div>
+        <link rel="stylesheet" href="../css/navbar.css">
 
+</head>
+<body data-page="compras-campana">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Operación Pollito</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Ingreso de Beneficiarios</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Encargado y Beneficiarios</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Compras de Pollitos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Crear Usuarios</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <header data-include="/view/partials/navbar.html"></header>
 
     <!-- Contenido Principal -->
     <div class="main-container">
@@ -47,7 +19,7 @@
         <div class="main-progress-section">
             <div class="text-center mb-4">
                 <h1 class="main-progress-title">
-                    <span class="title-icon">🎯</span> Campaña de Donaciones
+                    <span class="title-icon"></span> Campaña de Donaciones
                 </h1>
                 <p class="main-progress-subtitle">Meta: <strong>Q<span id="goalAmount">0</span></strong></p>
             </div>
@@ -81,9 +53,6 @@
                     <h2 class="section-title-pro">
                         <span class="title-icon-pro">🏆</span> Top Donadores
                     </h2>
-                    <button class="btn-action btn-export">
-                        <span class="btn-icon-action">📊</span> Exportar Reporte
-                    </button>
                 </div>
             </div>
             
@@ -146,18 +115,6 @@
             </div>
         </div>
 
-        <!-- Controles de acción -->
-        <div class="action-controls">
-            <button class="btn-action btn-primary-action">
-                <span class="btn-icon-action">➕</span> Nueva Donación
-            </button>
-            <button class="btn-action btn-secondary-action">
-                <span class="btn-icon-action">🔄</span> Actualizar Datos
-            </button>
-            <button class="btn-action btn-warning-action">
-                <span class="btn-icon-action">⚙️</span> Configuración
-            </button>
-        </div>
 
         <!-- Tabla de Transacciones -->
         <div class="transactions-section">
@@ -165,12 +122,6 @@
                 <div class="d-flex align-items-center justify-content-between flex-wrap">
                     <h3 class="table-title">📋 Historial de Transacciones</h3>
                     <div class="table-controls">
-                        <button class="btn-table-control">
-                            <span>🔍</span> Buscar
-                        </button>
-                        <button class="btn-table-control">
-                            <span>📄</span> Imprimir
-                        </button>
                     </div>
                 </div>
             </div>
@@ -200,7 +151,12 @@
             </div>
         </div>
     </div>
+    <div data-include="/view/partials/footer.html"></div>
 
+    <script src="/js/include.js"></script>
+      <script src="../js/auth.js"></script>
+    <script src="../js/pollitoprogress.js"></script>
+      <script src="../js/CargaUsuarios.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

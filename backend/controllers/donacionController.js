@@ -3,13 +3,13 @@ const DonacionModel = require('../models/donacionModel');
 
 class DonacionController {
   // GET /api/donaciones
-  static async getAllDonaciones(_req, res) {
+  static async getAllDonaciones(req, res) {
     try {
-      const rows = await DonacionModel.findAll();
-      res.json(rows);
+      const donaciones = await DonacionModel.findAll();
+      res.status(200).json(donaciones);
     } catch (e) {
-      console.error('Error al obtener donaciones:', e);
-      res.status(500).json({ message: 'Error interno del servidor.', debug: e.message || e });
+      console.error('Error al obtener donaciones:', e.message);
+      res.status(500).json({ message: 'Error interno del servidor.' });
     }
   }
 

@@ -801,3 +801,20 @@ body {
         border: 1px solid #000;
     }
 }   
+/* === Vista plana para Campaña de Donaciones / Compras === */
+body[data-page="compras-campana"] {
+    background: #ffffff !important;   /* fondo blanco liso */
+}
+
+/* Footer centrado, sin tarjeta ni sombra en esta vista */
+body[data-page="compras-campana"] footer,
+body[data-page="compras-campana"] .footer,
+body[data-page="compras-campana"] footer .container,
+body[data-page="compras-campana"] .footer .container {
+    background: #ffffff !important;
+    text-align: center;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}

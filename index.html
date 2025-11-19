@@ -8,52 +8,40 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/pollitos.css">
   <link rel="stylesheet" href="css/index.css">
-
+  <link rel="stylesheet" href="css/navbar.css">
 </head>
 <body data-page="index">
   <!-- Barra de Navegación Unificada -->
-  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#0D47A1;">
-    <div class="container">
-
-      <a class="navbar-brand fw-bold brand-highlight" href="index.html">Operación Pollito</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="mainNav">
-        <div class="navbar-nav me-auto">
-          <!-- Enlaces directos a las vistas -->
-          <a class="nav-link" href="view/VistaBeneficiarios.html">Ingreso de Beneficiarios</a>
-          <a class="nav-link" href="view/VistaEncargado.html">Encargado y Beneficiarios</a>
-          <a class="nav-link" href="view/VistaDonaciones.html">Ingreso de Donaciones</a>
-          <a class="nav-link" href="view/compras.html">Compras de Pollitos</a>
-          <a class="nav-link" href="view/usuarios.html">Crear Usuarios</a>
-        </div>
-        <!-- El widget de autenticación se inyectará aquí por JS -->
-      </div>
-
-    </div>
-  </nav>
+  <header data-include="/view/partials/navbar.html"></header>
 
   <!-- Contenido Principal -->
   <main class="container my-5">
     <div class="text-center py-5">
       <h1 class="display-4 mb-3">Bienvenido al Sistema</h1>
-      <p class="lead">Selecciona una vista en la barra de navegación para comenzar.</p>
+      <p class="lead">Selecciona una opción en la barra de navegación para comenzar.</p>
     </div>
   </main>
 
   <!-- Pie de Página -->
-  <footer class="text-center text-muted py-4 mt-auto">
-    <small>&copy; 2024 Operación Pollito. Todos los derechos reservados.</small>
-  </footer>
+  <div data-include="/view/partials/footer.html"></div>
 
-  <!-- Scripts de Bootstrap y la aplicación -->
+  <!-- ==== SCRIPTS (SIEMPRE AL FINAL DEL BODY) ==== -->
+  <script src="/js/include.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/auth.js"></script>
+
+  <!-- Autenticación -->
+  <script src="/js/auth.js"></script>
   <script>
-    // Inicializa los componentes de UI relacionados con la autenticación
+    // Espera a que el DOM e includes estén listos y aplica el estado de sesión al navbar
     document.addEventListener('DOMContentLoaded', () => {
-      window.PollitoAuth.bindUI({ injectIfMissing: true });
+      const applyAuth = () => {
+        if (window.PollitoAuth) {
+          window.PollitoAuth.bindUI({ injectIfMissing: true });
+        }
+      };
+
+      applyAuth();          // primera vez
+      setTimeout(applyAuth, 300); // por si include.js terminó un poco después
     });
   </script>
 </body>

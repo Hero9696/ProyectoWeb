@@ -111,3 +111,325 @@ body[data-page="index"] { animation: page-in .35s ease both; }
 
 /* Opcional: centrado y respiración del héroe */
 #contenidoPrincipal .lead { max-width: 56ch; margin-inline: auto; }
+
+/* Fondo amarillo para encabezado */
+.card-header.bg-azul {
+  background-color: #FFC107 !important;
+  color: #212529 !important; /* texto oscuro para mejor contraste */
+  border-bottom-color: rgba(0,0,0,.1) !important;
+}
+
+/* Si prefieres usar directamente bg-amarillo */
+.bg-azul {
+  background-color: #FFC107 !important;
+  color: #212529 !important;
+}
+
+/* ==== Quitar globos blancos / hacer todo plano ==== */
+
+/* Contenedor principal blanco */
+main .container,
+main,
+.container.my-5,
+.py-5,
+.mb-5,
+.mt-5 {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Tarjetas */
+.card,
+.card-header,
+.card-body,
+.card-footer {
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+/* Footer plano */
+[data-include*="footer"],
+footer {
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+/* Quitar sombras globales */
+* {
+  box-shadow: none !important;
+}
+/* ==== FOOTER PLANO, CENTRADO Y PEGADO ABAJO ==== */
+
+footer,
+[data-include*="footer"] {
+  width: 100%;
+  text-align: center;
+  padding: 1rem 0;
+  margin-top: 2rem;
+  color: #333;
+  font-size: 0.95rem;
+
+  /* quitar globos y sombras */
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+/* Forzar que el footer baje */
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* ========= VISTA BENEFICIARIOS PLANA (solo esta página) ========= */
+
+body.page-beneficiarios {
+  background: #ffffff;          /* todo blanco detrás */
+}
+
+/* Main de beneficiarios plano, sin tarjeta */
+body.page-beneficiarios main.container {
+  max-width: 100%;              /* que ocupe todo el ancho */
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Quitar forma de tarjeta a todo lo interno */
+body.page-beneficiarios .tab-content,
+body.page-beneficiarios .tab-content .card,
+body.page-beneficiarios .tab-content .card-body,
+body.page-beneficiarios #seccionValidacionEncargado,
+body.page-beneficiarios #seccionDatosBeneficiario {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Footer plano en esta página */
+body.page-beneficiarios footer,
+body.page-beneficiarios [data-include*="footer"],
+body.page-beneficiarios .pp-footer,
+body.page-beneficiarios .pp-footer-inner {
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  width: 100%;
+  text-align: center;
+  padding: 1rem 0;
+  margin-top: 2rem;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* Mantener footer abajo en esta página */
+body.page-beneficiarios {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body.page-beneficiarios main {
+  flex: 1;
+}
+
+/* Vista de edición PLANA */
+body.page-editar-beneficiario {
+  background: #ffffff !important;
+}
+
+body.page-editar-beneficiario main,
+body.page-editar-beneficiario main.container {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  max-width: 100%;
+}
+
+body.page-editar-beneficiario .card,
+body.page-editar-beneficiario .card-body,
+body.page-editar-beneficiario .card-header {
+  border: none !important;
+  box-shadow: none !important;
+  background: #ffffff !important;
+}
+
+body.page-editar-beneficiario .border,
+body.page-editar-beneficiario .rounded {
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+body.page-editar-beneficiario footer {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+/* ===== VISTA INVENTARIO PLANA ===== */
+
+body[data-page="inventario"] {
+  background: #ffffff !important;            /* quita el gris del fondo */
+}
+
+/* El main ocupa todo el ancho y sin “tarjeta” */
+body[data-page="inventario"] main.container {
+  max-width: 100% !important;
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Filtros y tabla sin tarjetas flotantes */
+body[data-page="inventario"] .card,
+body[data-page="inventario"] .card-header,
+body[data-page="inventario"] .card-body {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Quitar bordes redondeados extras */
+body[data-page="inventario"] .rounded,
+body[data-page="inventario"] .shadow-sm {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Footer plano también aquí */
+body[data-page="inventario"] footer,
+body[data-page="inventario"] [data-include*="footer"] {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== VISTA CONSULTA DE BENEFICIARIOS PLANA ===== */
+
+/* Fondo blanco, sin gris detrás */
+body[data-page="bene-consulta"] {
+  background: #ffffff !important;
+}
+
+/* Main a todo el ancho, sin “tarjeta” */
+body[data-page="bene-consulta"] main.container {
+  max-width: 100% !important;
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Quitar efecto de tarjeta a filtros y tabla */
+body[data-page="bene-consulta"] .card,
+body[data-page="bene-consulta"] .card-header,
+body[data-page="bene-consulta"] .card-body,
+body[data-page="bene-consulta"] .shadow-sm {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Opcional: fondo blanco detrás de la tabla para que no cambie nada visual */
+body[data-page="bene-consulta"] .table-responsive {
+  background: #ffffff !important;
+  border: none !important;
+}
+
+/* Footer plano también aquí */
+body[data-page="bene-consulta"] footer,
+body[data-page="bene-consulta"] [data-include*="footer"] {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== VISTA VENTAS PLANA ===== */
+
+body[data-page="ventas"] {
+  background: #ffffff !important;            /* quita el gris del fondo */
+}
+
+body[data-page="ventas"] main.container {
+  max-width: 100% !important;
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Quitar efecto de tarjeta (igual que inventario/consulta) */
+body[data-page="ventas"] .card,
+body[data-page="ventas"] .card-header,
+body[data-page="ventas"] .card-body {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+body[data-page="ventas"] .shadow-sm,
+body[data-page="ventas"] .rounded {
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Footer plano también aquí */
+body[data-page="ventas"] footer,
+body[data-page="ventas"] [data-include*="footer"] {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+/* ===== VISTA DONANTES PLANA ===== */
+
+body[data-page="donantes"] {
+  background: #ffffff !important;            /* fondo blanco */
+}
+
+body[data-page="donantes"] main.container {
+  max-width: 100% !important;                /* usar todo el ancho */
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Tarjetas y contenido sin "globos" ni sombras */
+body[data-page="donantes"] .card,
+body[data-page="donantes"] .card-header,
+body[data-page="donantes"] .card-body,
+body[data-page="donantes"] .shadow-sm {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Footer plano también aquí */
+body[data-page="donantes"] footer,
+body[data-page="donantes"] [data-include*="footer"] {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}

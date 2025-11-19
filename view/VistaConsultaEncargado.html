@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Encargados • Listado | Pollito</title>
+
+  <!-- Bootstrap / Icons -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  />
+
+  <!-- Tus estilos -->
+  <link rel="stylesheet" href="../css/index.css" />
+  <link rel="stylesheet" href="../css/navbar.css" />
+</head>
+<body data-page="encargados-lista">
+  <!-- Navbar unificada -->
+  <header data-include="/view/partials/navbar.html"></header>
+
+  <main class="container py-4">
+    <!-- Título / descripción -->
+    <div class="mb-4">
+      <h2 class="fw-bold text-primary">
+        <i class="bi bi-people-fill me-2"></i> Listado de Encargados
+      </h2>
+    </div>
+
+    <!-- Filtro simple -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <form class="row g-3 align-items-end">
+          <div class="col-sm-6 col-md-4">
+            <label for="filtroTextoEncargados" class="form-label">
+              Buscar por DPI o nombre
+            </label>
+            <input
+              type="text"
+              id="filtroTextoEncargados"
+              class="form-control"
+              placeholder="Ej. 1234 o Juan Pérez"
+            />
+          </div>
+          <div class="col-sm-4 col-md-3">
+            <label for="filtroPaisEncargados" class="form-label">
+              País
+            </label>
+            <select id="filtroPaisEncargados" class="form-select">
+              <option value="">Todos</option>
+            </select>
+          </div>
+          <div class="col-auto mt-3">
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tabla de encargados -->
+<div class="card shadow-sm">
+  <div class="card-header bg-primary text-white">
+    <i class="bi bi-list-ul me-2"></i> Encargados registrados
+  </div>
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle" id="tablaEncargados">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>DPI</th>
+          <th>Nombre completo</th>
+          <th>Teléfono</th>
+          <th>Correo</th>
+          <th>País</th>
+          <th>Lugar</th>
+          <th class="text-end">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="text-muted text-center">
+          <td colspan="8">
+            <i class="bi bi-hourglass-split me-2"></i>
+            Cargando encargados...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  </main>
+  <!-- Modal Detalle Encargado -->
+<!-- Modal Detalle Encargado -->
+<div class="modal fade" id="modalDetalleEncargado" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-person-vcard me-2"></i> Detalle del Encargado
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Identificación -->
+        <h6 class="mb-2">Identificación</h6>
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            <label class="form-label">ID Encargado</label>
+            <input id="detIdEncargado" class="form-control" readonly>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label">DPI / Identificación</label>
+            <input id="detDpi" class="form-control" readonly>
+          </div>
+        </div>
+
+        <!-- Nombres y apellidos -->
+        <h6 class="mb-2">Nombres y Apellidos</h6>
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Primer Nombre</label>
+            <input id="detNombre1" class="form-control" readonly>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Segundo Nombre</label>
+            <input id="detNombre2" class="form-control" readonly>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Tercer Nombre</label>
+            <input id="detNombre3" class="form-control" readonly>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Primer Apellido</label>
+            <input id="detApellido1" class="form-control" readonly>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Segundo Apellido</label>
+            <input id="detApellido2" class="form-control" readonly>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Tercer Apellido</label>
+            <input id="detApellido3" class="form-control" readonly>
+          </div>
+        </div>
+
+        <!-- Contacto -->
+        <h6 class="mb-2">Contacto</h6>
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Teléfono</label>
+            <input id="detTelefono" class="form-control" readonly>
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">Correo Electrónico</label>
+            <input id="detCorreo" class="form-control" readonly>
+          </div>
+        </div>
+
+        <!-- Ubicación -->
+        <h6 class="mb-2">Ubicación</h6>
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            <label class="form-label">País</label>
+            <input id="detPais" class="form-control" readonly>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Departamento</label>
+            <input id="detDepartamento" class="form-control" readonly>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Municipio</label>
+            <input id="detMunicipio" class="form-control" readonly>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Lugar</label>
+            <input id="detLugar" class="form-control" readonly>
+          </div>
+        </div>
+
+        <!-- Auditoría -->
+        <h6 class="mb-2">Auditoría</h6>
+        <div class="row g-3 mb-2">
+          <div class="col-md-3">
+            <label class="form-label">Fecha Ingreso</label>
+            <input id="detFechaIng" class="form-control" readonly>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Hora Ingreso</label>
+            <input id="detHoraIng" class="form-control" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Usuario que ingresó</label>
+            <input id="detUsuarioIng" class="form-control" readonly>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">Fecha Actualización</label>
+            <input id="detFechaAct" class="form-control" readonly>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Hora Actualización</label>
+            <input id="detHoraAct" class="form-control" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Usuario que actualizó</label>
+            <input id="detUsuarioAct" class="form-control" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Footer -->
+  <div data-include="/view/partials/footer.html"></div>
+
+  <!-- Scripts -->
+  <script src="/js/include.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+  </script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/EncargadosLista.js"></script>
+  <script src="../js/CargaUsuarios.js"></script>
+  
+</body>
+</html>

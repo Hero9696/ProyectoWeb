@@ -1,0 +1,44 @@
+/* ===== Vista PLANA: Ubicaciones Registradas ===== */
+body[data-page="ubicaciones-lista"] main.container {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 1.5rem 0 2.5rem;
+}
+
+/* Cards más planas: sin sombra fuerte ni bordes redondeados */
+body[data-page="ubicaciones-lista"] .card {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #e5e7eb;  /* si quieres totalmente plano, cámbialo a border: none; */
+}
+
+/* Quitar cualquier efecto de "tarjeta grande" que envuelva el contenido */
+body[data-page="ubicaciones-lista"] .page-wrapper,
+body[data-page="ubicaciones-lista"] .content,
+body[data-page="ubicaciones-lista"] .content-wrapper {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* ===== Footer plano y centrado SOLO en esta vista ===== */
+body[data-page="ubicaciones-lista"] footer,
+body[data-page="ubicaciones-lista"] .footer {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* El contenido del footer centrado y con el mismo ancho del main */
+body[data-page="ubicaciones-lista"] footer .container,
+body[data-page="ubicaciones-lista"] .footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+}

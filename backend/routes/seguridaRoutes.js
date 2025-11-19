@@ -1,5 +1,3 @@
-// routes/seguridad.routes.js
-
 const express = require('express');
 const router = express.Router();
 
@@ -120,6 +118,8 @@ router.post('/auth/logout', AuthController.logout);
  */
 router.get('/usuarios', UsuarioController.getAllUsuarios);
 router.post('/usuarios', UsuarioController.createUsuario);
+router.put('/usuarios/:id/password', UsuarioController.updatePassword);
+
 
 /**
  * @swagger

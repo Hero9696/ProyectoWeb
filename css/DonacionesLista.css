@@ -1,0 +1,46 @@
+/* Vista plana de donaciones (consulta) */
+
+body[data-page="donaciones-lista"] {
+  background: #ffffff;
+}
+
+/* que el main se vea como tarjeta blanca centrada, igual que otras vistas */
+body[data-page="donaciones-lista"] main.container {
+  max-width: 1200px;
+  margin-top: 20px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.10);
+}
+
+/* footer centrado y sencillo solo en esta vista */
+body[data-page="donaciones-lista"] footer,
+body[data-page="donaciones-lista"] .footer {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body[data-page="donaciones-lista"] footer .container,
+body[data-page="donaciones-lista"] .footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+}
+
+/* Botón azul reutilizando tu paleta (si ya existe .btn-azul en navbar.css puedes omitir esto) */
+.btn-azul {
+  background-color: #0f4fb3;
+  border-color: #0f4fb3;
+  color: #fff;
+}
+.btn-azul:hover {
+  background-color: #2a6edb;
+  border-color: #2a6edb;
+}

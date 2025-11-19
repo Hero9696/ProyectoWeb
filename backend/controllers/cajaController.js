@@ -79,7 +79,7 @@ class CajaController {
                     montoTotal = VALUES(montoTotal),
                     fechaActualizacion = CURDATE(),
                     horaActualizacion = CURTIME(),
-                    idUsuarioActualiza = VALUES(idUsuarioActualiza)`,
+                    idUsuarioActualiza = VALUES(idUsuarioActualiza) `,
                 [nuevoMonto, idUsuarioIngreso]
             );
 
@@ -126,6 +126,39 @@ class CajaController {
             }
         }
     }
+    static async getResumenDiario(req, res) {
+    try {
+      // solo manejamos caja 1
+      const resumen = await TransaccionCajaModel.getResumenDiario(1);
+      return res.status(200).json(resumen);
+    } catch (error) {
+      console.error('Error al obtener resumen diario de caja:', error.message);
+      return res
+        .status(500)
+        .json({ message: 'Error interno del servidor al obtener el resumen diario.' });
+    }
+  }
+
+  /**
+   * Últimos movimientos de caja (GET /api/caja/ultimos-movimientos?limit=5)
+   */
+  static async getUltimosMovimientos(req, res) {
+    try {
+      const { limit } = req.query;
+
+      const movimientos = await TransaccionCajaModel.getUltimosMovimientos({
+        idCaja: 1,
+        limit,
+      });
+
+      return res.status(200).json(movimientos);
+    } catch (error) {
+      console.error('Error al obtener últimos movimientos de caja:', error.message);
+      return res
+        .status(500)
+        .json({ message: 'Error interno del servidor al obtener los movimientos.' });
+    }
+  }
 }
 
 module.exports = CajaController;

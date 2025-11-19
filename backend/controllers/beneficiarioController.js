@@ -12,7 +12,13 @@ class BeneficiarioController {
     // ... (getAllBeneficiarios y getBeneficiarioById se mantienen igual)
     static async getAllBeneficiarios(req, res) {
         try {
-            const beneficiarios = await BeneficiarioModel.findAll();
+            const { q = '', estado = '' } = req.query;   // /api/beneficiarios?q=juan&estado=A
+
+            const beneficiarios = await BeneficiarioModel.findAll({
+                q: q.trim(),
+                estado: estado.trim().toUpperCase()
+            });
+
             res.status(200).json(beneficiarios);
         } catch (error) {
             console.error('Error al obtener beneficiarios:', error.message);

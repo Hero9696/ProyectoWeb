@@ -1,0 +1,40 @@
+/* ===== Vista plana para Listado de Donantes ===== */
+
+body[data-page="donantes-lista"] {
+  background: #ffffff;            /* fondo blanco completo */
+}
+
+/* Quita la tarjeta grande del main */
+body[data-page="donantes-lista"] main.container {
+  background: transparent;        /* sin caja blanca extra */
+  border-radius: 0;               /* sin esquinas redondeadas */
+  box-shadow: none;               /* sin sombra */
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+/* Las cards internas se ven planitas (solo un borde suave) */
+body[data-page="donantes-lista"] .card {
+  border-radius: 12px;
+  box-shadow: none;
+  border: 1px solid #e5e7eb;
+}
+
+/* Footer centrado y sin tarjeta */
+body[data-page="donantes-lista"] footer .container,
+body[data-page="donantes-lista"] .footer .container {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-align: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/* Por si el footer tiene envolturas extra */
+body[data-page="donantes-lista"] footer,
+body[data-page="donantes-lista"] .footer {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}

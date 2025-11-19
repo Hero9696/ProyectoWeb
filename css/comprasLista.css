@@ -1,0 +1,35 @@
+/* Fondo blanco y vista plana solo para esta página */
+body[data-page="compras-lista"] {
+  background: #ffffff !important;
+}
+
+/* Que el main se vea liso pero ordenado */
+body[data-page="compras-lista"] main.container {
+  background: #ffffff;
+  border-radius: 0;
+  box-shadow: none;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+/* Footer centrado y sin tarjeta blanca solo en esta página */
+body[data-page="compras-lista"] footer .container,
+body[data-page="compras-lista"] .footer .container {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Tabla un poco más compacta */
+body[data-page="compras-lista"] table.table tbody td,
+body[data-page="compras-lista"] table.table thead th {
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+/* Encabezados de tarjeta/filtros más planos */
+body[data-page="compras-lista"] .card {
+  border-radius: 10px;
+}

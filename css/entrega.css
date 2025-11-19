@@ -1,0 +1,39 @@
+/* Vista plana como las demás */
+body[data-page="entrega-pollitos"] main.container {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Cards planas */
+body[data-page="entrega-pollitos"] .card {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: 1px solid #e5e7eb;
+}
+
+/* Card del inventario general en amarillo suave */
+body[data-page="entrega-pollitos"] .card-invgen {
+  background: #fff9d9;
+  border-color: #f2e08c;
+}
+
+/* Footer plano centrado */
+body[data-page="entrega-pollitos"] footer,
+body[data-page="entrega-pollitos"] .footer {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body[data-page="entrega-pollitos"] footer .container,
+body[data-page="entrega-pollitos"] .footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}

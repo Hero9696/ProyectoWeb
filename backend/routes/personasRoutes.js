@@ -156,6 +156,7 @@ router.post('/donantes', DonanteController.createDonante);
  *       409:
  *         description: No se puede eliminar porque tiene Donaciones asociadas.
  */
+router.get('/donantes/:id', DonanteController.getDonanteById); 
 router.put('/donantes/:id', DonanteController.updateDonante);
 router.delete('/donantes/:id', DonanteController.deleteDonante);
 

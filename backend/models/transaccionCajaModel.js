@@ -65,6 +65,49 @@ class TransaccionCajaModel {
         return result.insertId;
     }
 
+     // Resumen del día: ingresos y egresos de hoy para una caja
+static async getResumenDiario(idCaja = 1) {
+  const [rows] = await pool.query(
+    `SELECT 
+       SUM(CASE WHEN tt.codigoTrx IN ('DON', 'CRE') THEN t.montoTrx ELSE 0 END) AS ingresosHoy,
+       SUM(CASE WHEN tt.codigoTrx = 'DEB' THEN t.montoTrx ELSE 0 END)           AS egresosHoy
+     FROM TransaccionesCaja t
+     INNER JOIN TiposTransacciones tt
+       ON t.idTipoTrx = tt.idTipoTrx
+     WHERE t.idCajaTrx = ?
+       AND t.fechaIngreso = CURDATE()`,
+    [idCaja]
+  );
+
+  const r = rows[0] || {};
+  return {
+    ingresosHoy: Number(r.ingresosHoy || 0), // siempre positivo
+    egresosHoy: Number(r.egresosHoy || 0),   // siempre positivo
+  };
+}
+
+  // Últimos movimientos de caja (para la tabla)
+  static async getUltimosMovimientos({ idCaja = 1, limit = 5 } = {}) {
+    const [rows] = await pool.query(
+      `SELECT 
+         t.idTransaccion,
+         t.fechaIngreso,
+         t.horaIngreso,
+         t.montoTrx,
+         t.descripcionTrx,
+         tt.codigoTrx AS tipoTransaccion
+       FROM TransaccionesCaja t
+       INNER JOIN TiposTransacciones tt
+         ON t.idTipoTrx = tt.idTipoTrx
+       WHERE t.idCajaTrx = ?
+       ORDER BY t.fechaIngreso DESC, t.horaIngreso DESC, t.idTransaccion DESC
+       LIMIT ?`,
+      [idCaja, Number(limit) || 5]
+    );
+
+    return rows;
+  }
+
     /**
      * Encuentra una transacción por su ID.
      */

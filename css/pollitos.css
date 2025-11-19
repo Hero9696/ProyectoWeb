@@ -313,3 +313,125 @@ body { background:#fff !important; }
 
 /* Quitar cualquier rastro del toggler/collapse si quedó */
 .navbar .navbar-toggler{ display:none !important; }
+
+/* ===== Layout plano para Historial de Ventas ===== */
+.page-historial-ventas body {
+  background: #fff;
+}
+
+/* Que el main se vea integrado, sin feeling de tarjeta */
+.page-historial-ventas main.container {
+  max-width: 1200px;        /* opcional: puedes subir/bajar este valor */
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+/* Quitar “tarjeta flotante”: sin bordes redondeados ni sombra */
+.page-historial-ventas .card {
+  border: none;             /* sin borde */
+  border-radius: 0;         /* sin esquinas redondeadas */
+  box-shadow: none;         /* sin sombra */
+  background: transparent;  /* que se funda con el fondo */
+}
+
+/* El header de la card también plano */
+.page-historial-ventas .card-header {
+  border-radius: 0;
+}
+
+/* Opcional: que la tabla sea la protagonista */
+.page-historial-ventas .card-body {
+  padding-top: 0.75rem;
+  padding-bottom: 1rem;
+}
+body.page-historial-ventas .card{
+  border-radius: 0;
+  box-shadow: none;
+}
+/* ===== VISTA HISTORIAL DE VENTAS PLANA ===== */
+
+body[data-page="ventas-historial"] {
+  background: #ffffff !important;            /* fondo blanco general */
+}
+
+/* Main sin “tarjeta” alrededor */
+/* Main de Historial plano, pero con márgenes como las demás vistas */
+body[data-page="ventas-historial"] main.container {
+  max-width: 1200px;                 /* ancho cómodo, centrado */
+  margin: 1.5rem auto 0;             /* separación arriba + centrado */
+  padding: 1.5rem 1.25rem 2rem;      /* respiración a los lados y abajo */
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+
+/* Cards planas (filtros + tabla) */
+body[data-page="ventas-historial"] .card,
+body[data-page="ventas-historial"] .card-header,
+body[data-page="ventas-historial"] .card-body {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Footer plano y centrado SOLO en Historial de Ventas */
+/* Footer plano y centrado SOLO en Historial de Ventas */
+body[data-page="ventas-historial"] footer,
+body[data-page="ventas-historial"] [data-include*="footer"],
+body[data-page="ventas-historial"] .footer {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Contenido del footer con el mismo ancho que el main */
+body[data-page="ventas-historial"] .footer .container,
+body[data-page="ventas-historial"] footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* ===== Vista plana Usuarios ===== */
+body[data-page="usuarios"] main.container {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding-top: 1.5rem;
+}
+
+/* Quitar estilo de tarjeta profunda */
+body[data-page="usuarios"] .card {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* ===== Footer plano ===== */
+body[data-page="usuarios"] footer,
+body[data-page="usuarios"] .footer {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-align: center !important;
+}
+
+body[data-page="usuarios"] footer .container,
+body[data-page="usuarios"] .footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  background: transparent !important;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+

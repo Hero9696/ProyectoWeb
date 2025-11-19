@@ -1,0 +1,49 @@
+/* ===== Vista PLANA: Ingreso de Ubicaciones ===== */
+body[data-page="ubicaciones-ingreso"] main.container {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 1.5rem 0 2.5rem;
+}
+
+/* Cards "planas" para esta vista */
+body[data-page="ubicaciones-ingreso"] .card {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #e5e7eb;
+}
+
+/* Footer plano centrado solo en esta vista */
+body[data-page="ubicaciones-ingreso"] footer,
+body[data-page="ubicaciones-ingreso"] .footer {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body[data-page="ubicaciones-ingreso"] footer .container,
+body[data-page="ubicaciones-ingreso"] .footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+}
+
+/* Detalles opcionales */
+body[data-page="ubicaciones-ingreso"] h2.h5,
+body[data-page="ubicaciones-ingreso"] h3.h6 {
+  font-weight: 600;
+}
+
+body[data-page="ubicaciones-ingreso"] .card-body {
+  padding: 1rem 1.25rem;
+}
+
+body[data-page="ubicaciones-ingreso"] form .form-label {
+  font-size: .9rem;
+  margin-bottom: .25rem;
+}

@@ -11,15 +11,24 @@ class LugarController {
     /**
      * Obtiene todos los lugares. (GET /api/lugares)
      */
-    static async getAllLugares(req, res) {
-        try {
-            const lugares = await LugarModel.findAll();
-            res.status(200).json(lugares);
-        } catch (error) {
-            console.error('Error al obtener lugares:', error.message);
-            res.status(500).json({ message: 'Error interno del servidor.' });
-        }
+static async getAllLugares(req, res) {
+    try {
+      const { idPais, idDepartamento, idMunicipio } = req.query;
+
+      const lugares = await LugarModel.findAll({
+        idPais,
+        idDepartamento,
+        idMunicipio
+      });
+
+      return res.status(200).json(lugares);
+    } catch (err) { 
+      console.error('[Lugares] Error al obtener lugares:', err);
+      return res
+        .status(500)
+        .json({ message: 'Error interno al obtener las ubicaciones.' });
     }
+  }
 
     /**
      * Obtiene un lugar por ID. (GET /api/lugares/:id)

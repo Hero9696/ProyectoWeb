@@ -20,10 +20,10 @@
 
 /* ======= Variables de color ======= */
 :root {
-  --azul-1: #203a72; /* más oscuro, elegante */
-  --azul-2: #2b5aa8; /* medio */
-  --azul-3: #4e7bd3; /* acento */
-  --marfil: #f6f8fc; /* base clara NO blanca pura */
+  --azul-1: #ffd500; /* más oscuro, elegante */
+  --azul-2: #ffd500; /* medio */
+  --azul-3: #ffd500; /* acento */
+  --marfil: #ffffff; /* base clara NO blanca pura */
 }
 
 /* ======= Fondo principal ======= */
@@ -143,3 +143,19 @@ body {
   transition: opacity .35s ease;
   opacity: 0;
 }
+
+body[data-page="auth"] {
+  background: url("../img/FondoPollito.jpg") no-repeat center center fixed;
+  background-size: cover;   /* Se adapta y recorta un poco si es necesario */
+}
+
+
+body[data-page="auth"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4); /* oscurece */
+  backdrop-filter: blur(2px);  /* difumina */
+  z-index: -1;
+}
+

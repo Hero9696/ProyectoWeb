@@ -3,28 +3,49 @@ const pool = require('../config/dbconfig');
 
 /**
  * Donaciones SIN tipos.
- * Guarda: idDonador, montoDonado, fecha/hora (auto), idUsuarioIngreso y idUsuarioActualizacion.
+ * Guarda: idDonador, montoDonado, fecha/hora (auto),
+ * idUsuarioIngreso y idUsuarioActualizacion.
  */
 class DonacionModel {
+  // ==========================
+  // LISTAR TODAS (con nombres)
+  // ==========================
   static async findAll() {
-    const sql = `
-      SELECT
-        idDonacion,
-        idDonador,
-        montoDonado,
-        fechaIngreso,
-        horaIngreso,
-        idUsuarioIngreso,
-        fechaActualizacion,
-        horaActualizacion,
-        IdUsuarioActualizacion
-      FROM donaciones
-      ORDER BY fechaIngreso DESC, horaIngreso DESC, idDonacion DESC
-    `;
-    const [rows] = await pool.query(sql);
+    const [rows] = await pool.query(`
+      SELECT 
+        d.idDonacion,
+        d.idDonador,
+        d.montoDonado,
+        d.fechaIngreso,
+        d.horaIngreso,
+        d.idUsuarioIngreso,
+        d.fechaActualizacion,
+        d.horaActualizacion,
+        d.IdUsuarioActualizacion,
+
+        -- nombre del donante
+        CONCAT(da.nombre1Donante, ' ', da.apellido1Donante) AS nombreDonante,
+
+        -- nombres de usuarios
+        uIng.nombreUsuario AS usuarioIngresoNombre,
+        uAct.nombreUsuario AS usuarioActualizaNombre
+      FROM Donaciones d
+      JOIN Donantes da
+        ON d.idDonador = da.idDonador
+      JOIN Usuarios uIng
+        ON d.idUsuarioIngreso = uIng.idUsuario
+      JOIN Usuarios uAct
+        ON d.IdUsuarioActualizacion = uAct.idUsuario
+      ORDER BY d.fechaIngreso DESC, d.horaIngreso DESC
+    `);
+
+    // LOG opcional para verificar que esto SÍ se está usando
     return rows;
   }
 
+  // ==========================
+  // OBTENER UNA POR ID
+  // ==========================
   static async findById(id) {
     const sql = `
       SELECT
@@ -37,7 +58,7 @@ class DonacionModel {
         fechaActualizacion,
         horaActualizacion,
         IdUsuarioActualizacion
-      FROM donaciones
+      FROM Donaciones
       WHERE idDonacion = ?
       LIMIT 1
     `;
@@ -45,32 +66,47 @@ class DonacionModel {
     return rows[0] || null;
   }
 
-  static async create({ idDonador, montoDonado, idUsuarioIngreso, fechaIngreso = null, horaIngreso = null }) {
-    // Guardamos también fecha/hora de actualización e idUsuarioActualizacion
+  // ==========================
+  // CREAR
+  // ==========================
+  static async create({
+    idDonador,
+    montoDonado,
+    idUsuarioIngreso,
+    fechaIngreso = null,
+    horaIngreso = null
+  }) {
     const sql = `
-      INSERT INTO donaciones
+      INSERT INTO Donaciones
         (idDonador, montoDonado,
          fechaIngreso,  horaIngreso,  idUsuarioIngreso,
-         fechaActualizacion, horaActualizacion, idUsuarioActualizacion)
+         fechaActualizacion, horaActualizacion, IdUsuarioActualizacion)
       VALUES
         (?, ?,
          COALESCE(?, CURDATE()), COALESCE(?, CURTIME()), ?,
          CURDATE(), CURTIME(), ?)
     `;
+
     const user = Number(idUsuarioIngreso) || 1;
     const [r] = await pool.query(sql, [
       Number(idDonador),
       Number(montoDonado),
       fechaIngreso,
       horaIngreso,
-      user,
-      user
+      user, // idUsuarioIngreso
+      user  // IdUsuarioActualizacion
     ]);
     return r.insertId;
   }
 
+  // ==========================
+  // ELIMINAR
+  // ==========================
   static async delete(id) {
-    const [r] = await pool.query('DELETE FROM donaciones WHERE idDonacion = ?', [id]);
+    const [r] = await pool.query(
+      'DELETE FROM Donaciones WHERE idDonacion = ?',
+      [id]
+    );
     return r.affectedRows;
   }
 }

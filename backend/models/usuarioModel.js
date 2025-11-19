@@ -1,7 +1,7 @@
 // models/UsuarioModel.js
 
-const pool = require('../config/dbconfig');
-const bcrypt = require('bcryptjs'); // Necesitas instalar esta dependencia: npm install bcryptjs
+const pool   = require('../config/dbconfig');
+const bcrypt = require('bcryptjs'); // npm install bcryptjs
 
 /**
  * Modelo para la tabla Usuarios.
@@ -15,19 +15,32 @@ class UsuarioModel {
      * @returns {Promise<string>} La contraseña hasheada.
      */
     static async hashPassword(contrasena) {
-        // Genera un salt y hashea la contraseña
         const salt = await bcrypt.genSalt(10);
         return bcrypt.hash(contrasena, salt);
     }
 
     /**
-     * Compara una contraseña plana con una hasheada.
-     * @param {string} contrasenaPlana - Contraseña ingresada por el usuario.
-     * @param {string} contrasenaHasheada - Contraseña hasheada de la DB.
+     * Compara una contraseña plana con lo que hay en la BD.
+     * Soporta:
+     *  - contraseñas viejas en TEXTO PLANO
+     *  - contraseñas nuevas en BCRYPT
+     * @param {string} contrasenaPlana     - Contraseña que ingresa el usuario.
+     * @param {string} contrasenaEnBase    - Valor guardado en la BD.
      * @returns {Promise<boolean>} True si coinciden, False en caso contrario.
      */
-    static async comparePassword(contrasenaPlana, contrasenaHasheada) {
-        return bcrypt.compare(contrasenaPlana, contrasenaHasheada);
+    static async comparePassword(contrasenaPlana, contrasenaEnBase) {
+        if (!contrasenaEnBase) return false;
+
+        // ¿Parece un hash bcrypt? (empieza con $2a$, $2b$ o $2y$)
+        const esBcrypt = /^\$2[aby]\$/.test(contrasenaEnBase);
+
+        if (esBcrypt) {
+            // contraseña nueva encriptada
+            return bcrypt.compare(contrasenaPlana, contrasenaEnBase);
+        }
+
+        // contraseña vieja guardada en texto plano
+        return contrasenaPlana === contrasenaEnBase;
     }
     
     // --- Métodos CRUD ---
@@ -71,12 +84,15 @@ class UsuarioModel {
      * Obtiene un usuario por su nombre de usuario.
      */
     static async findByUsername(nombreUsuario) {
-        const [rows] = await pool.query('SELECT * FROM Usuarios WHERE nombreUsuario = ?', [nombreUsuario]);
+        const [rows] = await pool.query(
+            'SELECT * FROM Usuarios WHERE nombreUsuario = ?',
+            [nombreUsuario]
+        );
         return rows[0] || null;
     }
 
     /**
-     * Crea un nuevo usuario.
+     * Crea un nuevo usuario (siempre guarda la contraseña hasheada).
      */
     static async create({ nombreUsuario, contrasena, idRol }) {
         const contrasenaHasheada = await this.hashPassword(contrasena);
@@ -89,8 +105,8 @@ class UsuarioModel {
     }
 
     /**
-     * Actualiza la información de un usuario. Permite actualizar el rol, y la contraseña (opcionalmente).
-     * Nota: Este método no maneja la actualización de la contraseña si es un string vacío. 
+     * Actualiza la información de un usuario.
+     * Si viene contraseña no vacía, se vuelve a hashear.
      */
     static async update(id, { nombreUsuario, contrasena, idRol }) {
         let sql = 'UPDATE Usuarios SET nombreUsuario = ?, idRol = ?';
@@ -113,7 +129,10 @@ class UsuarioModel {
      * Elimina un usuario por su ID.
      */
     static async delete(id) {
-        const [result] = await pool.query('DELETE FROM Usuarios WHERE idUsuario = ?', [id]);
+        const [result] = await pool.query(
+            'DELETE FROM Usuarios WHERE idUsuario = ?',
+            [id]
+        );
         return result.affectedRows;
     }
 }

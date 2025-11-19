@@ -1,0 +1,34 @@
+/* Vista plana para Roles */
+body[data-page="roles"] main.container {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding-top: 1.5rem;
+}
+
+/* Cards sin sombras fuertes */
+body[data-page="roles"] .card {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Footer plano centrado */
+body[data-page="roles"] footer,
+body[data-page="roles"] .footer {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body[data-page="roles"] footer .container,
+body[data-page="roles"] .footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}

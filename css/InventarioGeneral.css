@@ -1,0 +1,48 @@
+/* ===== Vista plana ===== */
+body[data-page="inventario-general"] main.container {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding-top: 1.5rem;
+}
+
+/* Tarjetas estilo Caja */
+.card-yellow {
+  background: #fff8d5;        /* Amarillo suave */
+  border: 1px solid #f2d98a;
+}
+
+/* Quitar bordes profundos */
+body[data-page="inventario-general"] .card {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Footer plano */
+body[data-page="inventario-general"] footer,
+body[data-page="inventario-general"] .footer {
+  background: transparent !important;
+  border: none !important;
+  text-align: center;
+  box-shadow: none !important;
+}
+/* ===== Footer plano y centrado SOLO en Inventario General ===== */
+body[data-page="inventario-general"] footer,
+body[data-page="inventario-general"] .footer {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* El contenido del footer sin tarjeta ni sombra */
+body[data-page="inventario-general"] footer .container,
+body[data-page="inventario-general"] .footer .container {
+  max-width: 1200px;      /* mismo ancho que el main */
+  margin: 0 auto;
+  text-align: center;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+}
+

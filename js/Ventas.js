@@ -3,6 +3,9 @@ const DATA = {
     beneficiarios: []
 };
 
+// === Regla de distribución ===
+const CAJA_POR_POLLO = 6.50; // Q6.50 por cada pollito
+
 // ===== Estado global =====
 let DETALLES_VENTA = [];
 let TOTAL_VENTA = 0;
@@ -25,6 +28,18 @@ function validateForm(form) {
     const ok = form.checkValidity();
     form.classList.add('was-validated');
     return ok;
+}
+
+// === Obtener ID de usuario logueado igual que en Beneficiarios ===
+function getLoggedUserId() {
+    try {
+        const s = window.PollitoAuth?.getSession?.();
+        if (s && s.user && s.user.id) return s.user.id;
+    } catch (e) {
+        console.warn('Error obteniendo sesión de PollitoAuth en Ventas:', e);
+    }
+    // Si quieres que truene si no hay sesión, puedes devolver null
+    return 1; // valor por defecto si algo falla
 }
 
 async function fetchBeneficiarios() {
@@ -50,13 +65,14 @@ async function fetchBeneficiarios() {
 }
 
 function calcularDistribucion(cantidad, valorUnidad) {
-    const subtotal = cantidad * valorUnidad;
-    
-    // Lógica: Q40 por cada 6 pollitos van a Caja
-    const gruposDeSeis = Math.floor(cantidad / 6);
-    const montoCaja = gruposDeSeis * 40;
+    const subtotal = (cantidad || 0) * (valorUnidad || 0);
+
+    // Q6.50 por cada pollito a Caja; nunca mayor al subtotal
+    let montoCaja = (cantidad || 0) * CAJA_POR_POLLO;
+    if (montoCaja > subtotal) montoCaja = subtotal;
+
     const montoInventario = subtotal - montoCaja;
-    
+
     return { subtotal, montoCaja, montoInventario };
 }
 
@@ -85,10 +101,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const tablaDetalles = document.querySelector('#tablaDetalles tbody');
 
     // Llenar select de beneficiarios
-    fetchBeneficiarios(); // Llama a la función para cargar beneficiarios
+    fetchBeneficiarios();
 
-    // Fechas automáticas
+    // 🕒 Setear fecha/hora actual en los campos ocultos
     setNowDates(formVenta, 'fechaVenta', 'horaVenta');
+
+    // 👤 Setear usuario logueado en el hidden idUsuarioIngresa usando getSession()
+    const inputUsrHidden = formVenta.querySelector('[name="idUsuarioIngresa"]');
+    if (inputUsrHidden) {
+        const userId = getLoggedUserId();
+        inputUsrHidden.value = userId;
+    }
 
     // Cálculo en tiempo real del detalle
     const inputCantidad = document.querySelector('input[name="cantidad"]');
@@ -202,6 +225,11 @@ document.addEventListener('DOMContentLoaded', function() {
             subtotal: det.subtotal
         }));
 
+        // 🔹 Forzar idUsuarioIngresa desde la sesión (por si el hidden quedó vacío)
+        const userId = getLoggedUserId();
+        ventaData.idUsuarioIngresa = userId;
+
+
         try {
             const response = await fetch('http://localhost:3000/api/ventas', {
                 method: 'POST',
@@ -242,7 +270,17 @@ document.addEventListener('DOMContentLoaded', function() {
         DETALLES_VENTA = [];
         tablaDetalles.innerHTML = '';
         actualizarTotales();
+
+        // Volver a poner fecha/hora actual
         setNowDates(formVenta, 'fechaVenta', 'horaVenta');
+
+        // Volver a poner usuario logueado usando getSession()
+        const inputUsr2 = formVenta.querySelector('[name="idUsuarioIngresa"]');
+        if (inputUsr2) {
+            const userId2 = getLoggedUserId();
+            inputUsr2.value = userId2;
+        }
+
         actualizarCalculo();
     });
 

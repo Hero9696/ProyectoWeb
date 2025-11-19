@@ -3,7 +3,8 @@
 const UsuarioModel = require('../models/usuarioModel');
 // Asumo que tienes una función para la Bitácora, la usaremos aquí
 const BitacoraModel = require('../models/bitacoraModel'); 
-
+const pool = require('../config/dbconfig');        // 👈 te falta esto
+const bcrypt = require('bcryptjs');  
 /**
  * Controlador para la gestión de Usuarios.
  * Este controlador es clave para la autenticación y el manejo de roles.
@@ -150,6 +151,47 @@ class UsuarioController {
             res.status(500).json({ message: 'Error interno del servidor al eliminar usuario.' });
         }
     }
+    // PUT /api/usuarios/:id/password
+// PUT /api/usuarios/:id/password
+static async updatePassword(req, res) {
+  try {
+    const { id } = req.params;
+    const { contrasena } = req.body;
+
+    if (!contrasena || contrasena.length < 6) {
+      return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres.' });
+    }
+
+    // Usar la misma lógica de hash del modelo
+    const hash = await UsuarioModel.hashPassword(contrasena);
+
+    const [result] = await pool.query(
+      `UPDATE Usuarios SET contrasena = ? WHERE idUsuario = ?`,
+      [hash, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
+
+    // Registrar en bitácora el cambio de contraseña (sin poner la contraseña, obvio)
+    await BitacoraModel.create({
+      idUsuario: id,
+      accion: 'UPDATE',
+      tabla: 'Usuarios',
+      pk_afectada: id.toString(),
+      descripcion: `Cambio de contraseña del usuario ID ${id}`
+    });
+
+    return res.status(200).json({ message: 'Contraseña actualizada.' });
+
+  } catch (error) {
+    console.error('Error updating password:', error);
+    return res.status(500).json({ message: 'Error interno.' });
+  }
+}
+
+
 }
 
 module.exports = UsuarioController;

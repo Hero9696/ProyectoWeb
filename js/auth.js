@@ -1,56 +1,117 @@
 /* Autenticación global – app protegida con login separado */
 (() => {
-  const STORAGE_KEY = "pollito.session";
-  const SESSION_TTL_MIN = 240;              // 4h
-  const LOGIN_PAGE = "view/login.html";          // Página de login
-  const LOGIN_ENDPOINT = "/api/auth/login"; // tu API real cuando exista
-  const USE_MOCK = true;                    // pon false cuando uses tu API
+  const STORAGE_KEY     = "pollito.session.v2";
+  const SESSION_TTL_MIN = 240;                 // 4 horas
+  const LOGIN_PAGE      = "../view/login.html";   // Ajusta si tu ruta es distinta
 
-  // Usuarios demo (solo mock)
-  const MOCK_USERS = [
-    { user:"admin", pass:"admin123", nombre:"Administrador",     rol:"ADMIN" },
-    { user:"caja",  pass:"caja123",  nombre:"Operador de Caja",  rol:"CAJA" },
-    { user:"inv",   pass:"inv123",   nombre:"Inventarios",       rol:"INVENTARIO" }
-  ];
+  // ======= PORT DEL BACKEND =========
+  // Debe coincidir con process.env.PORT o el valor por defecto de server.js
+  const API_PORT  = 3000;                      // <-- si tu .env tiene PORT=3307, pon 3307 aquí
+  const API_BASE  = `http://localhost:${API_PORT}`;
+  const LOGIN_ENDPOINT = `${API_BASE}/api/auth/login`;
+  // ==================================
 
-  // --- helpers sesión ---
   const now = () => Date.now();
-  function getSession(){
-    // AUTH DESHABILITADO: Siempre devuelve una sesión falsa para acceso libre.
-    return {
-      token: "fake-token-auth-disabled",
+
+  function clearSession() {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+
+  function getSession() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+
+    try {
+      const s = JSON.parse(raw);
+      if (!s.exp || s.exp < now()) {
+        clearSession();
+        return null;
+      }
+      return s;
+    } catch (e) {
+      clearSession();
+      return null;
+    }
+  }
+
+  function setSession(payload) {
+    const { accessToken, refreshToken, user } = payload;
+
+    const session = {
+      token: accessToken,
+      refreshToken,
       user: {
-        id: 1,
-        nombre: "Usuario (Auth Deshabilitado)",
-        rol: "ADMIN",
-        user: "dev"
+        id:       user.idUsuario,
+        nombre:   user.nombreUsuario,
+        rol:      user.idRol,
+        username: user.nombreUsuario
       },
-      exp: now() + 999999999 // Expiración en el futuro lejano
+      exp: now() + SESSION_TTL_MIN * 60 * 1000
     };
-  }
-  function setSession(payload){
-    // AUTH DESHABILITADO: No hacer nada.
-  }
-  function clearSession(){
-    // AUTH DESHABILITADO: No hacer nada.
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    return session;
   }
 
-  // --- login público (mock o API) ---
-  async function login(user, pass){
-    // AUTH DESHABILITADO: No es necesario, pero devolvemos éxito para no romper flujos.
-    return { ok: true, data: getSession() };
+  // --- login contra tu backend ---
+  async function login(username, password) {
+    username = (username || "").trim();
+
+    if (!username || !password) {
+      return { ok: false, error: "Usuario y contraseña son obligatorios." };
+    }
+
+    try {
+
+
+      const resp = await fetch(LOGIN_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombreUsuario: username,
+          contrasena:    password
+        })
+      });
+
+
+      const rawText = await resp.text();
+
+      let data = null;
+      try {
+        data = rawText ? JSON.parse(rawText) : null;
+      } catch (e) {
+        console.warn("No se pudo parsear JSON de login:", e);
+      }
+
+      if (!resp.ok) {
+        return {
+          ok: false,
+          error: data?.message || `Error al iniciar sesión (HTTP ${resp.status}).`
+        };
+      }
+
+      if (!data || !data.accessToken || !data.user) {
+        return { ok: false, error: "Respuesta inválida del servidor de autenticación." };
+      }
+
+      const session = setSession(data); // guarda idUsuario, rol, etc.
+      return { ok: true, data: session };
+
+    } catch (e) {
+      console.error("Error REAL en fetch login:", e);
+      return { ok: false, error: `No se pudo conectar con el servidor: ${e.message}` };
+    }
   }
 
-  // --- UI: sincronizar/inyectar widgets de sesión ---
-  function ensureAuthWidgets(options={}){
-    const { injectIfMissing=false } = options;
-    const hasBtn = document.querySelector("[data-auth-btn]");
+
+  function ensureAuthWidgets(options = {}) {
+    const { injectIfMissing = false } = options;
+    const hasBtn   = document.querySelector("[data-auth-btn]");
     const hasBadge = document.querySelector("[data-auth-user]");
     if (hasBtn && hasBadge) return;
 
     if (!injectIfMissing) return;
 
-    // intenta colocar a la derecha de la navbar
     const host =
       document.querySelector(".navbar .navbar-collapse") ||
       document.querySelector(".navbar .container") ||
@@ -58,66 +119,77 @@
     if (!host) return;
 
     const wrap = document.createElement("div");
-    wrap.className = "ms-auto d-flex align-items-center gap-2 d-none"; // Oculto por defecto
+    wrap.className = "ms-auto d-flex align-items-center gap-2";
     wrap.innerHTML = `
-      <span class="text-light small" data-auth-user>Sin sesión</span>
+      <span class="text-light small d-none" data-auth-user>Sin sesión</span>
       <button class="btn btn-sm btn-warning" type="button" data-auth-btn>Iniciar sesión</button>
     `;
     host.appendChild(wrap);
-    // AUTH DESHABILITADO: Ocultar el contenedor.
-    wrap.style.display = 'none';
   }
 
-  function applyHeaderState(){
-    const s = getSession();
-    const btns = document.querySelectorAll("[data-auth-btn]");
+  function applyHeaderState() {
+    const s      = getSession();
+    const btns   = document.querySelectorAll("[data-auth-btn]");
     const badges = document.querySelectorAll("[data-auth-user]");
 
-    btns.forEach(btn=>{
-      // AUTH DESHABILITADO: Ocultar botones.
-      btn.style.display = 'none';
+    btns.forEach(btn => {
+      if (!s) {
+        btn.textContent = "Iniciar sesión";
+        btn.onclick = () => { window.location.href = LOGIN_PAGE; };
+      } else {
+        btn.textContent = "Cerrar sesión";
+        btn.onclick = () => {
+          clearSession();
+          window.location.href = LOGIN_PAGE;
+        };
+      }
     });
 
-    badges.forEach(b=>{
-      // AUTH DESHABILITADO: Ocultar badges.
-      b.style.display = 'none';
+    badges.forEach(b => {
+      if (!s) {
+        b.classList.remove("d-none");
+        b.textContent = "Sin sesión";
+      } else {
+        b.classList.remove("d-none");
+        b.textContent = `${s.user.nombre}`;
+      }
     });
   }
 
-  // Reaplica estado al volver de otra pestaña
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) applyHeaderState();
   });
 
-  // --- Protección de enlaces (si por algo llegaran sin sesión) ---
-  function protectNavLinks(){
-    // AUTH DESHABILITADO: No proteger ningún enlace.
-    return;
+  function protectNavLinks() {
+    const s    = getSession();
+    const path = location.pathname;
+    const isLogin =
+      path.endsWith("login.html") ||
+      path.endsWith("/login") ||
+      path.endsWith("/view/login.html");
+
+    if (!s && !isLogin) {
+      window.location.replace(LOGIN_PAGE);
+    }
   }
 
-  // --- API pública para vistas (no login) ---
-  function bindUI(opts={ injectIfMissing:true }){
+  function bindUI(opts = { injectIfMissing: true }) {
     ensureAuthWidgets(opts);
     applyHeaderState();
     protectNavLinks();
   }
 
-  // --- Helper para redirigir a la home page ---
   function redirectToHome() {
-    // Asume que la página principal es index.html en la raíz
-    window.location.replace("index.html");
+    window.location.replace("/index.html");
   }
 
-  // --- Exponer helpers para login.html y vistas ---
   window.PollitoAuth = {
-    // sesión
-    getSession, setSession, clearSession,
-    // login
+    getSession,
+    setSession,
+    clearSession,
     login,
-    // navegación
     redirectToHome,
     LOGIN_PAGE,
-    // UI en vistas
     bindUI
   };
 })();

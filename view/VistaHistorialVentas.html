@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pollitos • Historial de Ventas</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/pollitos.css" />
+  <link rel="stylesheet" href="../css/navbar.css" />
+</head>
+<body data-page="ventas-historial">
+  <!-- NAVBAR unificada -->
+  <header data-include="/view/partials/navbar.html"></header>
+
+  <main class="container py-4">
+    <div class="mb-4">
+      <h2 class="fw-bold text-primary">
+        <i class="bi bi-receipt me-2"></i> Historial de Ventas
+      </h2>
+      <p class="text-muted">
+        Vista de solo lectura. Puedes consultar las ventas registradas y ver su detalle.
+      </p>
+    </div>
+
+    <!-- Filtros simples -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <form id="formFiltroVentas" class="row g-3 align-items-end">
+          <div class="col-sm-4 col-md-3">
+            <label class="form-label">ID Beneficiario</label>
+            <input type="number" min="1" id="filtroBeneficiario" class="form-control" placeholder="Ej. 10">
+          </div>
+          <div class="col-sm-4 col-md-3">
+            <label class="form-label">Desde (fecha)</label>
+            <input type="date" id="filtroDesde" class="form-control">
+          </div>
+          <div class="col-sm-4 col-md-3">
+            <label class="form-label">Hasta (fecha)</label>
+            <input type="date" id="filtroHasta" class="form-control">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-search"></i> Buscar
+            </button>
+            <button type="button" id="btnLimpiarVentas" class="btn btn-outline-secondary">
+              <i class="bi bi-x-circle"></i> Limpiar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tabla de ventas -->
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <i class="bi bi-list-ul me-2"></i> Listado de ventas
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-hover align-middle" id="tablaVentas">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Beneficiario (ID)</th>
+              <th>Total (Q)</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Usuario (ID)</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="text-muted text-center">
+              <td colspan="7">
+                <i class="bi bi-hourglass-split me-2"></i>
+                Esperando datos del servidor...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div data-include="/view/partials/footer.html"></div>
+
+  <!-- Modal Detalle de Venta -->
+  <div class="modal fade" id="modalDetalleVenta" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="bi bi-file-text me-2"></i> Detalle de la venta
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Info cabecera -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-3">
+              <label class="form-label">ID Venta</label>
+              <input id="detIdVenta" class="form-control" readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Beneficiario (ID)</label>
+              <input id="detIdBene" class="form-control" readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Fecha</label>
+              <input id="detFecha" class="form-control" readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Hora</label>
+              <input id="detHora" class="form-control" readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Usuario (ID)</label>
+              <input id="detUsuario" class="form-control" readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Total (Q)</label>
+              <input id="detTotal" class="form-control" readonly>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Detalle (tabla) -->
+          <h6 class="mb-3">
+            <i class="bi bi-list-check me-2"></i> Detalle de líneas
+          </h6>
+          <div class="table-responsive">
+            <table class="table table-sm" id="tablaDetalleVenta">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Cantidad</th>
+                  <th>Precio unidad (Q)</th>
+                  <th>Subtotal (Q)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-muted text-center">
+                  <td colspan="4">Sin líneas de detalle.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/include.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/HistorialVentas.js"></script>
+  <script src="../js/CargaUsuarios.js"></script>
+</body>
+</html>

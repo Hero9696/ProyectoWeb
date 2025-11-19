@@ -1,6 +1,7 @@
 // controllers/InventarioController.js
-
+const pool = require('../config/dbconfig');
 const InventarioModel = require('../models/inventarioModel');
+const InventarioGeneralModel = require('../models/InventarioGeneralModel');
 
 /**
  * Controlador para la gestión de Inventario.
@@ -26,19 +27,20 @@ class InventarioController {
      * Obtiene el inventario por ID de beneficiario. (GET /api/inventario/beneficiario/:id)
      */
     static async getInventarioByBeneficiarioId(req, res) {
-        try {
-            const { id } = req.params;
-            const inventario = await InventarioModel.findByBeneficiarioId(id);
+    try {
+      const { id } = req.params;
+      const inv = await InventarioModel.findByBeneficiario(id);   // 👈 usar método correcto
 
-            if (!inventario) {
-                return res.status(404).json({ message: 'Inventario no encontrado para este beneficiario.' });
-            }
-            res.status(200).json(inventario);
-        } catch (error) {
-            console.error('Error al obtener inventario por ID de beneficiario:', error.message);
-            res.status(500).json({ message: 'Error interno del servidor.' });
-        }
+      if (!inv) {
+        // devolvemos 0 en lugar de error 404 para que el front funcione sencillo
+        return res.status(200).json({ idBeneficiario: id, cantidadActual: 0 });
+      }
+      res.status(200).json(inv);
+    } catch (err) {
+      console.error('[Inventario] Error al obtener inventario de beneficiario:', err);
+      res.status(500).json({ message: 'Error interno al obtener inventario de beneficiario.' });
     }
+  }
 
     /**
      * Inicializa el inventario para un beneficiario. (POST /api/inventario)
@@ -83,6 +85,106 @@ class InventarioController {
             res.status(500).json({ message: 'Error interno del servidor.' });
         }
     }
+    static async getInventarioGeneral(req, res) {
+    try {
+      const inv = await InventarioGeneralModel.getActual();
+      if (!inv) {
+        return res.status(200).json({
+          idInventarioGeneral: 1,
+          cantidadActual: 0
+        });
+      }
+      // aseguramos que cantidadActual venga claro
+      res.status(200).json({
+        idInventarioGeneral: inv.idInventarioGeneral,
+        cantidadActual: inv.cantidadActual,
+        ultimaCantidadIngre: inv.ultimaCantidadIngre,
+        fechaIngreso: inv.fechaIngreso,
+        horaIngreso: inv.horaIngreso,
+        fechaActualizacion: inv.fechaActualizacion,
+        horaActualizacion: inv.horaActualizacion,
+        usuarioIngresoNombre: inv.usuarioIngresoNombre,
+        usuarioActualizaNombre: inv.usuarioActualizaNombre
+      });
+    } catch (err) {
+      console.error('[Inventario] Error al obtener inventario general:', err);
+      res.status(500).json({ message: 'Error interno al obtener inventario general.' });
+    }
+  }
+
+
+
+  // POST /api/inventario/entregar
+  static async entregarPollitos(req, res) {
+    const conn = await pool.getConnection();
+    try {
+      const { idBeneficiario, cantidad, idUsuario } = req.body;
+
+      if (!idBeneficiario || !cantidad || cantidad <= 0 || !idUsuario) {
+        return res.status(400).json({ message: 'Datos inválidos.' });
+      }
+
+      await conn.beginTransaction();
+
+      const invG = await InventarioGeneralModel.getActual();
+      if (!invG) {
+        await conn.rollback();
+        return res.status(500).json({ message: 'Inventario general no encontrado.' });
+      }
+
+      if (invG.cantidadActual < cantidad) {
+        await conn.rollback();
+        return res.status(400).json({ message: 'No hay suficientes pollitos en inventario general.' });
+      }
+
+      await InventarioGeneralModel.bajarStock({ cantidad, idUsuario }, conn);
+
+      const invB = await InventarioModel.findByBeneficiario(idBeneficiario);
+
+      if (!invB) {
+        await conn.query(
+          `INSERT INTO Inventario (
+            idBeneficiario,
+            cantidadInicial,
+            cantidadVendida,
+            cantidadConsumida,
+            cantidadActual,
+            ultimaCantidadIngre,
+            montoTotal,
+            fechaIngreso,
+            horaIngreso,
+            idUsuarioIngreso,
+            fechaActualizacion,
+            horaActualizacion,
+            idUsuarioActualiza
+          )
+          VALUES (?, 0, 0, 0, ?, ?, 0, CURDATE(), CURTIME(), ?, CURDATE(), CURTIME(), ?)`,
+          [idBeneficiario, cantidad, cantidad, idUsuario, idUsuario]
+        );
+      } else {
+        await conn.query(
+          `UPDATE Inventario
+           SET cantidadActual = cantidadActual + ?,
+               ultimaCantidadIngre = ?,
+               fechaActualizacion = CURDATE(),
+               horaActualizacion = CURTIME(),
+               idUsuarioActualiza = ?
+           WHERE idBeneficiario = ?`,
+          [cantidad, cantidad, idUsuario, idBeneficiario]
+        );
+      }
+
+      await conn.commit();
+      res.status(200).json({ message: 'Entrega registrada exitosamente.' });
+
+    } catch (err) {
+      await conn.rollback();
+      console.error('[Inventario] Error en entregarPollitos:', err);
+      res.status(500).json({ message: 'Error interno al registrar la entrega.' });
+    } finally {
+      conn.release();
+    }
+  }
 }
 
 module.exports = InventarioController;

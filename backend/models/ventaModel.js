@@ -1,63 +1,64 @@
-// models/VentaModel.js
-
+// models/ventaModel.js
 const pool = require('../config/dbconfig');
 
-/**
- * Modelo para la tabla Ventas (Cabecera).
- * Dependencias: Beneficiarios, Usuarios
- */
 class VentaModel {
 
-    /**
-     * Obtiene todas las ventas con el nombre del beneficiario y el usuario que las registró.
-     */
-    static async findAll() {
-        const query = `
-            SELECT 
-                v.idVenta, 
-                v.TotalVenta, 
-                v.fechaVenta, 
-                v.horaVenta,
-                CONCAT(b.nombre1Beneficiario, ' ', b.apellido1Beneficiario) AS nombreBeneficiario,
-                u.nombreUsuario AS usuarioIngresa
-            FROM Ventas v
-            JOIN beneficiarios b ON v.idBeneficiarioVenta = b.idBeneficiario
-            JOIN Usuarios u ON v.idUsuarioIngresa = u.idUsuario
-            ORDER BY v.fechaVenta DESC, v.horaVenta DESC
-        `;
-        const [rows] = await pool.query(query);
-        return rows;
-    }
+  // ========== LISTAR TODAS LAS VENTAS ==========
+  static async findAll() {
+    const sql = `
+      SELECT
+        v.idVenta,
+        v.idBeneficiarioVenta,
+        v.TotalVenta,
+        v.fechaVenta,
+        v.horaVenta,
+        v.idUsuarioIngresa,
 
-    /**
-     * Obtiene una venta por su ID.
-     */
-    static async findById(id) {
-        const [rows] = await pool.query('SELECT * FROM Ventas WHERE idVenta = ?', [id]);
-        return rows[0] || null;
-    }
+        -- nombres "bonitos"
+        CONCAT(b.nombre1Beneficiario, ' ', b.apellido1Beneficiario) AS nombreBeneficiario,
+        u.nombreUsuario AS nombreUsuarioIngresa
+      FROM Ventas v
+      JOIN beneficiarios b ON b.idBeneficiario = v.idBeneficiarioVenta
+      JOIN Usuarios u      ON u.idUsuario     = v.idUsuarioIngresa
+      ORDER BY v.fechaVenta DESC, v.horaVenta DESC, v.idVenta DESC
+    `;
+    const [rows] = await pool.query(sql);
+    return rows;
+  }
 
-    /**
-     * Registra una nueva venta.
-     * NOTA IMPORTANTE: Esta función DEBE ser ejecutada dentro de una transacción de BD
-     * para asegurar la atomicidad con DetalleVentas, Inventario y Caja.
-     */
-    static async create(data, connection) {
-        const { idBeneficiarioVenta, TotalVenta, idUsuarioIngresa } = data;
+  // ========== OBTENER UNA VENTA POR ID (PARA EL MODAL) ==========
+  static async findById(id) {
+    const sql = `
+      SELECT
+        v.idVenta,
+        v.idBeneficiarioVenta,
+        v.TotalVenta,
+        v.fechaVenta,
+        v.horaVenta,
+        v.idUsuarioIngresa,
 
-        const sql = `
-            INSERT INTO Ventas (
-                idBeneficiarioVenta, TotalVenta, fechaVenta, horaVenta, idUsuarioIngresa
-            ) VALUES (?, ?, CURDATE(), CURTIME(), ?)
-        `;
-        
-        // Ejecutamos la consulta en la conexión proporcionada (no el pool)
-        const [result] = await connection.query(sql, [idBeneficiarioVenta, TotalVenta, idUsuarioIngresa]);
-        return result.insertId;
-    }
+        CONCAT(b.nombre1Beneficiario, ' ', b.apellido1Beneficiario) AS nombreBeneficiario,
+        u.nombreUsuario AS nombreUsuarioIngresa
+      FROM Ventas v
+      JOIN beneficiarios b ON b.idBeneficiario = v.idBeneficiarioVenta
+      JOIN Usuarios u      ON u.idUsuario     = v.idUsuarioIngresa
+      WHERE v.idVenta = ?
+      LIMIT 1
+    `;
+    const [rows] = await pool.query(sql, [id]);
+    return rows[0] || null;
+  }
 
-    // No se implementa DELETE/UPDATE para Ventas, ya que se debería usar un proceso
-    // de anulación (inversión de transacción) para mantener la integridad financiera.
+  // ========== CREAR VENTA (ya lo usas en createVenta) ==========
+  static async create({ idBeneficiarioVenta, TotalVenta, idUsuarioIngresa }, connection = pool) {
+    const [result] = await connection.query(
+      `INSERT INTO Ventas (
+          idBeneficiarioVenta, TotalVenta, fechaVenta, horaVenta, idUsuarioIngresa
+       ) VALUES (?, ?, CURDATE(), CURTIME(), ?)`,
+      [idBeneficiarioVenta, TotalVenta, idUsuarioIngresa]
+    );
+    return result.insertId;
+  }
 }
 
 module.exports = VentaModel;

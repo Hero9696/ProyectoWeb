@@ -1,0 +1,42 @@
+/* ===== Vista PLANA: Ingreso de Donaciones ===== */
+body[data-page="donaciones-ingreso"] main.container{
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 1.5rem 0 2.5rem;
+}
+
+/* Quitar “tarjeta” gruesa a las cards de esta vista */
+body[data-page="donaciones-ingreso"] .card{
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #e5e7eb; /* si quieres, puedes quitarlo también */
+}
+
+/* Opcional: que el footer también sea plano aqui, como los otros */
+body[data-page="donaciones-ingreso"] .footer .container,
+body[data-page="donaciones-ingreso"] footer .container{
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+/* Footer centrado SOLO en la vista de donaciones */
+body[data-page="donaciones-ingreso"] footer,
+body[data-page="donaciones-ingreso"] .footer {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* El contenido del footer ocupa un ancho máximo y se centra */
+body[data-page="donaciones-ingreso"] footer .container,
+body[data-page="donaciones-ingreso"] .footer .container {
+  max-width: 1200px;      /* similar al main */
+  margin: 0 auto;         /* centra el bloque */
+  text-align: center;     /* centra el texto */
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+}
